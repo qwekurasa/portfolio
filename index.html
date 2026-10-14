@@ -69,7 +69,7 @@ body.loading .pz{opacity:0}.pz{transition:opacity .6s}
 .dots{position:fixed;z-index:30;left:var(--gl);bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;gap:5px}
 .dots a{width:9px;height:9px;border:1px solid var(--ink);border-radius:50%}
 .dots a.on{background:var(--ink)}
-body[data-v=about] .dots,body[data-v=project] .dots,body.loading .dots{display:none}
+body[data-v=map] .dots,body[data-v=about] .dots,body[data-v=project] .dots,body.loading .dots{display:none}
 
 /* ---------- индекс ---------- */
 #index{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
@@ -188,7 +188,7 @@ body[data-v=about]{background:#fff}
   <div class="pz" id="pz"></div>
   <header class="m-head m-ui">
     <div class="m-date tnum"><span id="mDate"></span><br><span id="mTime"></span></div>
-    <a class="m-nick" href="#index">qwekurasa<span class="m-sub">найди деталь — собери проект</span></a>
+    <a class="m-nick" href="#index">qwekurasa</a>
     <nav class="m-nav up"><a href="#about">Обо мне</a></nav>
   </header>
 </section>
