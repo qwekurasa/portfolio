@@ -144,11 +144,11 @@ body:not([data-v=project]) .dock{display:none}
 /* ---------- обо мне ---------- */
 #about{background:#fff;color:var(--ink);min-height:100%;padding:calc(22px + env(safe-area-inset-top,0px)) var(--gr) 80px var(--gl)}
 body[data-v=about]{background:#fff}
-.ab{display:grid;grid-template-columns:minmax(0,360px) minmax(0,560px);gap:48px;margin-top:96px;align-items:start}
-.ab-photo{display:block;width:100%;aspect-ratio:1.25;object-fit:cover}
+.ab{display:flex;flex-direction:column;align-items:center;text-align:center;gap:32px;max-width:520px;margin:80px auto 0}
+.ab-photo{display:block;width:min(360px,100%);aspect-ratio:1.25;object-fit:cover}
 .ab-text h1{margin:0 0 20px;font-size:clamp(40px,6vw,88px);line-height:.85;letter-spacing:-.05em}
-.ab-text p{margin:0 0 14px;font-size:18px;line-height:1.35;max-width:42ch}
-.ab-links{list-style:none;display:flex;gap:24px;padding:0;margin:28px 0 0}
+.ab-text p{margin:0 auto 14px;font-size:18px;line-height:1.35;max-width:42ch}
+.ab-links{list-style:none;display:flex;justify-content:center;gap:24px;padding:0;margin:28px 0 0}
 .ab-links a:hover{text-decoration:underline;text-underline-offset:3px}
 .ab-text .ab-foot{margin-top:48px;color:var(--mute);font-size:11px}
 @media (max-width:760px){
@@ -160,7 +160,7 @@ body[data-v=about]{background:#fff}
   .shots{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:72%;overflow-x:auto;scroll-snap-type:x mandatory}
   .shot{scroll-snap-align:start}
   .w-intro{grid-template-columns:1fr;margin:52px 0 36px}
-  .ab{grid-template-columns:1fr;gap:28px;margin-top:48px}
+  .ab{gap:24px;margin-top:48px}
 }
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01s!important;animation:none!important}}
 </style>
@@ -193,7 +193,6 @@ body[data-v=about]{background:#fff}
   <div class="ab">
     <img class="ab-photo" src="me.jpg" alt="qwekurasa в детстве">
     <div class="ab-text">
-      <h1>Обо мне</h1>
       <p>Меня зовут qwekurasa. Я дизайнер и разработчик из Москвы.</p>
       <p>Делаю интерфейсы и инструменты, которые экономят время: трекеры, дашборды, автоматизацию рутины. Собираю продукт от первого эскиза до рабочего кода.</p>
       <ul class="ab-links up"><li><a href="https://www.instagram.com/qwekurasa/" target="_blank" rel="noopener">Instagram ↗</a></li><li><a href="https://t.me/qwekurasa" target="_blank" rel="noopener">Telegram ↗</a></li></ul>
