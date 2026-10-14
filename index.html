@@ -51,27 +51,19 @@ body.loading .m-ui{opacity:0;pointer-events:none}
 .m-nick{font-weight:700;font-size:13px;text-align:center;letter-spacing:.02em}
 .m-nav{justify-self:end;display:flex;gap:18px}
 .m-nav a:hover,.m-filters button:hover{color:var(--ink)}
-.m-filters{position:absolute;z-index:3;right:var(--gr);top:50%;transform:translateY(-45%);display:flex;flex-direction:column;align-items:flex-end;gap:1px;font-size:12.5px}
-.m-filters button{color:#b4b4b4;transition:color .2s}
-.m-filters button.on{color:var(--ink)}
-.m-filters sup{font-size:7.5px;margin-left:2px;vertical-align:5px}
 .m-hint{position:absolute;z-index:3;right:var(--gr);bottom:calc(20px + env(safe-area-inset-bottom,0px));color:var(--mute)}
-.scene{position:absolute;inset:0;display:grid;place-items:center}
-.track{position:relative;height:var(--ch);width:var(--tw)}
-.card{position:absolute;top:0;left:0;width:var(--cw);height:var(--ch);border-radius:14px;background:#fafaf8;border:1px solid #d9d9d4;box-shadow:0 1px 0 #fff inset,0 10px 24px -14px rgba(0,0,0,.28);display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;gap:8px 12px;padding:12px 14px 14px;opacity:0;cursor:pointer;transition:transform .35s var(--ease),opacity .4s,border-color .2s;color:#1a1a1a;font-family:var(--mono)}
-.card.in{opacity:1}
-.card:hover{border-color:#8f8f8a}
-.card.dark{background:#0f0f10;border-color:#2a2a2a;color:#eee}
-.c-top{grid-column:1;display:flex;gap:10px;font-size:10px;letter-spacing:.06em;opacity:.6}
-.c-pic{grid-column:2;grid-row:1/3;width:calc(var(--ch) * .44);border-radius:8px;border:1px dashed #cfcfca;display:grid;place-items:center;font-size:9px;letter-spacing:.06em;color:#9a9a95;text-transform:uppercase;text-align:center}
-.dark .c-pic{border:0;background:url(kesh.webp) no-repeat;background-size:calc(var(--ph) * 5 * 284 / 480) var(--ph);background-position:calc(var(--ph) * -284 / 480) 0;width:calc(var(--ph) * 284 / 480);height:var(--ph);--ph:calc(var(--ch) - 52px)}
-.c-name{grid-column:1;grid-row:2;align-self:end;font-family:var(--sans);font-weight:700;font-size:18px;letter-spacing:-.02em;line-height:1.05}
-.c-name small{display:block;font:400 10px var(--mono);letter-spacing:.04em;opacity:.6;margin-top:5px}
-.floor{display:none;position:absolute;left:50%;top:62%;width:80vw;height:22vh;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(0,0,0,.07),transparent);pointer-events:none}
-.m-label{position:absolute;z-index:2;left:0;top:0;pointer-events:none;font-size:11px;line-height:1.3;display:flex;gap:8px;align-items:flex-start;white-space:nowrap;transition:opacity .2s}
-.m-label .plus{width:18px;height:18px;border:1px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-size:13px;line-height:1;flex:none}
-.m-label b{font-weight:700}
-body.loading .m-label{opacity:0}
+.pz{position:absolute;inset:0;overflow:hidden}
+.m-sub{display:block;font:400 10px var(--mono);letter-spacing:.06em;color:var(--mute);margin-top:4px;text-transform:uppercase}
+.boards{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:30px 40px;padding-inline:var(--gl)}
+.board{display:flex;flex-direction:column;align-items:center;gap:8px;font:11px var(--mono);color:#555;transition:opacity .4s}
+.board svg{display:block;overflow:visible}
+.board.done{cursor:pointer;color:var(--ink)}
+.piece{position:absolute;left:0;top:0;touch-action:none;cursor:grab;filter:drop-shadow(0 8px 12px rgba(0,0,0,.2));transition:transform .25s var(--ease),opacity .4s;z-index:5}
+.piece svg{display:block;overflow:visible}
+.board svg svg,.piece svg svg{overflow:hidden}
+.piece.drag{cursor:grabbing;transition:none;z-index:20}
+.piece.snap{transition:left .35s var(--ease),top .35s var(--ease),transform .35s var(--ease),filter .35s;filter:none;pointer-events:none;transform:none!important}
+body.loading .pz{opacity:0}.pz{transition:opacity .6s}
 
 /* точки-переключатель карта/индекс */
 .dots{position:fixed;z-index:30;left:var(--gl);bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;gap:5px}
@@ -170,7 +162,7 @@ body[data-v=about]{background:#fff}
 .y-foot{text-align:center;font:12px Arial,sans-serif;color:#555;margin:0}
 @media (max-width:760px){
   .m-head{grid-template-columns:1fr auto 1fr}
-  .m-filters{top:auto;bottom:calc(52px + env(safe-area-inset-bottom,0px));left:var(--gl);transform:none;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;gap:2px 12px}
+  .m-old{top:auto;bottom:calc(52px + env(safe-area-inset-bottom,0px));left:var(--gl);transform:none;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;gap:2px 12px}
   .m-hint{display:none}
   .cols{grid-template-columns:0 1fr 1fr 1fr}
   .row .meta{display:none}
@@ -193,15 +185,12 @@ body[data-v=about]{background:#fff}
 </div>
 
 <section id="map" class="view on" aria-label="Лента кадров">
-  <div class="floor"></div>
-  <div class="scene"><div class="track" id="track"></div></div>
-  <div class="m-label" id="mLabel"></div>
+  <div class="pz" id="pz"></div>
   <header class="m-head m-ui">
     <div class="m-date tnum"><span id="mDate"></span><br><span id="mTime"></span></div>
-    <a class="m-nick" href="#index">qwekurasa</a>
+    <a class="m-nick" href="#index">qwekurasa<span class="m-sub">найди деталь — собери проект</span></a>
     <nav class="m-nav up"><a href="#about">Обо мне</a></nav>
   </header>
-  <nav class="m-filters m-ui" id="mFilters" aria-label="Фильтр проектов"></nav>
 </section>
 
 <section id="index" class="view" aria-label="Проекты">
@@ -256,7 +245,7 @@ const P=[
    {t:'Kesh/Аналитика',k:3,h:'Аналитика',p:'Неделя, месяц или год: динамика по дням и куда ушли деньги по категориям.',dl:[['Экран','04 / 05']]},
    {t:'platforms.sys',h:'Где работает',ul:['iPhone — приложение с виджетом','Android — APK','Любой браузер — PWA','Компьютер — сайт с аналитикой и экспортом']},
    {t:'Kesh/Бюджет',k:4,h:'Бюджет',p:'Лимиты по категориям, остаток на месяц и сколько можно тратить в день.',dl:[['Экран','05 / 05']]}]},
- ...Array.from({length:9},(_,i)=>({id:'p'+(i+2),name:'Проект '+String(i+2).padStart(2,'0'),type:'В работе',empty:true})),
+ ...Array.from({length:4},(_,i)=>({id:'p'+(i+2),name:'Проект '+String(i+2).padStart(2,'0'),type:'В работе',empty:true})),
 ];
 P.forEach((p,i)=>{p.code='P'+String(i+1).padStart(3,'0');p.shots=p.shots||GENERIC});
 const ALL=[];P.forEach(p=>p.shots.forEach((t,k)=>ALL.push({p,k,t})));
@@ -273,35 +262,48 @@ function makeNoise(){noise=document.createElement('canvas');noise.width=noise.he
 function shot(p,k){const cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
   x.fillStyle=p.empty?'#fff':'#0b0b0b';x.fillRect(0,0,W,H);if(!p.empty&&sprite)x.drawImage(sprite,KESH.x[k],KESH.y,284,480,(W-284)/2,10,284,480);return cv.toDataURL('image/jpeg',.84)}
 /* ---------- карта ---------- */
-const track=$('#track'),label=$('#mLabel');
-let focus=0,hover=-1,OFF=100;
-const NP=P.length;
-P.forEach((p,i)=>{const d=document.createElement('div');d.className='card'+(p.empty?'':' dark');d.setAttribute('role','button');d.setAttribute('aria-label',p.name);
-  d.innerHTML=`<div class="c-top"><span>${p.code}</span><span>${p.year||'скоро'}</span></div><div class="c-pic">${p.empty?'в работе':''}</div><div class="c-name">${p.name}<small>${p.type}</small></div>`;
-  d.onclick=()=>openProject(p.id);d.onmouseenter=()=>{hover=i;placeLabel()};d.onmouseleave=()=>{hover=-1;placeLabel()};p.el=d;track.append(d)});
-function layout(){P.forEach((p,i)=>{p.el.style.transform=`translate(${i*OFF}px,${i===focus?-18:0}px)`;p.el.style.zIndex=i===focus?NP+1:i+1});
-  [...$('#mFilters').children].forEach((b,i)=>b.classList.toggle('on',i===focus));placeLabel()}
-function placeLabel(){const i=hover>=0?hover:focus,p=P[i],r=p.el.getBoundingClientRect();
-  label.style.transform=`translate(${Math.round(Math.max(16,Math.min(r.left,innerWidth-label.offsetWidth-16)))}px,${Math.round(r.bottom+30)}px)`;
-  label.innerHTML=`<span class="plus">+</span><span><b>${p.code} · ${p.name}</b><br>${p.type}</span>`}
-function follow(){setTimeout(placeLabel,400)}
-function step(d){const n=Math.max(0,Math.min(NP-1,focus+d));if(n!==focus){focus=n;layout();follow()}}
-$('#mFilters').innerHTML=P.map(p=>`<button>${p.name.toLowerCase()}</button>`).join('');
-$('#mFilters').onclick=e=>{const b=e.target.closest('button');if(b){focus=[...b.parentNode.children].indexOf(b);layout();follow()}};
-let acc=0;
-$('#map').addEventListener('wheel',e=>{e.preventDefault();if(document.body.classList.contains('loading'))return;acc+=Math.abs(e.deltaY)>Math.abs(e.deltaX)?e.deltaY:e.deltaX;
-  while(Math.abs(acc)>=40){const s=Math.sign(acc);step(s);acc-=s*40}},{passive:false});
-let ty=null;
-$('#map').addEventListener('touchstart',e=>{ty=e.touches[0].clientY+e.touches[0].clientX},{passive:true});
-$('#map').addEventListener('touchmove',e=>{if(ty===null)return;const v=e.touches[0].clientY+e.touches[0].clientX,d=ty-v;if(Math.abs(d)>28){step(Math.sign(d));ty=v}},{passive:true});
-addEventListener('keydown',e=>{if(document.body.dataset.v!=='map')return;
-  if(['ArrowDown','ArrowRight'].includes(e.key)){e.preventDefault();step(1)}
-  if(['ArrowUp','ArrowLeft'].includes(e.key)){e.preventDefault();step(-1)}
-  if(e.key==='Enter')openProject(P[focus].id)});
-function scale(){const side=innerWidth>760?180:0;$('.scene').style.paddingRight=side+'px';const avail=Math.min(innerWidth-48-side,1300),cw=Math.round(Math.min(320,Math.max(220,avail*.3))),ch=Math.round(cw*.62);
-  OFF=Math.max(14,Math.floor((avail-cw)/(NP-1)));
-  track.style.setProperty('--cw',cw+'px');track.style.setProperty('--ch',ch+'px');track.style.setProperty('--tw',((NP-1)*OFF+cw)+'px');layout()}
-addEventListener('resize',scale);scale();
+const pz=$('#pz');
+const ART=[['#d9dce3','#9aa6bf','#2234e6'],['#efe4d6','#d0b08c','#5b3b22'],['#dfe7d6','#9fb38a','#2f3e21'],['#ece2ea','#c39bbb','#4a2443']];
+function art(p,i,W,H){if(!p.empty){const ph=H*.92,pw=ph*284/480;return `<rect width="${W}" height="${H}" fill="#0b0b0b"/><svg x="${(W-pw)/2}" y="${(H-ph)/2}" width="${pw}" height="${ph}" viewBox="284 0 284 480"><image href="kesh.webp" width="1420" height="480"/></svg>`}
+  const c=ART[(i-1)%ART.length];return `<rect width="${W}" height="${H}" fill="${c[0]}"/><circle cx="${W*.72}" cy="${H*.42}" r="${H*.42}" fill="${c[1]}"/><circle cx="${W*.72}" cy="${H*.42}" r="${H*.2}" fill="${c[0]}"/><rect x="${W*.08}" y="${H*.72}" width="${W*.42}" height="${H*.05}" fill="${c[2]}"/><text x="${W*.08}" y="${H*.6}" font-family="Arimo,Arial,sans-serif" font-weight="700" font-size="${H*.36}" fill="${c[2]}">${String(i+1).padStart(2,'0')}</text>`}
+function rng(s){return()=>(s=s*16807%2147483647)/2147483647}
+function piecePath(x,y,C,t){let d=`M${x},${y}`;const pts=[[x,y],[x+C,y],[x+C,y+C],[x,y+C],[x,y]];
+  for(let e=0;e<4;e++){const[ax,ay]=pts[e],[bx,by]=pts[e+1],dx=(bx-ax)/C,dy=(by-ay)/C,nx=dy,ny=-dx,k=t[e]*C*.27;
+    const P=(a,h)=>`${(ax+(bx-ax)*a+nx*h*k).toFixed(2)},${(ay+(by-ay)*a+ny*h*k).toFixed(2)}`;
+    d+=t[e]?` L${P(.36,0)} C${P(.3,.6)} ${P(.34,1)} ${P(.5,1)} C${P(.66,1)} ${P(.7,.6)} ${P(.64,0)} L${P(1,0)}`:` L${P(1,0)}`}
+  return d+'Z'}
+const COLS=3,ROWS=2;
+function build(){pz.innerHTML='';const C=innerWidth<700?Math.max(34,Math.floor((innerWidth-90)/6)):Math.min(72,Math.floor((innerWidth-300)/17)),W=C*COLS,H=C*ROWS,m=C*.3;
+  const wrap=document.createElement('div');wrap.className='boards';pz.append(wrap);
+  P.forEach((p,i)=>{const R=rng(i*97+13),h=[],v=[];for(let r=0;r<=ROWS;r++){h[r]=[];for(let c=0;c<COLS;c++)h[r][c]=r==0||r==ROWS?0:(R()<.5?1:-1)}
+    for(let r=0;r<ROWS;r++){v[r]=[];for(let c=0;c<=COLS;c++)v[r][c]=c==0||c==COLS?0:(R()<.5?1:-1)}
+    const miss=Math.floor(R()*COLS*ROWS),mr=Math.floor(miss/COLS),mc=miss%COLS;
+    const path=(r,c)=>piecePath(c*C,r*C,C,[-h[r][c],v[r][c+1],h[r+1][c],-v[r][c]]);
+    let all='',out='';for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const d=path(r,c);if(r===mr&&c===mc)continue;all+=`<path d="${d}"/>`;out+=`<path d="${d}"/>`}
+    const id='pz'+i,b=document.createElement('div');b.className='board';
+    b.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs><clipPath id="${id}">${all}</clipPath></defs><path d="${path(mr,mc)}" fill="#efefec" stroke="#c9c9c4" stroke-dasharray="3 3"/><g clip-path="url(#${id})">${art(p,i,W,H)}</g><g fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1">${out}</g><g class="fill" opacity="0"></g></svg><span>${p.code} · ${p.name}</span>`;
+    b.onclick=()=>{if(b.classList.contains('done'))openProject(p.id)};wrap.append(b);
+    const pc=document.createElement('div');pc.className='piece';const d=path(mr,mc),pid='pp'+i;
+    pc.innerHTML=`<svg width="${C+2*m}" height="${C+2*m}" viewBox="${mc*C-m} ${mr*C-m} ${C+2*m} ${C+2*m}"><defs><clipPath id="${pid}"><path d="${d}"/></clipPath></defs><g clip-path="url(#${pid})">${art(p,i,W,H)}</g><path d="${d}" fill="none" stroke="rgba(0,0,0,.25)"/></svg>`;
+    pc.setAttribute('aria-label','Деталь проекта '+p.name);pz.append(pc);
+    p.pz={b,pc,mr,mc,C,m}});
+  requestAnimationFrame(scatter)}
+function scatter(){const R=pz.getBoundingClientRect(),busy=[...pz.querySelectorAll('.board svg')].map(s=>{const r=s.getBoundingClientRect();return[r.left-R.left-30,r.top-R.top-30,r.right-R.left+30,r.bottom-R.top+40]});
+  P.forEach(p=>{const{pc,C,m}=p.pz,S=C+2*m;let x,y,k=0;
+    do{x=16+Math.random()*(R.width-S-32);y=80+Math.random()*(R.height-S-130);k++}
+    while(k<200&&busy.some(([a,b,c,d])=>x<c&&x+S>a&&y<d&&y+S>b));
+    busy.push([x-10,y-10,x+S+10,y+S+10]);pc.style.left=x+'px';pc.style.top=y+'px';pc.style.transform=`rotate(${(Math.random()*50-25).toFixed(1)}deg)`;drag(p)})}
+function slot(p){const R=pz.getBoundingClientRect(),r=p.pz.b.querySelector('svg').getBoundingClientRect(),{mr,mc,C,m}=p.pz;return[r.left-R.left+mc*C-m,r.top-R.top+mr*C-m]}
+function drag(p){const pc=p.pz.pc;pc.onpointerdown=e=>{e.preventDefault();pc.setPointerCapture(e.pointerId);pc.classList.add('drag');
+    const x0=parseFloat(pc.style.left),y0=parseFloat(pc.style.top),sx=e.clientX,sy=e.clientY;
+    pc.onpointermove=ev=>{pc.style.left=x0+ev.clientX-sx+'px';pc.style.top=y0+ev.clientY-sy+'px'};
+    pc.onpointerup=pc.onpointercancel=()=>{pc.onpointermove=pc.onpointerup=pc.onpointercancel=null;pc.classList.remove('drag');
+      const[tx,ty]=slot(p),dx=parseFloat(pc.style.left)-tx,dy=parseFloat(pc.style.top)-ty;
+      if(Math.hypot(dx,dy)<p.pz.C*.45){pc.classList.add('snap');pc.style.left=tx+'px';pc.style.top=ty+'px';p.pz.b.classList.add('done');
+        setTimeout(()=>openProject(p.id),700)}}}}
+let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(document.body.dataset.v==='map')build()},200)});
+function follow(){}
+addEventListener('hashchange',()=>{if(location.hash===''||location.hash==='#map')setTimeout(build,50)});
 
 /* ---------- индекс ---------- */
 let pendingOpen=null,pendingShot=null;
@@ -366,9 +368,9 @@ clock();setInterval(clock,1000);
 /* ---------- загрузка ---------- */
 (async function boot(){
   await Promise.race([Promise.all([document.fonts.load('400 20px Arimo'),document.fonts.load('700 20px Arimo')]).catch(()=>{}),wait(2500)]);
-  makeNoise();layout();sprite=await loadImg(KESH.src);if(sprite)P[0].ph=[0,1,2,3,4].map(k=>{const c=document.createElement('canvas');c.width=284;c.height=480;c.getContext('2d').drawImage(sprite,KESH.x[k],KESH.y,284,480,0,0,284,480);return c.toDataURL('image/webp',.9)});
+  makeNoise();sprite=await loadImg(KESH.src);if(sprite)P[0].ph=[0,1,2,3,4].map(k=>{const c=document.createElement('canvas');c.width=284;c.height=480;c.getContext('2d').drawImage(sprite,KESH.x[k],KESH.y,284,480,0,0,284,480);return c.toDataURL('image/webp',.9)});
   const total=N+1,pad=n=>String(n).padStart(2,'0');
-  for(let i=0;i<N;i++){const it=ALL[i];it.src=shot(it.p,it.k);it.p.el.classList.add('in');
+  for(let i=0;i<N;i++){const it=ALL[i];it.src=shot(it.p,it.k);
     const pct=Math.round((i+1)/total*100);
     $('#preNum').textContent=String(pct).padStart(3,'0');$('#preBar').style.width=pct+'%';
     $('#preFrame').textContent=`кадр ${pad(i+1)} / ${pad(N)}`;$('#preName').textContent=it.p.code+' '+it.p.name;
@@ -377,7 +379,7 @@ clock();setInterval(clock,1000);
   $('#preNum').textContent='100';$('#preBar').style.width='100%';
   await wait(380);
   $('#pre').classList.add('done');document.body.classList.remove('loading');
-  route();follow();
+  route();build();
 })();
 </script>
 </body>
