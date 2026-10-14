@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Портфолио qwekurasa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Sans+Narrow:wght@400;700&display=swap">
 <style>
 
 :root{
   --paper:#ffffff;--ink:#0b0b0b;--mute:#9b9b9b;--line:#e3e3e3;
   --blue:#2234e6;--night:#000000;--snow:#efefef;
-  --sans:"Arimo","Helvetica Neue",Helvetica,Arial,sans-serif;
-  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --sans:"Arial Narrow","PT Sans Narrow","Helvetica Neue Condensed",Arial,sans-serif;
+  --mono:var(--sans);
   --hand:"Reenie Beanie","Segoe Print","Bradley Hand",cursive;
   --gl:max(24px,env(safe-area-inset-left,0px));--gr:max(24px,env(safe-area-inset-right,0px));
   --ease:cubic-bezier(.2,.7,.2,1);
@@ -103,14 +103,14 @@ body:not([data-v=index]) .ticks{display:none}
 
 /* ---------- проект: рабочий стол с окнами ---------- */
 body[data-v=project]{background:var(--desk)}
-#project{--desk:#e7e7e4;--edge:#d4d4d0;--bar:#f5f5f3;--soft:#8a8a85;--orange:#ff4a1c;background:var(--desk) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");min-height:100%;padding:calc(22px + env(safe-area-inset-top,0px)) var(--gr) calc(90px + env(safe-area-inset-bottom,0px)) var(--gl)}
+#project{--desk:#ffffff;--edge:#d4d4d0;--bar:#f5f5f3;--soft:#8a8a85;--orange:#ff4a1c;background:var(--desk);min-height:100%;padding:calc(22px + env(safe-area-inset-top,0px)) var(--gr) calc(90px + env(safe-area-inset-bottom,0px)) var(--gl)}
 .w-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
 .w-head>a{font-size:15px;font-weight:700}
 .w-head nav{display:flex;gap:18px}
 .w-head a:hover{text-decoration:underline;text-underline-offset:3px}
 .w-intro{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px 40px;align-items:end;margin:76px 0 56px}
 .w-name{margin:0;font-size:clamp(64px,12vw,190px);line-height:.8;letter-spacing:-.055em;font-weight:700;text-wrap:balance}
-.w-meta{display:grid;grid-template-columns:8em 1fr;gap:3px 14px;margin:0 0 20px;font:12px/1.5 var(--mono)}
+.w-meta{display:grid;grid-template-columns:8em 1fr;gap:3px 14px;margin:0 0 20px;font:14px/1.45 var(--mono)}
 .w-meta dt{color:var(--soft)}.w-meta dd{margin:0}
 .w-meta a,.win a{text-decoration:underline;text-underline-offset:3px}
 .w-desc{margin:0;font-size:clamp(16px,1.45vw,20px);line-height:1.3;max-width:44ch}
@@ -133,8 +133,8 @@ body[data-v=project]{background:var(--desk)}
 .win-shot img{display:block;width:min(284px,100%)}
 .win-blank{aspect-ratio:1.6;background:#fff;border:1px solid #ececea;border-radius:7px}
 .win h3{margin:0;font-size:21px;line-height:1.1;letter-spacing:-.015em}
-.win p{margin:0;font:12px/1.6 var(--mono);color:#3a3a37}
-.win ul{list-style:none;margin:0;padding:0;font:12px/1.65 var(--mono)}
+.win p{margin:0;font:14px/1.45 var(--mono);color:#3a3a37}
+.win ul{list-style:none;margin:0;padding:0;font:14px/1.5 var(--mono)}
 .win li::before{content:"↳ ";color:var(--soft)}
 .win dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;padding-top:10px;border-top:1px solid #efefec;font:11px/1.4 var(--mono)}
 .win dt{color:var(--soft)}.win dd{margin:0;text-align:right}
@@ -265,7 +265,7 @@ function shot(p,k){const cv=document.createElement('canvas');cv.width=W;cv.heigh
 const pz=$('#pz');
 const ART=[['#d9dce3','#9aa6bf','#2234e6'],['#efe4d6','#d0b08c','#5b3b22'],['#dfe7d6','#9fb38a','#2f3e21'],['#ece2ea','#c39bbb','#4a2443']];
 function art(p,i,W,H){if(!p.empty){const ph=H*.92,pw=ph*284/480;return `<rect width="${W}" height="${H}" fill="#0b0b0b"/><svg x="${(W-pw)/2}" y="${(H-ph)/2}" width="${pw}" height="${ph}" viewBox="284 0 284 480"><image href="kesh.webp" width="1420" height="480"/></svg>`}
-  const c=ART[(i-1)%ART.length];return `<rect width="${W}" height="${H}" fill="${c[0]}"/><circle cx="${W*.72}" cy="${H*.42}" r="${H*.42}" fill="${c[1]}"/><circle cx="${W*.72}" cy="${H*.42}" r="${H*.2}" fill="${c[0]}"/><rect x="${W*.08}" y="${H*.72}" width="${W*.42}" height="${H*.05}" fill="${c[2]}"/><text x="${W*.08}" y="${H*.6}" font-family="Arimo,Arial,sans-serif" font-weight="700" font-size="${H*.36}" fill="${c[2]}">${String(i+1).padStart(2,'0')}</text>`}
+  const c=ART[(i-1)%ART.length];return `<rect width="${W}" height="${H}" fill="${c[0]}"/><circle cx="${W*.72}" cy="${H*.42}" r="${H*.42}" fill="${c[1]}"/><circle cx="${W*.72}" cy="${H*.42}" r="${H*.2}" fill="${c[0]}"/><rect x="${W*.08}" y="${H*.72}" width="${W*.42}" height="${H*.05}" fill="${c[2]}"/><text x="${W*.08}" y="${H*.6}" font-family="Arial Narrow,PT Sans Narrow,Arial,sans-serif" font-weight="700" font-size="${H*.36}" fill="${c[2]}">${String(i+1).padStart(2,'0')}</text>`}
 function rng(s){return()=>(s=s*16807%2147483647)/2147483647}
 function piecePath(x,y,C,t){let d=`M${x},${y}`;const pts=[[x,y],[x+C,y],[x+C,y+C],[x,y+C],[x,y]];
   for(let e=0;e<4;e++){const[ax,ay]=pts[e],[bx,by]=pts[e+1],dx=(bx-ax)/C,dy=(by-ay)/C,nx=dy,ny=-dx,k=t[e]*C*.27;
@@ -367,7 +367,7 @@ clock();setInterval(clock,1000);
 
 /* ---------- загрузка ---------- */
 (async function boot(){
-  await Promise.race([Promise.all([document.fonts.load('400 20px Arimo'),document.fonts.load('700 20px Arimo')]).catch(()=>{}),wait(2500)]);
+  await Promise.race([Promise.all([document.fonts.load('400 20px "PT Sans Narrow"'),document.fonts.load('700 20px "PT Sans Narrow"')]).catch(()=>{}),wait(2500)]);
   makeNoise();sprite=await loadImg(KESH.src);if(sprite)P[0].ph=[0,1,2,3,4].map(k=>{const c=document.createElement('canvas');c.width=284;c.height=480;c.getContext('2d').drawImage(sprite,KESH.x[k],KESH.y,284,480,0,0,284,480);return c.toDataURL('image/webp',.9)});
   const total=N+1,pad=n=>String(n).padStart(2,'0');
   for(let i=0;i<N;i++){const it=ALL[i];it.src=shot(it.p,it.k);
