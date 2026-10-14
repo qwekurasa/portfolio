@@ -51,11 +51,11 @@ body.loading .m-ui{opacity:0;pointer-events:none}
 .board{display:flex;flex-direction:column;align-items:center;gap:8px;font:11px var(--mono);color:#555;transition:opacity .4s}
 .board svg{display:block;overflow:visible}
 .board.done{cursor:pointer;color:var(--ink)}
-.piece{position:absolute;left:0;top:0;touch-action:none;cursor:grab;filter:drop-shadow(0 6px 10px rgba(0,0,0,.18));transition:transform .25s var(--ease),opacity .4s;z-index:5}
+.piece{position:absolute;left:0;top:0;touch-action:none;cursor:grab;transition:transform .25s var(--ease),opacity .4s;z-index:5}
 .piece svg{display:block;overflow:visible}
 .board svg svg,.piece svg svg{overflow:hidden}
 .piece.drag{cursor:grabbing;transition:none;z-index:20}
-.piece.snap{transition:left .35s var(--ease),top .35s var(--ease),transform .35s var(--ease),filter .35s;filter:none;pointer-events:none;transform:none!important}
+.piece.snap{transition:left .35s var(--ease),top .35s var(--ease),transform .35s var(--ease);pointer-events:none;transform:none!important}
 body.loading .pz{opacity:0}.pz{transition:opacity .6s}
 
 /* точки-переключатель карта/индекс */
@@ -244,8 +244,8 @@ function piecePath(x,y,C,t){let d=`M${x},${y}`;const pts=[[x,y],[x+C,y],[x+C,y+C
     d+=t[e]?` L${P(.36,0)} C${P(.3,.6)} ${P(.34,1)} ${P(.5,1)} C${P(.66,1)} ${P(.7,.6)} ${P(.64,0)} L${P(1,0)}`:` L${P(1,0)}`}
   return d+'Z'}
 const COLS=3,ROWS=2;
-function build(){pz.innerHTML='';const sm=innerWidth<700,C=sm?Math.max(28,Math.floor((innerWidth-80)/9.6)):Math.max(44,Math.min(66,Math.floor((innerWidth-360)/16))),W=C*COLS,H=C*ROWS,m=C*.3;
-  const wrap=document.createElement('div');wrap.className='boards';wrap.style.maxWidth=(sm?3:5)*(W+(sm?20:44))+48+'px';wrap.style.margin='0 auto';wrap.style.gap=sm?'16px 14px':'26px 36px';pz.append(wrap);
+function build(){pz.innerHTML='';const sm=innerWidth<700,cols=sm?3:5,rows=Math.ceil(P.length/cols),gx=sm?14:36,gy=sm?16:26,C=Math.max(16,Math.floor(Math.min(66,(innerWidth-48-(cols-1)*gx)/(cols*3)/(sm?1:1.15),((innerHeight-110)*.5-(rows-1)*gy)/(rows*2)))),W=C*COLS,H=C*ROWS,m=C*.3;
+  const wrap=document.createElement('div');wrap.className='boards';wrap.style.maxWidth=cols*W+(cols-1)*gx+48+'px';wrap.style.margin='0 auto';wrap.style.gap=gy+'px '+gx+'px';pz.append(wrap);
   P.forEach((p,i)=>{const R=rng(i*97+13),h=[],v=[];for(let r=0;r<=ROWS;r++){h[r]=[];for(let c=0;c<COLS;c++)h[r][c]=r==0||r==ROWS?0:(R()<.5?1:-1)}
     for(let r=0;r<ROWS;r++){v[r]=[];for(let c=0;c<=COLS;c++)v[r][c]=c==0||c==COLS?0:(R()<.5?1:-1)}
     const miss=Math.floor(R()*COLS*ROWS),mr=Math.floor(miss/COLS),mc=miss%COLS;
