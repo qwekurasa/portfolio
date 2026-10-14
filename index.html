@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Портфолио qwekurasa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Caveat:wght@600&display=swap">
 <style>
 
 :root{
@@ -108,7 +108,9 @@ body[data-v=project]{background:var(--desk)}
 .pj{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,600px) minmax(0,1fr);gap:40px;margin-top:60px;align-items:start}
 .pj-main{grid-column:2;display:flex;flex-direction:column;gap:28px}
 .pj-side{grid-column:3;position:sticky;top:24px;max-width:340px}
-.pj-name{margin:0 0 14px;font-size:clamp(40px,4.4vw,64px);line-height:.9;letter-spacing:-.04em;font-weight:700}
+.pj-name{position:relative;display:inline-block;margin:0 0 18px;padding:14px 34px 18px 26px;font:600 clamp(48px,5vw,76px)/.9 "Caveat",cursive;color:#1c1c1c}
+.pj-name span{filter:url(#pencil)}
+.pj-ring{position:absolute;inset:-6px -14px -4px -10px;width:calc(100% + 24px);height:calc(100% + 10px);overflow:visible;fill:none;stroke:#1c1c1c;stroke-width:1.7;stroke-linecap:round;filter:url(#pencil);pointer-events:none}
 .w-desc{margin:0 0 20px;font-size:15px;line-height:1.45}
 .w-meta{display:grid;grid-template-columns:7.5em 1fr;gap:3px 12px;margin:0;padding-top:14px;border-top:1px solid var(--ink);font:13px/1.45 var(--mono)}
 .w-meta dt{color:var(--soft)}.w-meta dd{margin:0}
@@ -152,6 +154,7 @@ body[data-v=about]{background:#fff}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="pencil" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3" result="d"/><feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves="1" seed="8" result="g"/><feColorMatrix in="g" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3.2 0 0 0 -.25" result="ga"/><feComposite in="d" in2="ga" operator="in"/></filter></svg>
 
 <script>document.body.dataset.v="map"</script>
 
@@ -300,7 +303,7 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   $('#project').innerHTML=`
   <header class="w-head"><a href="#map">qwekurasa</a><nav class="up"><a href="#map">Главная</a><a href="#about">Обо мне</a></nav></header>
   <div class="pj"><div class="pj-main">${wins.map(w=>item(w,p)).join('')}</div>
-  <aside class="pj-side"><h1 class="pj-name">${p.name}</h1><p class="w-desc">${p.desc||'Проект в работе.'}</p><dl class="w-meta">${meta.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl></aside></div>
+  <aside class="pj-side"><h1 class="pj-name"><span>${p.name}</span><svg class="pj-ring" viewBox="0 0 200 100" preserveAspectRatio="none"><path vector-effect="non-scaling-stroke" d="M150 9C110 0 42 6 16 30 -4 50 10 82 60 93 112 104 186 92 196 58 205 26 166 6 112 7 84 8 58 14 46 21"/><path vector-effect="non-scaling-stroke" d="M146 12C104 5 40 12 20 34 6 52 18 80 64 89 114 99 182 86 192 56 199 30 168 11 120 10" opacity=".55"/></svg></h1><p class="w-desc">${p.desc||'Проект в работе.'}</p><dl class="w-meta">${meta.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl></aside></div>
   <footer class="w-foot"><a href="#p-${pv.id}">← ${pv.code} ${pv.name}</a><a href="#p-${nx.id}">${nx.code} ${nx.name} →</a></footer>`}
 
 /* ---------- роутер ---------- */
