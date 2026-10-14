@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Портфолио qwekurasa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Reenie+Beanie&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 
 :root{
@@ -19,6 +19,8 @@
   color-scheme:light;
 }
 *,*::before,*::after{box-sizing:border-box}
+html,body,*{scrollbar-width:none;-ms-overflow-style:none}
+::-webkit-scrollbar{display:none;width:0;height:0}
 html,body{height:100%;margin:0}
 img{max-width:100%}
 [hidden]{display:none!important}
@@ -46,7 +48,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 body.loading .m-ui{opacity:0;pointer-events:none}
 .m-head{position:absolute;z-index:3;top:calc(20px + env(safe-area-inset-top,0px));left:var(--gl);right:var(--gr);display:grid;grid-template-columns:1fr auto 1fr;align-items:start;font-size:12px}
 .m-date{font-weight:700;line-height:1.3}
-.m-title{font-weight:700;text-align:center}
+.m-nick{font-weight:700;font-size:13px;text-align:center;letter-spacing:.02em}
 .m-nav{justify-self:end;display:flex;gap:18px}
 .m-nav a:hover,.m-filters button:hover{color:var(--ink)}
 .m-filters{position:absolute;z-index:3;right:var(--gr);top:50%;transform:translateY(-45%);display:flex;flex-direction:column;align-items:flex-end;gap:1px;font-size:12.5px}
@@ -55,12 +57,12 @@ body.loading .m-ui{opacity:0;pointer-events:none}
 .m-filters sup{font-size:7.5px;margin-left:2px;vertical-align:5px}
 .m-hint{position:absolute;z-index:3;right:var(--gr);bottom:calc(20px + env(safe-area-inset-bottom,0px));color:var(--mute)}
 .scene{position:absolute;inset:0;perspective:2600px;display:grid;place-items:center}
-.track{position:relative;width:0;height:0;transform-style:preserve-3d;transform:rotate(var(--rz,0deg)) scale(var(--s,1)) rotateX(-24deg) rotateY(-58deg)}
+.track{position:relative;width:0;height:0;transform-style:preserve-3d;transform:scale(var(--s,1)) rotateY(-62deg)}
 .mk{position:absolute;width:1px;height:1px}
-.card{position:absolute;left:-90px;top:-56px;width:180px;height:112px;background:#eee center/cover no-repeat;box-shadow:0 0 0 1px rgba(0,0,0,.14);opacity:0;cursor:pointer;transition:transform .6s var(--ease),opacity .45s,filter .25s}
+.card{position:absolute;left:-130px;top:-81px;width:260px;height:162px;background:#eee center/cover no-repeat;box-shadow:0 0 0 1px rgba(0,0,0,.14);opacity:0;cursor:pointer;transition:transform .6s var(--ease),opacity .45s,filter .25s}
 .card.in{opacity:1}.card.in.dim{opacity:.1}
 .card:hover{filter:brightness(1.1) contrast(1.05)}
-.floor{position:absolute;left:50%;top:58%;width:70vw;height:30vh;transform:translate(-50%,-50%) rotate(-21deg);background:radial-gradient(closest-side,rgba(0,0,0,.07),transparent);pointer-events:none}
+.floor{position:absolute;left:50%;top:62%;width:80vw;height:22vh;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(0,0,0,.07),transparent);pointer-events:none}
 .m-label{position:absolute;z-index:2;left:0;top:0;pointer-events:none;font-size:11px;line-height:1.3;display:flex;gap:8px;align-items:flex-start;white-space:nowrap;transition:opacity .2s}
 .m-label .plus{width:18px;height:18px;border:1px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-size:13px;line-height:1;flex:none}
 .m-label b{font-weight:700}
@@ -145,21 +147,24 @@ body:not([data-v=project]) .dock{display:none}
 .w-foot{display:flex;justify-content:space-between;gap:16px;margin-top:36px;font:12px var(--mono)}
 .w-foot a:hover{text-decoration:underline;text-underline-offset:3px}
 /* ---------- обо мне ---------- */
-#about{background:var(--night);color:var(--snow);min-height:100%;padding-left:var(--gl);padding-right:var(--gr)}
-.a-col{max-width:500px;margin:0 auto;padding-block:calc(34px + env(safe-area-inset-top,0px)) 60px;border-top:1px solid #1d1d1d}
-.a-head{display:flex;justify-content:space-between;gap:16px;font-size:16px;line-height:1.2}
-.a-head a:hover{text-decoration:underline;text-underline-offset:3px}
-.a-photo{display:block;width:100%;aspect-ratio:1.25;object-fit:cover;margin:68px 0 34px;background:#111}
-.a-name{font-family:var(--hand);font-size:72px;line-height:1;margin:0 0 26px;font-weight:400}
-.a-text{margin:0;font-size:17.5px;line-height:1.16;text-transform:uppercase;letter-spacing:.005em}
-.a-soc{display:flex;justify-content:space-between;margin-top:40px;font-size:16px}
-.a-soc a{display:inline-flex;align-items:center;gap:10px;text-transform:uppercase}
-.a-soc svg{width:38px;height:38px;transition:transform .5s var(--ease)}
-.a-soc a:hover svg{transform:rotate(45deg)}
-.a-foot{display:flex;justify-content:space-between;margin-top:34px;font-size:16px}
-
+.y-wrap{max-width:760px;margin:0 auto;padding:12px 0 40px}
+#about{background:#fff;color:#000;font:16px/1.35 "Times New Roman",Times,serif;min-height:100%;padding-left:var(--gl);padding-right:var(--gr)}
+body[data-v=about]{background:#fff}
+#about a{color:#0000cc;text-decoration:underline}#about a:visited{color:#551a8b}
+.y-top{width:100%;border-collapse:collapse}.y-nav{text-align:right;font:13px Arial,sans-serif}
+#about .y-logo{font:italic 700 38px "Times New Roman",Times,serif;color:#cc0000;text-decoration:none;letter-spacing:-1px}
+.y-bar{background:#003399;color:#fff;font:700 13px Arial,sans-serif;padding:3px 8px;margin:6px 0 10px}
+.y-main{width:100%;border-collapse:separate;border-spacing:8px}
+.y-main td{vertical-align:top}
+.y-side{width:170px;background:#ffffcc;border:1px solid #999;text-align:center;padding:10px;font:12px Arial,sans-serif}
+.y-side img{width:150px;height:auto;border:3px outset #ccc;display:inline-block}
+.y-body h1{font-size:26px;margin:0 0 10px}
+.y-body h2{font:700 15px Arial,sans-serif;background:#e6e6e6;border-bottom:1px solid #999;padding:3px 6px;margin:18px 0 8px}
+.y-body p{margin:0 0 10px}.y-body ul{margin:0;padding-left:22px}
+#about hr{border:0;border-top:2px groove #ccc;margin:16px 0}
+.y-foot{text-align:center;font:12px Arial,sans-serif;color:#555;margin:0}
 @media (max-width:760px){
-  .m-head{grid-template-columns:1fr 1fr}.m-title{display:none}
+  .m-head{grid-template-columns:1fr auto 1fr}
   .m-filters{top:auto;bottom:calc(52px + env(safe-area-inset-bottom,0px));left:var(--gl);transform:none;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;gap:2px 12px}
   .m-hint{display:none}
   .cols{grid-template-columns:0 1fr 1fr 1fr}
@@ -167,7 +172,7 @@ body:not([data-v=project]) .dock{display:none}
   .shots{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:72%;overflow-x:auto;scroll-snap-type:x mandatory}
   .shot{scroll-snap-align:start}
   .w-intro{grid-template-columns:1fr;margin:52px 0 36px}
-  .a-name{font-size:60px}.a-text{font-size:15.5px}
+  .y-main td{display:block;width:auto}.y-side{width:auto}
 }
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01s!important;animation:none!important}}
 </style>
@@ -188,11 +193,10 @@ body:not([data-v=project]) .dock{display:none}
   <div class="m-label" id="mLabel"></div>
   <header class="m-head m-ui">
     <div class="m-date tnum"><span id="mDate"></span><br><span id="mTime"></span></div>
-    <div class="m-title" id="mTitle"></div>
-    <nav class="m-nav up"><a href="#index">Проекты</a><a href="#about">Обо мне</a></nav>
+    <a class="m-nick" href="#index">qwekurasa</a>
+    <nav class="m-nav up"><a href="#about">Обо мне</a></nav>
   </header>
   <nav class="m-filters m-ui" id="mFilters" aria-label="Фильтр проектов"></nav>
-  <div class="m-hint up m-ui">колесо — листать · клик — открыть</div>
 </section>
 
 <section id="index" class="view" aria-label="Проекты">
@@ -208,17 +212,23 @@ body:not([data-v=project]) .dock{display:none}
 <section id="project" class="view" aria-label="Проект"></section>
 
 <section id="about" class="view" aria-label="Обо мне">
-  <div class="a-col">
-    <header class="a-head"><a href="#map">qwekurasa<br>дизайнер &amp; разработчик</a><a href="#contacts">контакты</a></header>
-    <img class="a-photo" src="me.jpg" alt="qwekurasa в детстве">
-    <h1 class="a-name">qwekurasa</h1>
-    <p class="a-text">— дизайнер и разработчик. Делаю интерфейсы и инструменты, которые экономят время: трекеры, дашборды, автоматизацию рутины. Собираю продукт от первого эскиза до рабочего кода, люблю простые решения, аккуратную типографику и вещи, которыми приятно пользоваться каждый день.</p>
-    <div class="a-soc" id="contacts">
-      <a href="https://www.instagram.com/qwekurasa/" target="_blank" rel="noopener">Instagram <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 L21.3 18.7 L38 20 L21.3 21.3 L20 38 L18.7 21.3 L2 20 L18.7 18.7Z M20 9 L22.5 17.5 L31 20 L22.5 22.5 L20 31 L17.5 22.5 L9 20 L17.5 17.5Z" fill="currentColor" fill-rule="evenodd" opacity=".9"/><path d="M8 8 L20 20 L32 8 M8 32 L20 20 L32 32" stroke="currentColor" stroke-width=".5" fill="none" opacity=".6"/></svg></a>
-      <a href="https://t.me/qwekurasa" target="_blank" rel="noopener">Telegram <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 L21.3 18.7 L38 20 L21.3 21.3 L20 38 L18.7 21.3 L2 20 L18.7 18.7Z M20 9 L22.5 17.5 L31 20 L22.5 22.5 L20 31 L17.5 22.5 L9 20 L17.5 17.5Z" fill="currentColor" fill-rule="evenodd" opacity=".9"/><path d="M8 8 L20 20 L32 8 M8 32 L20 20 L32 32" stroke="currentColor" stroke-width=".5" fill="none" opacity=".6"/></svg></a>
-    </div>
-    <div class="a-foot tnum"><span>москва, <span id="aTime"></span></span><span>©2026</span></div>
-  </div>
+<div class="y-wrap">
+  <table class="y-top"><tr><td><a href="#map" class="y-logo">qwekurasa!</a></td><td class="y-nav"><a href="#map">Главная</a> | <a href="#index">Проекты</a> | <a href="#about">Обо мне</a></td></tr></table>
+  <div class="y-bar">Домашняя страница qwekurasa</div>
+  <table class="y-main"><tr>
+    <td class="y-side"><img src="me.jpg" alt="qwekurasa в детстве" width="150"><br><small>это я</small></td>
+    <td class="y-body">
+      <h1>Обо мне</h1>
+      <p>Привет! Меня зовут <b>qwekurasa</b>. Я дизайнер и разработчик из Москвы.</p>
+      <p>Делаю интерфейсы и инструменты, которые экономят время: трекеры, дашборды, автоматизацию рутины. Собираю продукт от первого эскиза до рабочего кода.</p>
+      <h2>Мои проекты</h2>
+      <ul><li><a href="#p-tracker">Кэш</a> — трекер трат без аккаунта и облака</li><li><a href="#index">Все проекты</a></li></ul>
+      <h2>Связаться со мной</h2>
+      <ul><li><a href="https://www.instagram.com/qwekurasa/" target="_blank" rel="noopener">Instagram</a></li><li><a href="https://t.me/qwekurasa" target="_blank" rel="noopener">Telegram</a></li></ul>
+    </td></tr></table>
+  <hr>
+  <p class="y-foot">Москва, <span id="aTime"></span> · Страница обновлена 14.10.2026<br>© 2026 qwekurasa · Лучше всего смотреть в разрешении 800×600</p>
+</div>
 </section>
 
 <nav class="dots" aria-label="Вид"><a href="#map" data-v="map" title="Карта"></a><a href="#index" data-v="index" title="Проекты"></a></nav>
@@ -241,7 +251,7 @@ const P=[
    {t:'Kesh/Аналитика',k:3,h:'Аналитика',p:'Неделя, месяц или год: динамика по дням и куда ушли деньги по категориям.',dl:[['Экран','04 / 05']]},
    {t:'platforms.sys',h:'Где работает',ul:['iPhone — приложение с виджетом','Android — APK','Любой браузер — PWA','Компьютер — сайт с аналитикой и экспортом']},
    {t:'Kesh/Бюджет',k:4,h:'Бюджет',p:'Лимиты по категориям, остаток на месяц и сколько можно тратить в день.',dl:[['Экран','05 / 05']]}]},
- ...Array.from({length:11},(_,i)=>({id:'p'+(i+2),name:'Проект '+String(i+2).padStart(2,'0'),type:'В работе',empty:true})),
+ ...Array.from({length:9},(_,i)=>({id:'p'+(i+2),name:'Проект '+String(i+2).padStart(2,'0'),type:'В работе',empty:true})),
 ];
 P.forEach((p,i)=>{p.code='P'+String(i+1).padStart(3,'0');p.shots=p.shots||GENERIC});
 const ALL=[];P.forEach(p=>p.shots.forEach((t,k)=>ALL.push({p,k,t})));
@@ -259,40 +269,38 @@ function shot(p,k){const cv=document.createElement('canvas');cv.width=W;cv.heigh
   x.fillStyle=p.empty?'#fff':'#0b0b0b';x.fillRect(0,0,W,H);if(!p.empty&&sprite)x.drawImage(sprite,KESH.x[k],KESH.y,284,480,(W-284)/2,10,284,480);return cv.toDataURL('image/jpeg',.84)}
 /* ---------- карта ---------- */
 const track=$('#track'),label=$('#mLabel');
-let focus=0,hover=-1,filter='all';
-ALL.forEach((it,i)=>{const d=document.createElement('div');d.className='card';d.setAttribute('role','button');d.tabIndex=-1;d.setAttribute('aria-label',it.p.name+' — '+it.t);
-  d.onclick=()=>openProject(it.p.id);d.onmouseenter=()=>{hover=i;placeLabel()};d.onmouseleave=()=>{hover=-1;placeLabel()};it.el=d;track.append(d)});
-const vis=()=>ALL.map((a,i)=>i).filter(i=>filter==='all'||ALL[i].p.id===filter);
-function layout(){const GAP=15,OPEN=78;
-  ALL.forEach((it,i)=>{let z=(N/2-i)*GAP;if(i<focus)z+=OPEN;if(i>focus)z-=OPEN;const f=i===focus;
-    it.el.style.transform=`translate3d(0,${f?-24:0}px,${z}px)${f?' scale(1.14)':''}`;
-    it.el.classList.toggle('dim',filter!=='all'&&it.p.id!==filter)});
-  const fp=P.find(p=>p.id===filter);
-  $('#mTitle').textContent=(fp?fp.name.toLowerCase():'все')+' : кадр '+String(focus+1).padStart(2,'0');
-  follow()}
-function placeLabel(){const i=hover>=0?hover:focus,it=ALL[i],r=it.el.getBoundingClientRect();
-  label.style.transform=`translate(${Math.round(Math.max(16,Math.min(r.left,innerWidth-label.offsetWidth-16)))}px,${Math.round(Math.min(r.bottom+10,innerHeight-label.offsetHeight-60))}px)`;
-  label.innerHTML=`<span class="plus">+</span><span><b>${it.p.code} · ${it.p.name}</b><br>${String(it.k+1).padStart(2,'0')} — ${it.t}</span>`}
+let focus=0,hover=-1;
+const NP=P.length;let GAP=62,OPEN=120;
+P.forEach((p,i)=>{const d=document.createElement('div');d.className='card';d.setAttribute('role','button');d.setAttribute('aria-label',p.name);
+  d.onclick=()=>openProject(p.id);d.onmouseenter=()=>{hover=i;placeLabel()};d.onmouseleave=()=>{hover=-1;placeLabel()};p.el=d;track.append(d)});
+function zs(){const z=P.map((p,i)=>-i*GAP+(i<focus?OPEN:i>focus?-OPEN:0)),c=(Math.max(...z)+Math.min(...z))/2;return z.map(v=>v-c)}
+function layout(){const z=zs();P.forEach((p,i)=>{
+    p.el.style.transform=`translate3d(0,${i===focus?-28:0}px,${z[i]}px)`});
+  [...$('#mFilters').children].forEach((b,i)=>b.classList.toggle('on',i===focus));follow()}
+function placeLabel(){const i=hover>=0?hover:focus,p=P[i],r=p.el.getBoundingClientRect();
+  label.style.transform=`translate(${Math.round(Math.max(16,Math.min(r.left,innerWidth-label.offsetWidth-16)))}px,${Math.round(Math.min(r.bottom+12,innerHeight-label.offsetHeight-50))}px)`;
+  label.innerHTML=`<span class="plus">+</span><span><b>${p.code} · ${p.name}</b><br>${p.type}</span>`}
 let raf=0,until=0;
 function follow(){until=performance.now()+750;if(!raf)raf=requestAnimationFrame(function tick(t){placeLabel();raf=t<until?requestAnimationFrame(tick):0})}
-function step(d){const v=vis();let p=v.indexOf(focus);p=p<0?0:Math.max(0,Math.min(v.length-1,p+d));if(v[p]!==focus){focus=v[p];layout()}}
-function setFilter(id){filter=id;[...$('#mFilters').children].forEach(b=>b.classList.toggle('on',b.dataset.id===id));focus=vis()[0];layout()}
-$('#mFilters').innerHTML=`<button data-id="all" class="on">все<sup>${N}</sup></button>`+P.map(p=>`<button data-id="${p.id}">${p.name.toLowerCase()}<sup>${p.shots.length}</sup></button>`).join('');
-$('#mFilters').onclick=e=>{const b=e.target.closest('button');if(b)setFilter(b.dataset.id)};
+function step(d){const n=Math.max(0,Math.min(NP-1,focus+d));if(n!==focus){focus=n;layout()}}
+$('#mFilters').innerHTML=P.map(p=>`<button>${p.name.toLowerCase()}</button>`).join('');
+$('#mFilters').onclick=e=>{const b=e.target.closest('button');if(b){focus=[...b.parentNode.children].indexOf(b);layout()}};
 let acc=0;
 $('#map').addEventListener('wheel',e=>{e.preventDefault();if(document.body.classList.contains('loading'))return;acc+=Math.abs(e.deltaY)>Math.abs(e.deltaX)?e.deltaY:e.deltaX;
-  while(Math.abs(acc)>=36){const s=Math.sign(acc);step(s);acc-=s*36}},{passive:false});
+  while(Math.abs(acc)>=40){const s=Math.sign(acc);step(s);acc-=s*40}},{passive:false});
 let ty=null;
 $('#map').addEventListener('touchstart',e=>{ty=e.touches[0].clientY+e.touches[0].clientX},{passive:true});
-$('#map').addEventListener('touchmove',e=>{if(ty===null)return;const v=e.touches[0].clientY+e.touches[0].clientX,d=ty-v;if(Math.abs(d)>22){step(Math.sign(d));ty=v}},{passive:true});
+$('#map').addEventListener('touchmove',e=>{if(ty===null)return;const v=e.touches[0].clientY+e.touches[0].clientX,d=ty-v;if(Math.abs(d)>28){step(Math.sign(d));ty=v}},{passive:true});
 addEventListener('keydown',e=>{if(document.body.dataset.v!=='map')return;
   if(['ArrowDown','ArrowRight'].includes(e.key)){e.preventDefault();step(1)}
   if(['ArrowUp','ArrowLeft'].includes(e.key)){e.preventDefault();step(-1)}
-  if(e.key==='Enter')openProject(ALL[focus].p.id)});
-const ZMAX=N/2*15+78,mk=[[-90,56,ZMAX],[90,-56,-ZMAX]].map(([x,y,z])=>{const m=document.createElement('i');m.className='mk';m.style.transform=`translate3d(${x}px,${y}px,${z}px)`;track.append(m);return m});
-function scale(){let s=1;const tall=innerHeight>innerWidth*1.2;track.style.setProperty('--rz',tall?'-38deg':'0deg');track.style.setProperty('--s',1);
-  for(let n=0;n<3;n++){const a=mk[0].getBoundingClientRect(),b=mk[1].getBoundingClientRect(),w=Math.abs(b.left-a.left),h=Math.abs(a.top-b.top);
-    s*=Math.min(innerWidth/w,innerHeight*(tall?.72:.62)/h);track.style.setProperty('--s',s)}
+  if(e.key==='Enter')openProject(P[focus].id)});
+const mk=[0,1].map(()=>{const m=document.createElement('i');m.className='mk';track.append(m);return m});
+function scale(){const sm=innerWidth<700;GAP=sm?26:62;OPEN=sm?60:120;const Z=((NP-1)*GAP+2*OPEN)/2;
+  mk[0].style.transform=`translate3d(-130px,81px,${Z}px)`;mk[1].style.transform=`translate3d(130px,-81px,${-Z}px)`;layout();
+  let s=1;track.style.setProperty('--s',1);
+  for(let n=0;n<3;n++){const a=mk[0].getBoundingClientRect(),b=mk[1].getBoundingClientRect(),w=Math.abs(b.left-a.left),h=Math.max(a.bottom,b.bottom)-Math.min(a.top,b.top);
+    s*=Math.min(innerWidth*.9/w,innerHeight*.5/h);track.style.setProperty('--s',s)}
   follow()}
 addEventListener('resize',scale);scale();
 
@@ -358,10 +366,10 @@ clock();setInterval(clock,1000);
 
 /* ---------- загрузка ---------- */
 (async function boot(){
-  await Promise.race([Promise.all([document.fonts.load('400 20px Arimo'),document.fonts.load('700 20px Arimo'),document.fonts.load('40px "Reenie Beanie"')]).catch(()=>{}),wait(2500)]);
+  await Promise.race([Promise.all([document.fonts.load('400 20px Arimo'),document.fonts.load('700 20px Arimo')]).catch(()=>{}),wait(2500)]);
   makeNoise();layout();sprite=await loadImg(KESH.src);if(sprite)P[0].ph=[0,1,2,3,4].map(k=>{const c=document.createElement('canvas');c.width=284;c.height=480;c.getContext('2d').drawImage(sprite,KESH.x[k],KESH.y,284,480,0,0,284,480);return c.toDataURL('image/webp',.9)});
   const total=N+1,pad=n=>String(n).padStart(2,'0');
-  for(let i=0;i<N;i++){const it=ALL[i];it.src=shot(it.p,it.k);it.el.style.backgroundImage=`url(${it.src})`;it.el.classList.add('in');
+  for(let i=0;i<N;i++){const it=ALL[i];it.src=shot(it.p,it.k);if(it.k===(it.p.empty?0:1)){it.p.el.style.backgroundImage=`url(${it.src})`;it.p.el.classList.add('in')}
     const pct=Math.round((i+1)/total*100);
     $('#preNum').textContent=String(pct).padStart(3,'0');$('#preBar').style.width=pct+'%';
     $('#preFrame').textContent=`кадр ${pad(i+1)} / ${pad(N)}`;$('#preName').textContent=it.p.code+' '+it.p.name;
