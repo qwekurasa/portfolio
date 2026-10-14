@@ -93,8 +93,8 @@ body:not([data-v=index]) .ticks{display:none}
 .shots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:12px var(--gr) 26px var(--gl)}
 .shots:not([hidden]) .shot{animation:rise .55s var(--ease) both}
 .shot{display:flex;flex-direction:column;gap:7px;min-width:0}
-.shot img{display:block;width:100%;aspect-ratio:1.6;object-fit:cover;background:#eee;box-shadow:0 0 0 1px var(--line);transition:filter .25s}
-.shot:hover img{filter:brightness(.92)}
+.shot canvas{display:block;width:100%;aspect-ratio:1.6;background:#ececec}
+.shot:hover canvas{opacity:.85}
 .shot .cap{font-size:11px;line-height:1.35}
 .shot .cap b{font-weight:400;text-transform:uppercase;letter-spacing:.06em}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}}
@@ -283,10 +283,19 @@ addEventListener('hashchange',()=>{if(location.hash===''||location.hash==='#map'
 let pendingOpen=null,pendingShot=null;
 $('#list').innerHTML=P.map(p=>`
   <div class="row cols up"><button aria-expanded="false" data-id="${p.id}"><span>${p.code}</span><span class="nm">${p.name}</span></button><span class="meta">${p.type}${p.year?' · '+p.year:''}</span></div>
-  <div class="shots" id="sh-${p.id}" hidden>${p.shots.map((t,k)=>`<a class="shot" href="#p-${p.id}" data-k="${k}"><img alt="${t}" data-p="${p.id}" data-k="${k}"><span class="cap"><b>${p.name}</b><br>${t}<br>${p.type}</span></a>`).join('')}</div>`).join('');
-function toggleRow(id,open){const b=$(`.row [data-id="${id}"]`),s=$('#sh-'+id);open=open??s.hidden;s.hidden=!open;b.setAttribute('aria-expanded',open)}
+  <div class="shots" id="sh-${p.id}" hidden>${p.shots.map((t,k)=>`<a class="shot" href="#p-${p.id}" aria-label="${p.name}: ${t}"><canvas class="px"></canvas></a>`).join('')}</div>`).join('');
+function toggleRow(id,open,solo=1){const b=$(`.row [data-id="${id}"]`),s=$('#sh-'+id);open=open??s.hidden;if(open&&solo)P.forEach(q=>{if(q.id!==id){$('#sh-'+q.id).hidden=true;$(`.row [data-id="${q.id}"]`).setAttribute('aria-expanded',false)}});s.hidden=!open;b.setAttribute('aria-expanded',open)}
 $('#list').onclick=e=>{const b=e.target.closest('.row button');if(b)toggleRow(b.dataset.id);};
-$('#expandAll').onclick=function(){const o=this.getAttribute('aria-expanded')!=='true';this.setAttribute('aria-expanded',o);this.textContent=o?'Свернуть все':'Раскрыть все';P.forEach(p=>toggleRow(p.id,o))};
+$('#expandAll').onclick=function(){const o=this.getAttribute('aria-expanded')!=='true';this.setAttribute('aria-expanded',o);this.textContent=o?'Свернуть все':'Раскрыть все';P.forEach(p=>toggleRow(p.id,o,0))};
+const calmPx=matchMedia('(prefers-reduced-motion: reduce)').matches;let pxLast=0;
+(function pxLoop(t){requestAnimationFrame(pxLoop);if(t-pxLast<50&&pxLast)return;pxLast=t;if(document.body.dataset.v!=='index')return;
+  const tt=calmPx?0:t/1000,d=devicePixelRatio||1;
+  document.querySelectorAll('.shots:not([hidden]) canvas.px').forEach((c,ci)=>{const w=c.clientWidth,h=c.clientHeight;if(!w)return;
+    if(c.width!==Math.round(w*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}
+    const x=c.getContext('2d'),cell=Math.max(6,Math.round(w/30))*d,cols=Math.ceil(c.width/cell),rows=Math.ceil(c.height/cell),br=.5+.5*Math.sin(tt*1.1+ci*.9);
+    for(let i=0;i<cols;i++)for(let j=0;j<rows;j++){const g=i/cols*.55+j/rows*.45,n=((i*73+j*151+ci*37)%29)/29;
+      const v=Math.round(Math.max(196,Math.min(246,242-g*38*(.55+.45*br)+7*Math.sin(tt*1.6+n*6.28))));
+      x.fillStyle=`rgb(${v},${v},${v+2})`;x.fillRect(i*cell,j*cell,cell-d,cell-d)}})})(0);
 function openProject(id,direct){if(direct){location.hash='p-'+id;return}pendingOpen=id;location.hash='index'}
 
 /* ---------- проект ---------- */
@@ -344,7 +353,6 @@ clock();setInterval(clock,1000);
   makeNoise();route();if(document.body.dataset.v==='map')build();
   sprite=await loadImg(KESH.src);if(sprite)P[0].ph=[0,1,2,3,4].map(k=>{const c=document.createElement('canvas');c.width=284;c.height=480;c.getContext('2d').drawImage(sprite,KESH.x[k],KESH.y,284,480,0,0,284,480);return c.toDataURL('image/webp',.9)});
   ALL.forEach(it=>it.src=shot(it.p,it.k));
-  document.querySelectorAll('.shot img').forEach(im=>im.src=src(P.find(p=>p.id===im.dataset.p),+im.dataset.k));
   if(document.body.dataset.v==='project')route();
 })();
 </script>
