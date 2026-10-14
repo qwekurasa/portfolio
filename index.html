@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Портфолио qwekurasa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Reenie+Beanie&display=swap">
+<style>
+
+:root{
+  --paper:#ffffff;--ink:#0b0b0b;--mute:#9b9b9b;--line:#e3e3e3;
+  --blue:#2234e6;--night:#000000;--snow:#efefef;
+  --sans:"Arimo","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --hand:"Reenie Beanie","Segoe Print","Bradley Hand",cursive;
+  --gl:max(24px,env(safe-area-inset-left,0px));--gr:max(24px,env(safe-area-inset-right,0px));
+  --ease:cubic-bezier(.2,.7,.2,1);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%;margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font:13px/1.35 var(--sans);-webkit-font-smoothing:antialiased}
+body[data-v=map],body.loading{overflow:hidden}
+body[data-v=about]{background:var(--night)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+:focus-visible{outline:1px solid currentColor;outline-offset:3px}
+.up{text-transform:uppercase;letter-spacing:.06em;font-size:11px}
+.view{display:none}.view.on{display:block}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ---------- прелоадер ---------- */
+#pre{position:fixed;inset:0;z-index:40;pointer-events:none;padding:calc(20px + env(safe-area-inset-top,0px)) var(--gr) calc(22px + env(safe-area-inset-bottom,0px)) var(--gl);display:flex;flex-direction:column;justify-content:flex-end;transition:opacity .6s var(--ease)}
+#pre.done{opacity:0}
+.pre-cap{display:flex;gap:18px;color:var(--mute)}
+.pre-num{font-size:clamp(72px,13vw,180px);line-height:.82;font-weight:400;letter-spacing:-.05em;margin-top:6px}
+.pre-bar{height:1px;background:var(--line);margin-top:16px;position:relative}
+.pre-bar i{position:absolute;inset:0 auto 0 0;width:0;background:var(--ink);transition:width .2s linear}
+
+/* ---------- карта (лента) ---------- */
+#map{position:fixed;inset:0;overflow:hidden;background:var(--paper);touch-action:none}
+.m-ui{transition:opacity .8s var(--ease) .1s}
+body.loading .m-ui{opacity:0;pointer-events:none}
+.m-head{position:absolute;z-index:3;top:calc(20px + env(safe-area-inset-top,0px));left:var(--gl);right:var(--gr);display:grid;grid-template-columns:1fr auto 1fr;align-items:start;font-size:12px}
+.m-date{font-weight:700;line-height:1.3}
+.m-title{font-weight:700;text-align:center}
+.m-nav{justify-self:end;display:flex;gap:18px}
+.m-nav a:hover,.m-filters button:hover{color:var(--ink)}
+.m-filters{position:absolute;z-index:3;right:var(--gr);top:50%;transform:translateY(-45%);display:flex;flex-direction:column;align-items:flex-end;gap:1px;font-size:12.5px}
+.m-filters button{color:#b4b4b4;transition:color .2s}
+.m-filters button.on{color:var(--ink)}
+.m-filters sup{font-size:7.5px;margin-left:2px;vertical-align:5px}
+.m-hint{position:absolute;z-index:3;right:var(--gr);bottom:calc(20px + env(safe-area-inset-bottom,0px));color:var(--mute)}
+.scene{position:absolute;inset:0;perspective:2600px;display:grid;place-items:center}
+.track{position:relative;width:0;height:0;transform-style:preserve-3d;transform:rotate(var(--rz,0deg)) scale(var(--s,1)) rotateX(-24deg) rotateY(-58deg)}
+.mk{position:absolute;width:1px;height:1px}
+.card{position:absolute;left:-90px;top:-56px;width:180px;height:112px;background:#eee center/cover no-repeat;box-shadow:0 0 0 1px rgba(0,0,0,.14);opacity:0;cursor:pointer;transition:transform .6s var(--ease),opacity .45s,filter .25s}
+.card.in{opacity:1}.card.in.dim{opacity:.1}
+.card:hover{filter:brightness(1.1) contrast(1.05)}
+.floor{position:absolute;left:50%;top:58%;width:70vw;height:30vh;transform:translate(-50%,-50%) rotate(-21deg);background:radial-gradient(closest-side,rgba(0,0,0,.07),transparent);pointer-events:none}
+.m-label{position:absolute;z-index:2;left:0;top:0;pointer-events:none;font-size:11px;line-height:1.3;display:flex;gap:8px;align-items:flex-start;white-space:nowrap;transition:opacity .2s}
+.m-label .plus{width:18px;height:18px;border:1px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-size:13px;line-height:1;flex:none}
+.m-label b{font-weight:700}
+body.loading .m-label{opacity:0}
+
+/* точки-переключатель карта/индекс */
+.dots{position:fixed;z-index:30;left:var(--gl);bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;gap:5px}
+.dots a{width:9px;height:9px;border:1px solid var(--ink);border-radius:50%}
+.dots a.on{background:var(--ink)}
+body[data-v=about] .dots,body[data-v=project] .dots,body.loading .dots{display:none}
+
+/* ---------- индекс ---------- */
+#index{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+.cols{display:grid;grid-template-columns:21% 1fr 1fr 1fr;padding-left:var(--gl);padding-right:var(--gr)}
+.cols>*{grid-column:2}
+.ticks{position:fixed;left:0;right:0;z-index:5;pointer-events:none}
+.ticks i{grid-column:auto;height:13px;border-left:1px solid var(--ink)}
+.ticks i:first-child{grid-column:2}
+.ticks.top{top:env(safe-area-inset-top,0px)}.ticks.bot{bottom:env(safe-area-inset-bottom,0px)}
+body:not([data-v=index]) .ticks{display:none}
+.i-head{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:var(--paper);padding-block:26px 30px}
+.i-head a{grid-column:auto}.i-head a:first-child{grid-column:2}
+.i-head a:hover{text-decoration:underline;text-underline-offset:3px}
+.i-tools{padding-block:8px 26px}
+.i-tools button{display:inline-flex;gap:10px;align-items:center}
+.i-tools button::after{content:"";border:4.5px solid transparent;border-top:6px solid currentColor;margin-top:5px;transition:transform .3s}
+.i-tools button[aria-expanded=true]::after{transform:rotate(180deg) translateY(5px)}
+.row{align-items:baseline}
+.row button{grid-column:2;padding-block:2.5px;display:flex;gap:2.2em}
+.row button:hover .nm,.row button[aria-expanded=true] .nm{text-decoration:underline;text-underline-offset:3px}
+.row .meta{grid-column:3;color:var(--mute);opacity:0;transition:opacity .2s}
+.row:hover .meta,.row:has([aria-expanded=true]) .meta{opacity:1}
+.shots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:12px var(--gr) 26px var(--gl)}
+.shots:not([hidden]) .shot{animation:rise .55s var(--ease) both}
+.shot{display:flex;flex-direction:column;gap:7px;min-width:0}
+.shot img{display:block;width:100%;aspect-ratio:1.6;object-fit:cover;background:#eee;box-shadow:0 0 0 1px var(--line);transition:filter .25s}
+.shot:hover img{filter:brightness(.92)}
+.shot .cap{font-size:11px;line-height:1.35}
+.shot .cap b{font-weight:400;text-transform:uppercase;letter-spacing:.06em}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+
+/* ---------- проект: рабочий стол с окнами ---------- */
+body[data-v=project]{background:var(--desk)}
+#project{--desk:#e7e7e4;--edge:#d4d4d0;--bar:#f5f5f3;--soft:#8a8a85;--orange:#ff4a1c;background:var(--desk) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");min-height:100%;padding:calc(22px + env(safe-area-inset-top,0px)) var(--gr) calc(90px + env(safe-area-inset-bottom,0px)) var(--gl)}
+.w-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.w-head>a{font-size:15px;font-weight:700}
+.w-head nav{display:flex;gap:18px}
+.w-head a:hover{text-decoration:underline;text-underline-offset:3px}
+.w-intro{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px 40px;align-items:end;margin:76px 0 56px}
+.w-name{margin:0;font-size:clamp(64px,12vw,190px);line-height:.8;letter-spacing:-.055em;font-weight:700;text-wrap:balance}
+.w-meta{display:grid;grid-template-columns:8em 1fr;gap:3px 14px;margin:0 0 20px;font:12px/1.5 var(--mono)}
+.w-meta dt{color:var(--soft)}.w-meta dd{margin:0}
+.w-meta a,.win a{text-decoration:underline;text-underline-offset:3px}
+.w-desc{margin:0;font-size:clamp(16px,1.45vw,20px);line-height:1.3;max-width:44ch}
+.desk{columns:3 290px;column-gap:22px}
+.win{display:inline-block;width:100%;margin:0 0 22px;position:relative;background:#fff;border:1px solid var(--edge);border-radius:12px;box-shadow:0 1px 0 rgba(0,0,0,.03),0 20px 40px -24px rgba(0,0,0,.3);overflow:hidden;scroll-margin-top:24px;transition:opacity .22s,scale .22s}
+.win.closing{opacity:0;scale:.96}
+.win.lift{box-shadow:0 30px 60px -24px rgba(0,0,0,.4)}
+.win-bar{display:grid;grid-template-columns:18px minmax(0,1fr) auto;align-items:center;gap:8px;height:32px;padding:0 8px 0 10px;background:var(--bar);border-bottom:1px solid #ebebe7;font:11px var(--mono);user-select:none;touch-action:pan-y}
+.can-drag .win-bar{cursor:grab}.win.lift .win-bar{cursor:grabbing}
+.win-bar svg{width:12px;height:12px}
+.win-bar .t{text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.win-btns{display:flex;gap:6px;align-items:center}
+.win-btns button{width:16px;height:16px;display:grid;place-items:center;border-radius:4px}
+.b-min::before{content:"";width:9px;height:9px;border:1.2px solid var(--soft);border-radius:2px}
+.b-x{background:var(--orange);border-radius:50%!important;color:#fff;font-size:12px;line-height:1}
+.b-x:hover{filter:brightness(1.1)}
+.win.min .win-body{display:none}.win.min .win-bar{border-bottom:0}
+.win-body{padding:14px;display:flex;flex-direction:column;gap:12px}
+.win-shot{margin:0;background:#0b0b0b;border-radius:7px;display:grid;place-items:center;padding:20px 12px}
+.win-shot img{display:block;width:min(284px,100%)}
+.win-blank{aspect-ratio:1.6;background:#fff;border:1px solid #ececea;border-radius:7px}
+.win h3{margin:0;font-size:21px;line-height:1.1;letter-spacing:-.015em}
+.win p{margin:0;font:12px/1.6 var(--mono);color:#3a3a37}
+.win ul{list-style:none;margin:0;padding:0;font:12px/1.65 var(--mono)}
+.win li::before{content:"↳ ";color:var(--soft)}
+.win dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;padding-top:10px;border-top:1px solid #efefec;font:11px/1.4 var(--mono)}
+.win dt{color:var(--soft)}.win dd{margin:0;text-align:right}
+.dock{position:fixed;z-index:20;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;gap:14px;align-items:center;padding:9px 16px;border-radius:999px;background:var(--ink);color:#fff;font:11px var(--mono);white-space:nowrap}
+.dock button{color:var(--orange)}
+body:not([data-v=project]) .dock{display:none}
+.w-foot{display:flex;justify-content:space-between;gap:16px;margin-top:36px;font:12px var(--mono)}
+.w-foot a:hover{text-decoration:underline;text-underline-offset:3px}
+/* ---------- обо мне ---------- */
+#about{background:var(--night);color:var(--snow);min-height:100%;padding-left:var(--gl);padding-right:var(--gr)}
+.a-col{max-width:500px;margin:0 auto;padding-block:calc(34px + env(safe-area-inset-top,0px)) 60px;border-top:1px solid #1d1d1d}
+.a-head{display:flex;justify-content:space-between;gap:16px;font-size:16px;line-height:1.2}
+.a-head a:hover{text-decoration:underline;text-underline-offset:3px}
+.a-photo{display:block;width:100%;aspect-ratio:1.25;object-fit:cover;margin:68px 0 34px;background:#111}
+.a-name{font-family:var(--hand);font-size:72px;line-height:1;margin:0 0 26px;font-weight:400}
+.a-text{margin:0;font-size:17.5px;line-height:1.16;text-transform:uppercase;letter-spacing:.005em}
+.a-soc{display:flex;justify-content:space-between;margin-top:40px;font-size:16px}
+.a-soc a{display:inline-flex;align-items:center;gap:10px;text-transform:uppercase}
+.a-soc svg{width:38px;height:38px;transition:transform .5s var(--ease)}
+.a-soc a:hover svg{transform:rotate(45deg)}
+.a-foot{display:flex;justify-content:space-between;margin-top:34px;font-size:16px}
+
+@media (max-width:760px){
+  .m-head{grid-template-columns:1fr 1fr}.m-title{display:none}
+  .m-filters{top:auto;bottom:calc(52px + env(safe-area-inset-bottom,0px));left:var(--gl);transform:none;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;gap:2px 12px}
+  .m-hint{display:none}
+  .cols{grid-template-columns:0 1fr 1fr 1fr}
+  .row .meta{display:none}
+  .shots{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:72%;overflow-x:auto;scroll-snap-type:x mandatory}
+  .shot{scroll-snap-align:start}
+  .w-intro{grid-template-columns:1fr;margin:52px 0 36px}
+  .a-name{font-size:60px}.a-text{font-size:15.5px}
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01s!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<script>document.body.classList.add("loading");document.body.dataset.v="map"</script>
+
+<div id="pre" aria-live="polite">
+  <div class="pre-cap up"><span id="preFrame">кадр 00 / 00</span><span id="preName"></span></div>
+  <div class="pre-num tnum" id="preNum">000</div>
+  <div class="pre-bar"><i id="preBar"></i></div>
+</div>
+
+<section id="map" class="view on" aria-label="Лента кадров">
+  <div class="floor"></div>
+  <div class="scene"><div class="track" id="track"></div></div>
+  <div class="m-label" id="mLabel"></div>
+  <header class="m-head m-ui">
+    <div class="m-date tnum"><span id="mDate"></span><br><span id="mTime"></span></div>
+    <div class="m-title" id="mTitle"></div>
+    <nav class="m-nav up"><a href="#index">Проекты</a><a href="#about">Обо мне</a></nav>
+  </header>
+  <nav class="m-filters m-ui" id="mFilters" aria-label="Фильтр проектов"></nav>
+  <div class="m-hint up m-ui">колесо — листать · клик — открыть</div>
+</section>
+
+<section id="index" class="view" aria-label="Проекты">
+  <div class="ticks top cols"><i></i><i></i><i></i></div>
+  <div class="ticks bot cols"><i></i><i></i><i></i></div>
+  <header class="i-head cols up">
+    <a href="#index">M1. Проекты</a><a href="#map">M2. Карта</a><a href="#about">M3. Обо мне</a>
+  </header>
+  <div class="i-tools cols up"><button id="expandAll" aria-expanded="false">Раскрыть все</button></div>
+  <div id="list"></div>
+</section>
+
+<section id="project" class="view" aria-label="Проект"></section>
+
+<section id="about" class="view" aria-label="Обо мне">
+  <div class="a-col">
+    <header class="a-head"><a href="#map">qwekurasa<br>дизайнер &amp; разработчик</a><a href="#contacts">контакты</a></header>
+    <img class="a-photo" src="me.jpg" alt="qwekurasa в детстве">
+    <h1 class="a-name">qwekurasa</h1>
+    <p class="a-text">— дизайнер и разработчик. Делаю интерфейсы и инструменты, которые экономят время: трекеры, дашборды, автоматизацию рутины. Собираю продукт от первого эскиза до рабочего кода, люблю простые решения, аккуратную типографику и вещи, которыми приятно пользоваться каждый день.</p>
+    <div class="a-soc" id="contacts">
+      <a href="https://www.instagram.com/qwekurasa/" target="_blank" rel="noopener">Instagram <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 L21.3 18.7 L38 20 L21.3 21.3 L20 38 L18.7 21.3 L2 20 L18.7 18.7Z M20 9 L22.5 17.5 L31 20 L22.5 22.5 L20 31 L17.5 22.5 L9 20 L17.5 17.5Z" fill="currentColor" fill-rule="evenodd" opacity=".9"/><path d="M8 8 L20 20 L32 8 M8 32 L20 20 L32 32" stroke="currentColor" stroke-width=".5" fill="none" opacity=".6"/></svg></a>
+      <a href="https://t.me/qwekurasa" target="_blank" rel="noopener">Telegram <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 L21.3 18.7 L38 20 L21.3 21.3 L20 38 L18.7 21.3 L2 20 L18.7 18.7Z M20 9 L22.5 17.5 L31 20 L22.5 22.5 L20 31 L17.5 22.5 L9 20 L17.5 17.5Z" fill="currentColor" fill-rule="evenodd" opacity=".9"/><path d="M8 8 L20 20 L32 8 M8 32 L20 20 L32 32" stroke="currentColor" stroke-width=".5" fill="none" opacity=".6"/></svg></a>
+    </div>
+    <div class="a-foot tnum"><span>москва, <span id="aTime"></span></span><span>©2026</span></div>
+  </div>
+</section>
+
+<nav class="dots" aria-label="Вид"><a href="#map" data-v="map" title="Карта"></a><a href="#index" data-v="index" title="Проекты"></a></nav>
+
+<script>
+const $=s=>document.querySelector(s);
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const GENERIC=['Экран 01','Экран 02','Экран 03','Экран 04','Экран 05'];
+const P=[
+ {id:'tracker',name:'Кэш',type:'Трекер трат',year:'2026',created:'10.10.2026',shots:['Знакомство','Главная','Ввод','Аналитика','Бюджет'],
+  desc:'Трекер трат с котом. Без аккаунта, облака и рекламы: все данные хранятся только на устройстве. Расходы и доходы, аналитика за любой период, лимиты, вклады и импорт выписки банка.',
+  meta:[['Стек','JavaScript, PWA, Swift, Java'],['Платформы','iPhone, Android, браузер, ПК'],['Приложение','<a href="https://kesh-money.vercel.app/" target="_blank" rel="noopener">kesh-money.vercel.app</a>']],
+  wins:[
+   {t:'Kesh/Знакомство',k:0,h:'Без аккаунта',p:'Никакой регистрации и облака: данные живут только на устройстве. Интерфейс на русском или английском.',dl:[['Экран','01 / 05']]},
+   {t:'about.txt',h:'Что умеет',ul:['Расходы и доходы, категории, комментарии','Аналитика за любой период','Счета и лимиты по категориям','Вклады и накопительные счета','Офлайн, 10 валют']},
+   {t:'Kesh/Главная',k:1,h:'Главная',p:'Расходы за месяц и сравнение с прошлым, траты по дням и лента последних операций.',dl:[['Экран','02 / 05']]},
+   {t:'import.pdf',h:'Импорт выписки',p:'Выписка Т-Банка в PDF или CSV превращается в операции с категориями.',dl:[['Форматы','PDF, CSV'],['Разбор','PDF.js']]},
+   {t:'Kesh/Ввод',k:2,h:'Трата за три касания',p:'Сумма, частая категория, комментарий. На крупную трату кот переспросит.',dl:[['Экран','03 / 05']]},
+   {t:'export.xlsx',h:'Excel и резервная копия',p:'Отчёт в Excel и резервная копия одним файлом. На компьютере — экспорт в CSV и перенос данных с телефона.'},
+   {t:'Kesh/Аналитика',k:3,h:'Аналитика',p:'Неделя, месяц или год: динамика по дням и куда ушли деньги по категориям.',dl:[['Экран','04 / 05']]},
+   {t:'platforms.sys',h:'Где работает',ul:['iPhone — приложение с виджетом','Android — APK','Любой браузер — PWA','Компьютер — сайт с аналитикой и экспортом']},
+   {t:'Kesh/Бюджет',k:4,h:'Бюджет',p:'Лимиты по категориям, остаток на месяц и сколько можно тратить в день.',dl:[['Экран','05 / 05']]}]},
+ ...Array.from({length:11},(_,i)=>({id:'p'+(i+2),name:'Проект '+String(i+2).padStart(2,'0'),type:'В работе',empty:true})),
+];
+P.forEach((p,i)=>{p.code='P'+String(i+1).padStart(3,'0');p.shots=p.shots||GENERIC});
+const ALL=[];P.forEach(p=>p.shots.forEach((t,k)=>ALL.push({p,k,t})));
+const N=ALL.length;
+const src=(p,k)=>ALL.find(a=>a.p===p&&a.k===k).src||'';
+
+/* ---------- генерация заглушек ---------- */
+const W=800,H=500;let noise,sprite;
+const KESH={src:'kesh.webp',x:[0,284,568,852,1136],y:0};
+const loadImg=u=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=u});
+function T(x,s,X,Y,font,col,al){x.font=font;x.fillStyle=col;x.textAlign=al||'left';x.fillText(s,X,Y)}
+function makeNoise(){noise=document.createElement('canvas');noise.width=noise.height=160;const x=noise.getContext('2d'),d=x.createImageData(160,160);for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255}x.putImageData(d,0,0)}
+
+function shot(p,k){const cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+  x.fillStyle=p.empty?'#fff':'#0b0b0b';x.fillRect(0,0,W,H);if(!p.empty&&sprite)x.drawImage(sprite,KESH.x[k],KESH.y,284,480,(W-284)/2,10,284,480);return cv.toDataURL('image/jpeg',.84)}
+/* ---------- карта ---------- */
+const track=$('#track'),label=$('#mLabel');
+let focus=0,hover=-1,filter='all';
+ALL.forEach((it,i)=>{const d=document.createElement('div');d.className='card';d.setAttribute('role','button');d.tabIndex=-1;d.setAttribute('aria-label',it.p.name+' — '+it.t);
+  d.onclick=()=>openProject(it.p.id);d.onmouseenter=()=>{hover=i;placeLabel()};d.onmouseleave=()=>{hover=-1;placeLabel()};it.el=d;track.append(d)});
+const vis=()=>ALL.map((a,i)=>i).filter(i=>filter==='all'||ALL[i].p.id===filter);
+function layout(){const GAP=15,OPEN=78;
+  ALL.forEach((it,i)=>{let z=(N/2-i)*GAP;if(i<focus)z+=OPEN;if(i>focus)z-=OPEN;const f=i===focus;
+    it.el.style.transform=`translate3d(0,${f?-24:0}px,${z}px)${f?' scale(1.14)':''}`;
+    it.el.classList.toggle('dim',filter!=='all'&&it.p.id!==filter)});
+  const fp=P.find(p=>p.id===filter);
+  $('#mTitle').textContent=(fp?fp.name.toLowerCase():'все')+' : кадр '+String(focus+1).padStart(2,'0');
+  follow()}
+function placeLabel(){const i=hover>=0?hover:focus,it=ALL[i],r=it.el.getBoundingClientRect();
+  label.style.transform=`translate(${Math.round(Math.max(16,Math.min(r.left,innerWidth-label.offsetWidth-16)))}px,${Math.round(Math.min(r.bottom+10,innerHeight-label.offsetHeight-60))}px)`;
+  label.innerHTML=`<span class="plus">+</span><span><b>${it.p.code} · ${it.p.name}</b><br>${String(it.k+1).padStart(2,'0')} — ${it.t}</span>`}
+let raf=0,until=0;
+function follow(){until=performance.now()+750;if(!raf)raf=requestAnimationFrame(function tick(t){placeLabel();raf=t<until?requestAnimationFrame(tick):0})}
+function step(d){const v=vis();let p=v.indexOf(focus);p=p<0?0:Math.max(0,Math.min(v.length-1,p+d));if(v[p]!==focus){focus=v[p];layout()}}
+function setFilter(id){filter=id;[...$('#mFilters').children].forEach(b=>b.classList.toggle('on',b.dataset.id===id));focus=vis()[0];layout()}
+$('#mFilters').innerHTML=`<button data-id="all" class="on">все<sup>${N}</sup></button>`+P.map(p=>`<button data-id="${p.id}">${p.name.toLowerCase()}<sup>${p.shots.length}</sup></button>`).join('');
+$('#mFilters').onclick=e=>{const b=e.target.closest('button');if(b)setFilter(b.dataset.id)};
+let acc=0;
+$('#map').addEventListener('wheel',e=>{e.preventDefault();if(document.body.classList.contains('loading'))return;acc+=Math.abs(e.deltaY)>Math.abs(e.deltaX)?e.deltaY:e.deltaX;
+  while(Math.abs(acc)>=36){const s=Math.sign(acc);step(s);acc-=s*36}},{passive:false});
+let ty=null;
+$('#map').addEventListener('touchstart',e=>{ty=e.touches[0].clientY+e.touches[0].clientX},{passive:true});
+$('#map').addEventListener('touchmove',e=>{if(ty===null)return;const v=e.touches[0].clientY+e.touches[0].clientX,d=ty-v;if(Math.abs(d)>22){step(Math.sign(d));ty=v}},{passive:true});
+addEventListener('keydown',e=>{if(document.body.dataset.v!=='map')return;
+  if(['ArrowDown','ArrowRight'].includes(e.key)){e.preventDefault();step(1)}
+  if(['ArrowUp','ArrowLeft'].includes(e.key)){e.preventDefault();step(-1)}
+  if(e.key==='Enter')openProject(ALL[focus].p.id)});
+const ZMAX=N/2*15+78,mk=[[-90,56,ZMAX],[90,-56,-ZMAX]].map(([x,y,z])=>{const m=document.createElement('i');m.className='mk';m.style.transform=`translate3d(${x}px,${y}px,${z}px)`;track.append(m);return m});
+function scale(){let s=1;const tall=innerHeight>innerWidth*1.2;track.style.setProperty('--rz',tall?'-38deg':'0deg');track.style.setProperty('--s',1);
+  for(let n=0;n<3;n++){const a=mk[0].getBoundingClientRect(),b=mk[1].getBoundingClientRect(),w=Math.abs(b.left-a.left),h=Math.abs(a.top-b.top);
+    s*=Math.min(innerWidth/w,innerHeight*(tall?.72:.62)/h);track.style.setProperty('--s',s)}
+  follow()}
+addEventListener('resize',scale);scale();
+
+/* ---------- индекс ---------- */
+let pendingOpen=null,pendingShot=null;
+$('#list').innerHTML=P.map(p=>`
+  <div class="row cols up"><button aria-expanded="false" data-id="${p.id}"><span>${p.code}</span><span class="nm">${p.name}</span></button><span class="meta">${p.type}${p.year?' · '+p.year:''}</span></div>
+  <div class="shots" id="sh-${p.id}" hidden>${p.shots.map((t,k)=>`<a class="shot" href="#p-${p.id}" data-k="${k}"><img alt="${t}" data-p="${p.id}" data-k="${k}"><span class="cap"><b>${p.name}</b><br>${t}<br>${p.type}</span></a>`).join('')}</div>`).join('');
+function toggleRow(id,open){const b=$(`.row [data-id="${id}"]`),s=$('#sh-'+id);open=open??s.hidden;s.hidden=!open;b.setAttribute('aria-expanded',open)}
+$('#list').onclick=e=>{const b=e.target.closest('.row button');if(b)toggleRow(b.dataset.id);const a=e.target.closest('.shot');if(a)pendingShot=+a.dataset.k};
+$('#expandAll').onclick=function(){const o=this.getAttribute('aria-expanded')!=='true';this.setAttribute('aria-expanded',o);this.textContent=o?'Свернуть все':'Раскрыть все';P.forEach(p=>toggleRow(p.id,o))};
+function openProject(id){pendingOpen=id;location.hash='index'}
+
+/* ---------- проект ---------- */
+const ICON='<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 0l1 5 5 1-5 1-1 5-1-5-5-1 5-1z" fill="currentColor"/></svg>';
+function win(w,p){const shot=w.k!==undefined?`<figure class="win-shot"><img src="${p.ph?.[w.k]||''}" alt="${p.name}: ${w.h}"></figure>`:w.blank?'<div class="win-blank"></div>':'';
+  return `<article class="win"${w.k!==undefined?` id="s${w.k}"`:''}><div class="win-bar">${ICON}<span class="t">${w.t}</span><span class="win-btns"><button class="b-min" aria-label="Свернуть окно"></button><button class="b-x" aria-label="Закрыть окно">×</button></span></div>
+  <div class="win-body">${shot}<h3>${w.h}</h3>${w.p?`<p>${w.p}</p>`:''}${w.ul?`<ul>${w.ul.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}${w.dl?`<dl>${w.dl.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl>`:''}</div></article>`}
+function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=P[(i+1)%P.length],pv=P[(i+P.length-1)%P.length];
+  const wins=p.wins||[{t:'status.txt',h:'В работе',p:'Скоро здесь появятся описание и функции проекта.'},{t:'preview.png',h:'Превью',blank:true,p:'Экраны появятся позже.'}];
+  const meta=[['Проект',p.code],['Тип',p.type],['Создан',p.created||'—'],...(p.meta||[])];
+  $('#project').innerHTML=`
+  <header class="w-head"><a href="#map">qwekurasa</a><nav class="up"><a href="#map">Главная</a><a href="#about">Обо мне</a></nav></header>
+  <section class="w-intro"><h1 class="w-name">${p.name}</h1><div><dl class="w-meta">${meta.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl><p class="w-desc">${p.desc||'Проект в работе. Скоро здесь появятся описание и экраны.'}</p></div></section>
+  <section class="desk${matchMedia('(pointer:fine)').matches?' can-drag':''}" id="desk">${wins.map(w=>win(w,p)).join('')}</section>
+  <footer class="w-foot"><a href="#p-${pv.id}">← ${pv.code} ${pv.name}</a><a href="#p-${nx.id}">${nx.code} ${nx.name} →</a></footer>
+  <div class="dock" id="dock" hidden><span id="dockN"></span><button id="dockAll">вернуть все</button></div>`;
+  initDesk()}
+function initDesk(){const desk=$('#desk'),dock=$('#dock');let z=1;
+  const count=()=>{const n=desk.querySelectorAll('.win[hidden]').length;dock.hidden=!n;$('#dockN').textContent='закрыто окон: '+n};
+  $('#dockAll').onclick=()=>{desk.querySelectorAll('.win').forEach(w=>{w.hidden=false;w.classList.remove('closing','min')});count()};
+  desk.addEventListener('click',e=>{const w=e.target.closest('.win');if(!w)return;
+    if(e.target.closest('.b-x')){w.classList.add('closing');setTimeout(()=>{w.hidden=true;count()},220)}
+    if(e.target.closest('.b-min'))w.classList.toggle('min')});
+  if(!desk.classList.contains('can-drag'))return;
+  desk.addEventListener('pointerdown',e=>{const bar=e.target.closest('.win-bar');if(!bar||e.target.closest('button'))return;
+    const w=bar.parentElement,[x0,y0]=(w.style.translate||'0px 0px').split(' ').map(parseFloat),sx=e.clientX,sy=e.clientY;
+    w.style.zIndex=++z;w.classList.add('lift');bar.setPointerCapture(e.pointerId);
+    const mv=ev=>{w.style.translate=`${x0+ev.clientX-sx}px ${(y0||0)+ev.clientY-sy}px`};
+    const up=()=>{w.classList.remove('lift');bar.removeEventListener('pointermove',mv);bar.removeEventListener('pointerup',up);bar.removeEventListener('pointercancel',up)};
+    bar.addEventListener('pointermove',mv);bar.addEventListener('pointerup',up);bar.addEventListener('pointercancel',up)})}
+
+/* ---------- роутер ---------- */
+function route(){let h=location.hash.slice(1)||'map',v=h;
+  if(h.startsWith('p-')){v='project';renderProject(h.slice(2))}
+  if(!['map','index','about','project'].includes(v))v='map';
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id===v));
+  document.body.dataset.v=v;
+  document.querySelectorAll('.dots a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));
+  if(v==='map')follow();
+  if(v==='index'&&pendingOpen){toggleRow(pendingOpen,true);const r=$(`.row [data-id="${pendingOpen}"]`).parentElement;pendingOpen=null;
+    requestAnimationFrame(()=>scrollTo(0,r.getBoundingClientRect().top+scrollY-120))}
+  else if(v==='project'&&pendingShot!==null){const k=pendingShot;pendingShot=null;requestAnimationFrame(()=>document.getElementById('s'+k)?.scrollIntoView({block:'start'}))}
+  else scrollTo(0,0)}
+addEventListener('hashchange',route);
+
+/* ---------- часы ---------- */
+const tf=new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const tm=new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',hour:'2-digit',minute:'2-digit'});
+$('#mDate').textContent=new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long',year:'numeric'}).format(new Date()).replace(' г.','');
+function clock(){const n=new Date();$('#mTime').textContent=tf.format(n);$('#aTime').textContent=tm.format(n)}
+clock();setInterval(clock,1000);
+
+/* ---------- загрузка ---------- */
+(async function boot(){
+  await Promise.race([Promise.all([document.fonts.load('400 20px Arimo'),document.fonts.load('700 20px Arimo'),document.fonts.load('40px "Reenie Beanie"')]).catch(()=>{}),wait(2500)]);
+  makeNoise();layout();sprite=await loadImg(KESH.src);if(sprite)P[0].ph=[0,1,2,3,4].map(k=>{const c=document.createElement('canvas');c.width=284;c.height=480;c.getContext('2d').drawImage(sprite,KESH.x[k],KESH.y,284,480,0,0,284,480);return c.toDataURL('image/webp',.9)});
+  const total=N+1,pad=n=>String(n).padStart(2,'0');
+  for(let i=0;i<N;i++){const it=ALL[i];it.src=shot(it.p,it.k);it.el.style.backgroundImage=`url(${it.src})`;it.el.classList.add('in');
+    const pct=Math.round((i+1)/total*100);
+    $('#preNum').textContent=String(pct).padStart(3,'0');$('#preBar').style.width=pct+'%';
+    $('#preFrame').textContent=`кадр ${pad(i+1)} / ${pad(N)}`;$('#preName').textContent=it.p.code+' '+it.p.name;
+    await wait(24)}
+  document.querySelectorAll('.shot img').forEach(im=>im.src=src(P.find(p=>p.id===im.dataset.p),+im.dataset.k));
+  $('#preNum').textContent='100';$('#preBar').style.width='100%';
+  await wait(380);
+  $('#pre').classList.add('done');document.body.classList.remove('loading');
+  route();follow();
+})();
+</script>
+</body>
+</html>
