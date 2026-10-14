@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Портфолио qwekurasa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Sans+Narrow:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap">
 <style>
 
 :root{
   --paper:#ffffff;--ink:#0b0b0b;--mute:#9b9b9b;--line:#e3e3e3;
   --blue:#2234e6;--night:#000000;--snow:#efefef;
-  --sans:"Arial Narrow","PT Sans Narrow","Helvetica Neue Condensed",Arial,sans-serif;
+  --sans:"Arimo","Helvetica Neue",Helvetica,Arial,sans-serif;
   --mono:var(--sans);
   --hand:"Reenie Beanie","Segoe Print","Bradley Hand",cursive;
   --gl:max(24px,env(safe-area-inset-left,0px));--gr:max(24px,env(safe-area-inset-right,0px));
@@ -181,8 +181,6 @@ body[data-v=about]{background:#fff}
 </section>
 
 <section id="index" class="view" aria-label="Проекты">
-  <div class="ticks top cols"><i></i><i></i><i></i></div>
-  <div class="ticks bot cols"><i></i><i></i><i></i></div>
   <header class="i-head cols up">
     <a href="#index">M1. Проекты</a><a href="#map">M2. Карта</a><a href="#about">M3. Обо мне</a>
   </header>
@@ -252,7 +250,7 @@ function shot(p,k){const cv=document.createElement('canvas');cv.width=W;cv.heigh
 const pz=$('#pz');
 const ART=[['#d9dce3','#9aa6bf','#2234e6'],['#efe4d6','#d0b08c','#5b3b22'],['#dfe7d6','#9fb38a','#2f3e21'],['#ece2ea','#c39bbb','#4a2443']];
 function art(p,i,W,H){if(!p.empty){const ph=H*.92,pw=ph*284/480;return `<rect width="${W}" height="${H}" fill="#0b0b0b"/><svg x="${(W-pw)/2}" y="${(H-ph)/2}" width="${pw}" height="${ph}" viewBox="284 0 284 480"><image href="kesh.webp" width="1420" height="480"/></svg>`}
-  const c=ART[(i-1)%ART.length];return `<rect width="${W}" height="${H}" fill="${c[0]}"/><circle cx="${W*.72}" cy="${H*.42}" r="${H*.42}" fill="${c[1]}"/><circle cx="${W*.72}" cy="${H*.42}" r="${H*.2}" fill="${c[0]}"/><rect x="${W*.08}" y="${H*.72}" width="${W*.42}" height="${H*.05}" fill="${c[2]}"/><text x="${W*.08}" y="${H*.6}" font-family="Arial Narrow,PT Sans Narrow,Arial,sans-serif" font-weight="700" font-size="${H*.36}" fill="${c[2]}">${String(i+1).padStart(2,'0')}</text>`}
+  const c=ART[(i-1)%ART.length];return `<rect width="${W}" height="${H}" fill="${c[0]}"/><circle cx="${W*.72}" cy="${H*.42}" r="${H*.42}" fill="${c[1]}"/><circle cx="${W*.72}" cy="${H*.42}" r="${H*.2}" fill="${c[0]}"/><rect x="${W*.08}" y="${H*.72}" width="${W*.42}" height="${H*.05}" fill="${c[2]}"/><text x="${W*.08}" y="${H*.6}" font-family="Arimo,Arial,sans-serif" font-weight="700" font-size="${H*.36}" fill="${c[2]}">${String(i+1).padStart(2,'0')}</text>`}
 function rng(s){return()=>(s=s*16807%2147483647)/2147483647}
 function piecePath(x,y,C,t){let d=`M${x},${y}`;const pts=[[x,y],[x+C,y],[x+C,y+C],[x,y+C],[x,y]];
   for(let e=0;e<4;e++){const[ax,ay]=pts[e],[bx,by]=pts[e+1],dx=(bx-ax)/C,dy=(by-ay)/C,nx=dy,ny=-dx,k=t[e]*C*.27;
