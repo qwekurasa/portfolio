@@ -34,13 +34,6 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .view{display:none}.view.on{display:block}
 .tnum{font-variant-numeric:tabular-nums}
 
-/* ---------- прелоадер ---------- */
-#pre{position:fixed;inset:0;z-index:40;pointer-events:none;padding:calc(20px + env(safe-area-inset-top,0px)) var(--gr) calc(22px + env(safe-area-inset-bottom,0px)) var(--gl);display:flex;flex-direction:column;justify-content:flex-end;transition:opacity .6s var(--ease)}
-#pre.done{opacity:0}
-.pre-cap{display:flex;gap:18px;color:var(--mute)}
-.pre-num{font-size:clamp(72px,13vw,180px);line-height:.82;font-weight:400;letter-spacing:-.05em;margin-top:6px}
-.pre-bar{height:1px;background:var(--line);margin-top:16px;position:relative}
-.pre-bar i{position:absolute;inset:0 auto 0 0;width:0;background:var(--ink);transition:width .2s linear}
 
 /* ---------- карта (лента) ---------- */
 #map{position:fixed;inset:0;overflow:hidden;background:var(--paper);touch-action:none}
@@ -176,13 +169,7 @@ body[data-v=about]{background:#fff}
 </head>
 <body>
 
-<script>document.body.classList.add("loading");document.body.dataset.v="map"</script>
-
-<div id="pre" aria-live="polite">
-  <div class="pre-cap up"><span id="preFrame">кадр 00 / 00</span><span id="preName"></span></div>
-  <div class="pre-num tnum" id="preNum">000</div>
-  <div class="pre-bar"><i id="preBar"></i></div>
-</div>
+<script>document.body.dataset.v="map"</script>
 
 <section id="map" class="view on" aria-label="Лента кадров">
   <div class="pz" id="pz"></div>
@@ -367,19 +354,11 @@ clock();setInterval(clock,1000);
 
 /* ---------- загрузка ---------- */
 (async function boot(){
-  await Promise.race([Promise.all([document.fonts.load('400 20px "PT Sans Narrow"'),document.fonts.load('700 20px "PT Sans Narrow"')]).catch(()=>{}),wait(2500)]);
-  makeNoise();sprite=await loadImg(KESH.src);if(sprite)P[0].ph=[0,1,2,3,4].map(k=>{const c=document.createElement('canvas');c.width=284;c.height=480;c.getContext('2d').drawImage(sprite,KESH.x[k],KESH.y,284,480,0,0,284,480);return c.toDataURL('image/webp',.9)});
-  const total=N+1,pad=n=>String(n).padStart(2,'0');
-  for(let i=0;i<N;i++){const it=ALL[i];it.src=shot(it.p,it.k);
-    const pct=Math.round((i+1)/total*100);
-    $('#preNum').textContent=String(pct).padStart(3,'0');$('#preBar').style.width=pct+'%';
-    $('#preFrame').textContent=`кадр ${pad(i+1)} / ${pad(N)}`;$('#preName').textContent=it.p.code+' '+it.p.name;
-    await wait(24)}
+  makeNoise();route();if(document.body.dataset.v==='map')build();
+  sprite=await loadImg(KESH.src);if(sprite)P[0].ph=[0,1,2,3,4].map(k=>{const c=document.createElement('canvas');c.width=284;c.height=480;c.getContext('2d').drawImage(sprite,KESH.x[k],KESH.y,284,480,0,0,284,480);return c.toDataURL('image/webp',.9)});
+  ALL.forEach(it=>it.src=shot(it.p,it.k));
   document.querySelectorAll('.shot img').forEach(im=>im.src=src(P.find(p=>p.id===im.dataset.p),+im.dataset.k));
-  $('#preNum').textContent='100';$('#preBar').style.width='100%';
-  await wait(380);
-  $('#pre').classList.add('done');document.body.classList.remove('loading');
-  route();build();
+  if(document.body.dataset.v==='project')route();
 })();
 </script>
 </body>
