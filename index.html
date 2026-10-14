@@ -46,6 +46,11 @@ body.loading .m-ui{opacity:0;pointer-events:none}
 .m-nav a:hover,.m-filters button:hover{color:var(--ink)}
 .m-hint{position:absolute;z-index:3;right:var(--gr);bottom:calc(20px + env(safe-area-inset-bottom,0px));color:var(--mute)}
 .pz{position:absolute;inset:0;overflow:hidden}
+.net{display:block;touch-action:none}
+.net .node{cursor:pointer}
+.net .nl{paint-order:stroke;stroke:#fff;stroke-width:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.net .node:hover .nl,.net .node:focus .nl,.net .node:first-child .nl{opacity:1}
+.net g{cursor:grab}
 .m-sub{display:block;font:400 10px var(--mono);letter-spacing:.06em;color:var(--mute);margin-top:4px;text-transform:uppercase}
 .boards{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:30px 40px;padding-inline:var(--gl)}
 .board{display:flex;flex-direction:column;align-items:center;gap:8px;font:11px var(--mono);color:#555;transition:opacity .4s}
@@ -234,44 +239,41 @@ function makeNoise(){noise=document.createElement('canvas');noise.width=noise.he
 function shot(p,k){const cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
   x.fillStyle=p.empty?'#fff':'#0b0b0b';x.fillRect(0,0,W,H);if(!p.empty&&sprite)x.drawImage(sprite,KESH.x[k],KESH.y,284,480,(W-284)/2,10,284,480);return cv.toDataURL('image/jpeg',.84)}
 /* ---------- карта ---------- */
-const pz=$('#pz');
-function art(p,i,W,H){const n=p.name,fs=Math.min(H*.32,W*1.3/Math.max(n.length,3));
-  return `<rect width="${W}" height="${H}" fill="#fff"/><text x="${W*.06}" y="${H*.16}" font-family="Arimo,Arial,sans-serif" font-size="${H*.08}" letter-spacing="${H*.005}" fill="#0b0b0b">${p.code}</text><text x="${W*.94}" y="${H*.16}" text-anchor="end" font-family="Arimo,Arial,sans-serif" font-size="${H*.08}" fill="#0b0b0b">${p.year||'скоро'}</text><text x="${W/2}" y="${H*.58+fs*.35}" text-anchor="middle" font-family="Arimo,Arial,sans-serif" font-weight="700" font-size="${fs}" letter-spacing="${-fs*.04}" fill="#0b0b0b">${n}</text><text x="${W/2}" y="${H*.9}" text-anchor="middle" font-family="Arimo,Arial,sans-serif" font-size="${H*.07}" fill="#0b0b0b" opacity=".55">${p.type.toLowerCase()}</text>`}
+const pz=$('#pz'),NS='http://www.w3.org/2000/svg';let raf=0;
 function rng(s){return()=>(s=s*16807%2147483647)/2147483647}
-function piecePath(x,y,C,t){let d=`M${x},${y}`;const pts=[[x,y],[x+C,y],[x+C,y+C],[x,y+C],[x,y]];
-  for(let e=0;e<4;e++){const[ax,ay]=pts[e],[bx,by]=pts[e+1],dx=(bx-ax)/C,dy=(by-ay)/C,nx=dy,ny=-dx,k=t[e]*C*.27;
-    const P=(a,h)=>`${(ax+(bx-ax)*a+nx*h*k).toFixed(2)},${(ay+(by-ay)*a+ny*h*k).toFixed(2)}`;
-    d+=t[e]?` L${P(.36,0)} C${P(.3,.6)} ${P(.34,1)} ${P(.5,1)} C${P(.66,1)} ${P(.7,.6)} ${P(.64,0)} L${P(1,0)}`:` L${P(1,0)}`}
-  return d+'Z'}
-const COLS=3,ROWS=2;
-function build(){pz.innerHTML='';const sm=innerWidth<700,cols=sm?3:5,rows=Math.ceil(P.length/cols),gx=sm?14:36,gy=sm?16:26,C=Math.max(16,Math.floor(Math.min(66,(innerWidth-48-(cols-1)*gx)/(cols*3)/(sm?1:1.15),((innerHeight-110)*.5-(rows-1)*gy)/(rows*2)))),W=C*COLS,H=C*ROWS,m=C*.3;
-  const wrap=document.createElement('div');wrap.className='boards';wrap.style.maxWidth=cols*W+(cols-1)*gx+48+'px';wrap.style.margin='0 auto';wrap.style.gap=gy+'px '+gx+'px';pz.append(wrap);
-  P.forEach((p,i)=>{const R=rng(i*97+13),h=[],v=[];for(let r=0;r<=ROWS;r++){h[r]=[];for(let c=0;c<COLS;c++)h[r][c]=r==0||r==ROWS?0:(R()<.5?1:-1)}
-    for(let r=0;r<ROWS;r++){v[r]=[];for(let c=0;c<=COLS;c++)v[r][c]=c==0||c==COLS?0:(R()<.5?1:-1)}
-    const miss=Math.floor(R()*COLS*ROWS),mr=Math.floor(miss/COLS),mc=miss%COLS;
-    const path=(r,c)=>piecePath(c*C,r*C,C,[-h[r][c],v[r][c+1],h[r+1][c],-v[r][c]]);
-    let all='',out='';for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const d=path(r,c);if(r===mr&&c===mc)continue;all+=`<path d="${d}"/>`;out+=`<path d="${d}"/>`}
-    const id='pz'+i,b=document.createElement('div');b.className='board';
-    b.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs><clipPath id="${id}">${all}</clipPath></defs><path d="${path(mr,mc)}" fill="#f2f2f2" stroke="#9a9a9a" stroke-dasharray="3 3"/><g clip-path="url(#${id})">${art(p,i,W,H)}</g><g fill="none" stroke="#0b0b0b" stroke-width="1">${out}</g><rect x=".5" y=".5" width="${W-1}" height="${H-1}" fill="none" stroke="#0b0b0b"/></svg>`;
-    b.onclick=()=>{if(b.classList.contains('done'))openProject(p.id)};wrap.append(b);
-    const pc=document.createElement('div');pc.className='piece';const d=path(mr,mc),pid='pp'+i;
-    pc.innerHTML=`<svg width="${C+2*m}" height="${C+2*m}" viewBox="${mc*C-m} ${mr*C-m} ${C+2*m} ${C+2*m}"><defs><clipPath id="${pid}"><path d="${d}"/></clipPath></defs><g clip-path="url(#${pid})">${art(p,i,W,H)}</g><path d="${d}" fill="none" stroke="#0b0b0b"/></svg>`;
-    pc.setAttribute('aria-label','Деталь проекта '+p.name);pz.append(pc);
-    p.pz={b,pc,mr,mc,C,m}});
-  requestAnimationFrame(scatter)}
-function scatter(){const R=pz.getBoundingClientRect(),busy=[...pz.querySelectorAll('.board svg')].map(s=>{const r=s.getBoundingClientRect();return[r.left-R.left-30,r.top-R.top-30,r.right-R.left+30,r.bottom-R.top+40]});
-  P.forEach(p=>{const{pc,C,m}=p.pz,S=C+2*m;let x,y,k=0;
-    do{x=16+Math.random()*(R.width-S-32);y=80+Math.random()*(R.height-S-130);k++}
-    while(k<200&&busy.some(([a,b,c,d])=>x<c&&x+S>a&&y<d&&y+S>b));
-    busy.push([x-10,y-10,x+S+10,y+S+10]);pc.style.left=x+'px';pc.style.top=y+'px';pc.style.transform=`rotate(${(Math.random()*50-25).toFixed(1)}deg)`;drag(p)})}
-function slot(p){const R=pz.getBoundingClientRect(),r=p.pz.b.querySelector('svg').getBoundingClientRect(),{mr,mc,C,m}=p.pz;return[r.left-R.left+mc*C-m,r.top-R.top+mr*C-m]}
-function drag(p){const pc=p.pz.pc;pc.onpointerdown=e=>{e.preventDefault();pc.setPointerCapture(e.pointerId);pc.classList.add('drag');
-    const x0=parseFloat(pc.style.left),y0=parseFloat(pc.style.top),sx=e.clientX,sy=e.clientY;
-    pc.onpointermove=ev=>{pc.style.left=x0+ev.clientX-sx+'px';pc.style.top=y0+ev.clientY-sy+'px'};
-    pc.onpointerup=pc.onpointercancel=()=>{pc.onpointermove=pc.onpointerup=pc.onpointercancel=null;pc.classList.remove('drag');
-      const[tx,ty]=slot(p),dx=parseFloat(pc.style.left)-tx,dy=parseFloat(pc.style.top)-ty;
-      if(Math.hypot(dx,dy)<p.pz.C*.45){pc.classList.add('snap');pc.style.left=tx+'px';pc.style.top=ty+'px';p.pz.b.classList.add('done');
-        setTimeout(()=>openProject(p.id),700)}}}}
+function build(){cancelAnimationFrame(raf);pz.innerHTML='';const Wv=pz.clientWidth,Hv=pz.clientHeight,sm=Wv<700,k=sm?.62:1,R=rng(7);
+  const svg=document.createElementNS(NS,'svg');svg.setAttribute('width',Wv);svg.setAttribute('height',Hv);svg.classList.add('net');pz.append(svg);
+  const N=[],E=[];
+  P.forEach((p,i)=>N.push({p,s:Math.round((i===0?72:30+R()*22)*k)}));
+  const extra=sm?55:110;for(let i=0;i<extra;i++)N.push({s:Math.round((6+R()*12)*k),f:R()<.25});
+  N.forEach((n,i)=>{const a=R()*6.283,r=(n.p?.15:.35+R()*.25)*Math.min(Wv,Hv);n.x=Wv/2+Math.cos(a)*r;n.y=Hv/2+Math.sin(a)*r*.8;n.vx=n.vy=0});
+  const link=(a,b)=>{if(a!==b&&!E.some(e=>e[0]===a&&e[1]===b||e[0]===b&&e[1]===a))E.push([a,b])};
+  for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++)if(R()<.35)link(i,j);
+  for(let i=P.length;i<N.length;i++){link(i,Math.floor(R()*P.length));if(R()<.55)link(i,Math.floor(R()*N.length));if(R()<.25)link(i,Math.floor(R()*P.length))}
+  const gl=document.createElementNS(NS,'g');gl.setAttribute('stroke','#c9c9c9');gl.setAttribute('stroke-width','1');svg.append(gl);
+  E.forEach(e=>{const l=document.createElementNS(NS,'line');gl.append(l);e.l=l});
+  const gn=document.createElementNS(NS,'g');svg.append(gn);
+  N.forEach((n,i)=>{const g=document.createElementNS(NS,'g'),h=n.s/2;n.g=g;
+    if(n.p){const p=n.p;g.classList.add('node');g.setAttribute('tabindex','0');g.setAttribute('role','link');g.setAttribute('aria-label',p.name);
+      g.innerHTML=p.empty?`<rect x="${-h}" y="${-h}" width="${n.s}" height="${n.s}" fill="#fff" stroke="#0b0b0b"/><text y="${n.s*.12}" text-anchor="middle" font-family="Arimo,Arial,sans-serif" font-weight="700" font-size="${n.s*.3}" fill="#0b0b0b">${String(i+1).padStart(2,'0')}</text>`
+        :`<rect x="${-h}" y="${-h}" width="${n.s}" height="${n.s}" fill="#0b0b0b"/><svg x="${-h*.62}" y="${-h*.92}" width="${n.s*.62}" height="${n.s*.92}" viewBox="284 0 284 420" preserveAspectRatio="xMidYMin slice"><image href="kesh.webp" width="1420" height="480"/></svg><rect x="${-h}" y="${-h}" width="${n.s}" height="${n.s}" fill="none" stroke="#0b0b0b"/>`;
+      g.innerHTML+=`<text class="nl" y="${h+14}" text-anchor="middle" font-family="Arimo,Arial,sans-serif" font-size="11" fill="#0b0b0b">${p.code} · ${p.name}</text>`;
+      g.onclick=()=>{if(!n.moved)openProject(p.id)};g.onkeydown=e=>{if(e.key==='Enter')openProject(p.id)}}
+    else g.innerHTML=`<rect x="${-h}" y="${-h}" width="${n.s}" height="${n.s}" fill="${n.f?'#d8d8d8':'#fff'}" stroke="#9a9a9a"/>`;
+    gn.append(g);
+    g.onpointerdown=e=>{e.preventDefault();g.setPointerCapture(e.pointerId);n.fix=1;n.moved=0;const r=svg.getBoundingClientRect();
+      g.onpointermove=ev=>{n.x=ev.clientX-r.left;n.y=ev.clientY-r.top;n.moved=1;heat=1};
+      g.onpointerup=g.onpointercancel=()=>{g.onpointermove=g.onpointerup=g.onpointercancel=null;n.fix=0}}});
+  let heat=1;const L=sm?55:80;
+  function tick(){for(let i=0;i<N.length;i++){const a=N[i];for(let j=i+1;j<N.length;j++){const b=N[j];let dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy+.01,d=Math.sqrt(d2),min=(a.s+b.s)/2+(a.p||b.p?18:6);
+        let f=(a.p&&b.p?2600:900)*k/d2;if(d<min)f+=(min-d)*.2;const fx=dx/d*f,fy=dy/d*f;a.vx-=fx;a.vy-=fy;b.vx+=fx;b.vy+=fy}}
+    E.forEach(([i,j])=>{const a=N[i],b=N[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,len=L*(a.p&&b.p?1.6:1),f=(d-len)*.012,fx=dx/d*f,fy=dy/d*f;a.vx+=fx;a.vy+=fy;b.vx-=fx;b.vy-=fy});
+    N.forEach(n=>{n.vx+=(Wv/2-n.x)*.0025;n.vy+=(Hv/2+10-n.y)*.004;if(n.fix){n.vx=n.vy=0;return}n.vx*=.82;n.vy*=.82;n.x+=n.vx*heat;n.y+=n.vy*heat;
+      const h=n.s/2+8;n.x=Math.max(h,Math.min(Wv-h,n.x));n.y=Math.max(h+70,Math.min(Hv-h-10,n.y))});heat=Math.max(.04,heat*.995)}
+  function draw(){E.forEach(e=>{const a=N[e[0]],b=N[e[1]];e.l.setAttribute('x1',a.x.toFixed(1));e.l.setAttribute('y1',a.y.toFixed(1));e.l.setAttribute('x2',b.x.toFixed(1));e.l.setAttribute('y2',b.y.toFixed(1))});
+    N.forEach(n=>n.g.setAttribute('transform',`translate(${n.x.toFixed(1)},${n.y.toFixed(1)})`))}
+  for(let i=0;i<260;i++)tick();draw();
+  (function loop(){if(document.body.dataset.v!=='map')return;if(heat>.05){tick();draw()}raf=requestAnimationFrame(loop)})()}
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(document.body.dataset.v==='map')build()},200)});
 function follow(){}
 addEventListener('hashchange',()=>{if(location.hash===''||location.hash==='#map')setTimeout(build,50)});
