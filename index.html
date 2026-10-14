@@ -51,7 +51,7 @@ body.loading .m-ui{opacity:0;pointer-events:none}
 .board{display:flex;flex-direction:column;align-items:center;gap:8px;font:11px var(--mono);color:#555;transition:opacity .4s}
 .board svg{display:block;overflow:visible}
 .board.done{cursor:pointer;color:var(--ink)}
-.piece{position:absolute;left:0;top:0;touch-action:none;cursor:grab;filter:drop-shadow(0 8px 12px rgba(0,0,0,.2));transition:transform .25s var(--ease),opacity .4s;z-index:5}
+.piece{position:absolute;left:0;top:0;touch-action:none;cursor:grab;filter:drop-shadow(0 6px 10px rgba(0,0,0,.18));transition:transform .25s var(--ease),opacity .4s;z-index:5}
 .piece svg{display:block;overflow:visible}
 .board svg svg,.piece svg svg{overflow:hidden}
 .piece.drag{cursor:grabbing;transition:none;z-index:20}
@@ -217,7 +217,7 @@ const P=[
    {t:'Kesh/Аналитика',k:3,h:'Аналитика',p:'Неделя, месяц или год: динамика по дням и куда ушли деньги по категориям.',dl:[['Экран','04 / 05']]},
    {t:'platforms.sys',h:'Где работает',ul:['iPhone — приложение с виджетом','Android — APK','Любой браузер — PWA','Компьютер — сайт с аналитикой и экспортом']},
    {t:'Kesh/Бюджет',k:4,h:'Бюджет',p:'Лимиты по категориям, остаток на месяц и сколько можно тратить в день.',dl:[['Экран','05 / 05']]}]},
- ...Array.from({length:4},(_,i)=>({id:'p'+(i+2),name:'Проект '+String(i+2).padStart(2,'0'),type:'В работе',empty:true})),
+ ...Array.from({length:9},(_,i)=>({id:'p'+(i+2),name:'Проект '+String(i+2).padStart(2,'0'),type:'В работе',empty:true})),
 ];
 P.forEach((p,i)=>{p.code='P'+String(i+1).padStart(3,'0');p.shots=p.shots||GENERIC});
 const ALL=[];P.forEach(p=>p.shots.forEach((t,k)=>ALL.push({p,k,t})));
@@ -235,9 +235,8 @@ function shot(p,k){const cv=document.createElement('canvas');cv.width=W;cv.heigh
   x.fillStyle=p.empty?'#fff':'#0b0b0b';x.fillRect(0,0,W,H);if(!p.empty&&sprite)x.drawImage(sprite,KESH.x[k],KESH.y,284,480,(W-284)/2,10,284,480);return cv.toDataURL('image/jpeg',.84)}
 /* ---------- карта ---------- */
 const pz=$('#pz');
-const ART=[['#d9dce3','#9aa6bf','#2234e6'],['#efe4d6','#d0b08c','#5b3b22'],['#dfe7d6','#9fb38a','#2f3e21'],['#ece2ea','#c39bbb','#4a2443']];
-function art(p,i,W,H){if(!p.empty){const ph=H*.92,pw=ph*284/480;return `<rect width="${W}" height="${H}" fill="#0b0b0b"/><svg x="${(W-pw)/2}" y="${(H-ph)/2}" width="${pw}" height="${ph}" viewBox="284 0 284 480"><image href="kesh.webp" width="1420" height="480"/></svg>`}
-  const c=ART[(i-1)%ART.length];return `<rect width="${W}" height="${H}" fill="${c[0]}"/><circle cx="${W*.72}" cy="${H*.42}" r="${H*.42}" fill="${c[1]}"/><circle cx="${W*.72}" cy="${H*.42}" r="${H*.2}" fill="${c[0]}"/><rect x="${W*.08}" y="${H*.72}" width="${W*.42}" height="${H*.05}" fill="${c[2]}"/><text x="${W*.08}" y="${H*.6}" font-family="Arimo,Arial,sans-serif" font-weight="700" font-size="${H*.36}" fill="${c[2]}">${String(i+1).padStart(2,'0')}</text>`}
+function art(p,i,W,H){const n=p.name,fs=Math.min(H*.32,W*1.3/Math.max(n.length,3));
+  return `<rect width="${W}" height="${H}" fill="#fff"/><text x="${W*.06}" y="${H*.16}" font-family="Arimo,Arial,sans-serif" font-size="${H*.08}" letter-spacing="${H*.005}" fill="#0b0b0b">${p.code}</text><text x="${W*.94}" y="${H*.16}" text-anchor="end" font-family="Arimo,Arial,sans-serif" font-size="${H*.08}" fill="#0b0b0b">${p.year||'скоро'}</text><text x="${W/2}" y="${H*.58+fs*.35}" text-anchor="middle" font-family="Arimo,Arial,sans-serif" font-weight="700" font-size="${fs}" letter-spacing="${-fs*.04}" fill="#0b0b0b">${n}</text><text x="${W/2}" y="${H*.9}" text-anchor="middle" font-family="Arimo,Arial,sans-serif" font-size="${H*.07}" fill="#0b0b0b" opacity=".55">${p.type.toLowerCase()}</text>`}
 function rng(s){return()=>(s=s*16807%2147483647)/2147483647}
 function piecePath(x,y,C,t){let d=`M${x},${y}`;const pts=[[x,y],[x+C,y],[x+C,y+C],[x,y+C],[x,y]];
   for(let e=0;e<4;e++){const[ax,ay]=pts[e],[bx,by]=pts[e+1],dx=(bx-ax)/C,dy=(by-ay)/C,nx=dy,ny=-dx,k=t[e]*C*.27;
@@ -245,18 +244,18 @@ function piecePath(x,y,C,t){let d=`M${x},${y}`;const pts=[[x,y],[x+C,y],[x+C,y+C
     d+=t[e]?` L${P(.36,0)} C${P(.3,.6)} ${P(.34,1)} ${P(.5,1)} C${P(.66,1)} ${P(.7,.6)} ${P(.64,0)} L${P(1,0)}`:` L${P(1,0)}`}
   return d+'Z'}
 const COLS=3,ROWS=2;
-function build(){pz.innerHTML='';const C=innerWidth<700?Math.max(34,Math.floor((innerWidth-90)/6)):Math.min(72,Math.floor((innerWidth-300)/17)),W=C*COLS,H=C*ROWS,m=C*.3;
-  const wrap=document.createElement('div');wrap.className='boards';pz.append(wrap);
+function build(){pz.innerHTML='';const sm=innerWidth<700,C=sm?Math.max(28,Math.floor((innerWidth-80)/9.6)):Math.max(44,Math.min(66,Math.floor((innerWidth-360)/16))),W=C*COLS,H=C*ROWS,m=C*.3;
+  const wrap=document.createElement('div');wrap.className='boards';wrap.style.maxWidth=(sm?3:5)*(W+(sm?20:44))+48+'px';wrap.style.margin='0 auto';wrap.style.gap=sm?'16px 14px':'26px 36px';pz.append(wrap);
   P.forEach((p,i)=>{const R=rng(i*97+13),h=[],v=[];for(let r=0;r<=ROWS;r++){h[r]=[];for(let c=0;c<COLS;c++)h[r][c]=r==0||r==ROWS?0:(R()<.5?1:-1)}
     for(let r=0;r<ROWS;r++){v[r]=[];for(let c=0;c<=COLS;c++)v[r][c]=c==0||c==COLS?0:(R()<.5?1:-1)}
     const miss=Math.floor(R()*COLS*ROWS),mr=Math.floor(miss/COLS),mc=miss%COLS;
     const path=(r,c)=>piecePath(c*C,r*C,C,[-h[r][c],v[r][c+1],h[r+1][c],-v[r][c]]);
     let all='',out='';for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const d=path(r,c);if(r===mr&&c===mc)continue;all+=`<path d="${d}"/>`;out+=`<path d="${d}"/>`}
     const id='pz'+i,b=document.createElement('div');b.className='board';
-    b.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs><clipPath id="${id}">${all}</clipPath></defs><path d="${path(mr,mc)}" fill="#efefec" stroke="#c9c9c4" stroke-dasharray="3 3"/><g clip-path="url(#${id})">${art(p,i,W,H)}</g><g fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1">${out}</g><g class="fill" opacity="0"></g></svg><span>${p.code} · ${p.name}</span>`;
+    b.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs><clipPath id="${id}">${all}</clipPath></defs><path d="${path(mr,mc)}" fill="#f2f2f2" stroke="#9a9a9a" stroke-dasharray="3 3"/><g clip-path="url(#${id})">${art(p,i,W,H)}</g><g fill="none" stroke="#0b0b0b" stroke-width="1">${out}</g><rect x=".5" y=".5" width="${W-1}" height="${H-1}" fill="none" stroke="#0b0b0b"/></svg>`;
     b.onclick=()=>{if(b.classList.contains('done'))openProject(p.id)};wrap.append(b);
     const pc=document.createElement('div');pc.className='piece';const d=path(mr,mc),pid='pp'+i;
-    pc.innerHTML=`<svg width="${C+2*m}" height="${C+2*m}" viewBox="${mc*C-m} ${mr*C-m} ${C+2*m} ${C+2*m}"><defs><clipPath id="${pid}"><path d="${d}"/></clipPath></defs><g clip-path="url(#${pid})">${art(p,i,W,H)}</g><path d="${d}" fill="none" stroke="rgba(0,0,0,.25)"/></svg>`;
+    pc.innerHTML=`<svg width="${C+2*m}" height="${C+2*m}" viewBox="${mc*C-m} ${mr*C-m} ${C+2*m} ${C+2*m}"><defs><clipPath id="${pid}"><path d="${d}"/></clipPath></defs><g clip-path="url(#${pid})">${art(p,i,W,H)}</g><path d="${d}" fill="none" stroke="#0b0b0b"/></svg>`;
     pc.setAttribute('aria-label','Деталь проекта '+p.name);pz.append(pc);
     p.pz={b,pc,mr,mc,C,m}});
   requestAnimationFrame(scatter)}
