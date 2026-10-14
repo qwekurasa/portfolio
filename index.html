@@ -120,7 +120,7 @@ body[data-v=project]{background:var(--desk)}
 .it-img img{display:block;width:min(240px,70%);filter:grayscale(1)}
 .it-blank{aspect-ratio:2.4;background:#ededed}
 .it h3{margin:0 0 12px;padding:7px 10px;background:var(--ink);color:#fff;font-size:17px;font-weight:400}
-.it-img+h3{margin-top:0}
+.it-photo{margin:0}.it-photo img{display:block;width:100%;height:auto}
 .it p{margin:0 0 8px;font:14px/1.5 var(--mono);color:#222}
 .it ul{list-style:none;margin:0;padding:0;font:14px/1.6 var(--mono)}
 .it li::before{content:"▪ ";color:var(--soft)}
@@ -192,6 +192,7 @@ body[data-v=about]{background:#fff}
 
 <nav class="dots" aria-label="Вид"><a href="#map" data-v="map" title="Карта"></a><a href="#index" data-v="index" title="Проекты"></a></nav>
 
+<script src="projects.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
@@ -210,8 +211,13 @@ const P=[
    {t:'Kesh/Аналитика',k:3,h:'Аналитика',p:'Неделя, месяц или год: динамика по дням и куда ушли деньги по категориям.',dl:[['Экран','04 / 05']]},
    {t:'platforms.sys',h:'Где работает',ul:['iPhone — приложение с виджетом','Android — APK','Любой браузер — PWA','Компьютер — сайт с аналитикой и экспортом']},
    {t:'Kesh/Бюджет',k:4,h:'Бюджет',p:'Лимиты по категориям, остаток на месяц и сколько можно тратить в день.',dl:[['Экран','05 / 05']]}]},
- ...Array.from({length:9},(_,i)=>({id:'p'+(i+2),name:'Проект '+String(i+2).padStart(2,'0'),type:'В работе',empty:true})),
+ ...(window.CUSTOM||[]).map(c=>{const e=v=>String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[m]),sh=c.shots||[];
+   const url=/^https?:\/\//.test(c.link||'')?c.link:'';
+   return{id:'c'+e(c.id),name:e(c.name),type:e(c.type),created:e(c.created),year:(c.created||'').slice(-4),desc:e(c.desc),cover:sh[0]?.src,
+    meta:[c.stack&&['Стек',e(c.stack)],c.platforms&&['Платформы',e(c.platforms)],url&&['Ссылка',`<a href="${e(url)}" target="_blank" rel="noopener">${e(url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''))}</a>`]].filter(Boolean),
+    shots:sh.length?sh.map(x=>e(x.h)||'Фото'):undefined,wins:sh.length?sh.map(x=>({img:e(x.src),h:e(x.h),p:e(x.p)})):undefined}}),
 ];
+while(P.length<10)P.push({id:'p'+(P.length+1),name:'Проект '+String(P.length+1).padStart(2,'0'),type:'В работе',empty:true});
 P.forEach((p,i)=>{p.code='P'+String(i+1).padStart(3,'0');p.shots=p.shots||GENERIC});
 const ALL=[];P.forEach(p=>p.shots.forEach((t,k)=>ALL.push({p,k,t})));
 const N=ALL.length;
@@ -225,7 +231,7 @@ function T(x,s,X,Y,font,col,al){x.font=font;x.fillStyle=col;x.textAlign=al||'lef
 function makeNoise(){noise=document.createElement('canvas');noise.width=noise.height=160;const x=noise.getContext('2d'),d=x.createImageData(160,160);for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255}x.putImageData(d,0,0)}
 
 function shot(p,k){const cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
-  x.fillStyle=p.empty?'#fff':'#0b0b0b';x.fillRect(0,0,W,H);if(!p.empty&&sprite)x.drawImage(sprite,KESH.x[k],KESH.y,284,480,(W-284)/2,10,284,480);return cv.toDataURL('image/jpeg',.84)}
+  x.fillStyle=p.empty?'#fff':'#0b0b0b';x.fillRect(0,0,W,H);if(p===P[0]&&sprite)x.drawImage(sprite,KESH.x[k],KESH.y,284,480,(W-284)/2,10,284,480);return cv.toDataURL('image/jpeg',.84)}
 /* ---------- карта ---------- */
 const pz=$('#pz'),NS='http://www.w3.org/2000/svg';let raf=0;
 function rng(s){return()=>(s=s*16807%2147483647)/2147483647}
@@ -244,6 +250,7 @@ function build(){cancelAnimationFrame(raf);pz.innerHTML='';const Wv=pz.clientWid
   N.forEach((n,i)=>{const g=document.createElementNS(NS,'g'),h=n.s/2;n.g=g;
     if(n.p){const p=n.p;g.classList.add('node');g.setAttribute('tabindex','0');g.setAttribute('role','link');g.setAttribute('aria-label',p.name);
       g.innerHTML=p.empty?`<rect x="${-h}" y="${-h}" width="${n.s}" height="${n.s}" fill="#fff" stroke="#0b0b0b"/><text y="${n.s*.12}" text-anchor="middle" font-family="Arimo,Arial,sans-serif" font-weight="700" font-size="${n.s*.3}" fill="#0b0b0b">${String(i+1).padStart(2,'0')}</text>`
+        :p.cover?`<rect x="${-h}" y="${-h}" width="${n.s}" height="${n.s}" fill="#fff"/><image href="${p.cover}" x="${-h}" y="${-h}" width="${n.s}" height="${n.s}" preserveAspectRatio="xMidYMid slice"/><rect x="${-h}" y="${-h}" width="${n.s}" height="${n.s}" fill="none" stroke="#0b0b0b"/>`
         :`<rect x="${-h}" y="${-h}" width="${n.s}" height="${n.s}" fill="#0b0b0b"/><svg x="${-h*.62}" y="${-h*.92}" width="${n.s*.62}" height="${n.s*.92}" viewBox="284 0 284 420" preserveAspectRatio="xMidYMin slice"><image href="kesh.webp" width="1420" height="480"/></svg><rect x="${-h}" y="${-h}" width="${n.s}" height="${n.s}" fill="none" stroke="#0b0b0b"/>`;
       g.innerHTML+=`<text class="nl" y="${h+14}" text-anchor="middle" font-family="Arimo,Arial,sans-serif" font-size="11" fill="#0b0b0b">${p.code} · ${p.name}</text>`;
       g.onclick=()=>{if(!n.moved)openProject(p.id)};g.onkeydown=e=>{if(e.key==='Enter')openProject(p.id)}}
@@ -295,8 +302,8 @@ const cloud=(x,y,t,k)=>{const a=Math.sin(x*.9+t*.35+k)+Math.sin(y*1.3-t*.25+k*2)
 function openProject(id,direct){if(direct){location.hash='p-'+id;return}pendingOpen=id;location.hash='index'}
 
 /* ---------- проект ---------- */
-function item(w,p){const img=w.k!==undefined?`<figure class="it-img"><img src="${p.ph?.[w.k]||''}" alt="${p.name}: ${w.h}"></figure>`:w.blank?'<div class="it-blank"></div>':'';
-  return `<article class="it">${img}<h3>${w.h}</h3>${w.p?`<p>${w.p}</p>`:''}${w.ul?`<ul>${w.ul.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}${w.dl?`<dl>${w.dl.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl>`:''}</article>`}
+function item(w,p){const img=w.img?`<figure class="it-photo"><img src="${w.img}" alt="${p.name}: ${w.h}" loading="lazy"></figure>`:w.k!==undefined?`<figure class="it-img"><img src="${p.ph?.[w.k]||''}" alt="${p.name}: ${w.h}"></figure>`:w.blank?'<div class="it-blank"></div>':'';
+  return `<article class="it">${img}${w.h?`<h3>${w.h}</h3>`:''}${w.p?`<p>${w.p}</p>`:''}${w.ul?`<ul>${w.ul.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}${w.dl?`<dl>${w.dl.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl>`:''}</article>`}
 function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=P[(i+1)%P.length],pv=P[(i+P.length-1)%P.length];
   const wins=p.wins||[{h:'В работе',blank:true,p:'Скоро здесь появятся описание и экраны проекта.'}];
   const meta=[['Проект',p.code],['Тип',p.type],['Создан',p.created||'—'],...(p.meta||[])];
