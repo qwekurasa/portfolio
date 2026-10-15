@@ -72,7 +72,6 @@ body[data-v=map] .dots,body[data-v=project] .dots,body.loading .dots{display:non
 body:not([data-v=index]) .ticks{display:none}
 .i-head{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:var(--paper);padding-block:26px 30px}
 .i-head a{grid-column:auto}.i-head a:first-child{grid-column:2}
-.i-nick{text-transform:none;font-weight:400}
 .i-head a:hover{text-decoration:underline;text-underline-offset:3px}
 .i-tools{padding-block:8px 26px}
 .i-tools button{display:inline-flex;gap:10px;align-items:center}
@@ -151,7 +150,7 @@ body[data-v=project]{background:var(--desk)}
 
 <section id="index" class="view" aria-label="Проекты">
   <header class="i-head cols up">
-    <a href="#index">M1. Проекты</a><a class="i-nick" href="#map">qwekurasa</a>
+    <a href="#index">M1. Проекты</a><a href="#map">qwekurasa</a>
   </header>
   <div class="i-tools cols up"><button id="expandAll" aria-expanded="false">Раскрыть все</button></div>
   <div id="list"></div>
