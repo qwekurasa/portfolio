@@ -37,7 +37,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 /* ---------- карта (лента) ---------- */
 #map{position:fixed;inset:0;overflow:hidden;background:var(--paper);touch-action:none}
-#hero{position:absolute;left:0;top:0;image-rendering:pixelated;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#hero{position:absolute;left:0;top:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .hero-text{position:absolute;max-width:440px;font-size:15px;line-height:1.5;opacity:0;transform:translateY(6px);transition:opacity .8s,transform .8s;pointer-events:none}
 .hero-text.on{opacity:1;transform:none;pointer-events:auto}
 .hero-text p{margin:0 0 12px}
@@ -151,7 +151,7 @@ body[data-v=about]{background:#fff}
 <script>document.body.dataset.v="map"</script>
 
 <section id="map" class="view on" aria-label="qwekurasa">
-  <canvas id="hero" role="img" aria-label="3D-аватар qwekurasa"></canvas>
+  <svg id="hero" shape-rendering="crispEdges" role="img" aria-label="Пиксельный qwekurasa"></svg>
   <div class="hero-text" id="heroText">
     <p class="ht-name">qwekurasa</p>
     <p>Меня зовут qwekurasa. Я дизайнер и разработчик из Москвы.</p>
@@ -292,7 +292,6 @@ clock();setInterval(clock,1000);
   if(document.body.dataset.v==='project')route();
 })();
 </script>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
-<script type="module" src="hero.js"></script>
+<script src="hero.js"></script>
 </body>
 </html>

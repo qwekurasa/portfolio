@@ -1,251 +1,181 @@
-import * as THREE from 'three';
+/* Пиксельный qwekurasa: поза собирается из суставов, растеризуется в сетку пикселей и выводится в SVG */
+(() => {
+const sv = document.getElementById('hero'), txt = document.getElementById('heroText'), NS = 'http://www.w3.org/2000/svg';
+const PAL = ['', '#140e0c', '#5e3420', '#84502e', '#f1cfbb', '#d6a58f', '#1d1d22', '#383840', '#2c3242', '#40485c', '#151515', '#e9e9e9', '#2a1610', '#f3bfe2', '#ff5a1f', '#b9746a'];
+// 1 контур, 2-3 волосы, 4-5 кожа, 6-7 футболка, 8-9 джинсы, 10 обувь, 11 подошва, 12 глаза, 13 сигарета, 14 огонёк, 15 рот
+const MAP = { K: 1, H: 2, h: 3, S: 4, s: 5, E: 12, m: 15 };
+const HEAD_F = [
+  '...K.KK..KK.K.....',
+  '..KhKHhKKhHKhKK...',
+  '.KHHhHHHHHHHHhHK..',
+  'KhHHHHHhHHHHHHHhK.',
+  'KHHhHHHHHHhHHHHHK.',
+  'KHHHHHHHHHHHHhHHHK',
+  'KhHHhHHHHHHHHHHhHK',
+  'KHHHSHHhHHHSHHHHK.',
+  'KHhSSSSHSSSSSSHhK.',
+  'KHHSSSSSSSSSSSHHK.',
+  '.KHSKESSSSSKESHK..',
+  '.KHSSESSSSSSESHhK.',
+  '.KhSSSSSssSSSSHHK.',
+  '.KHHSSSSSSSSSSHK..',
+  '..KHSSSSmmSSSHK...',
+  '..KHKSSSSSSSKHK...',
+  '...K.KKSSSKK.K....'];
+const HEAD_S = [
+  '......K.KK.K......',
+  '....KKhKHhKKK.....',
+  '...KHHHHHHHHhK....',
+  '..KHHhHHHHHHHHK...',
+  '.KhHHHHHHHhHHHHK..',
+  '.KHSHHHHHHHHHhHK..',
+  'KhSSHHHHHHHHHHHHK.',
+  'KSSSSSHHHHHhHHHK..',
+  'KSSSSSSHHHHHHHHK..',
+  'KKESSSSHHHHHHhK...',
+  'KSESSSSShHHHHHK...',
+  '.KSSSSSSHHHHHK....',
+  'KsSSSSSSHHHhK.....',
+  'KmSSSSSSSHHK......',
+  '.KSSSSSSSHK.......',
+  '..KKSSSSKK........',
+  '....KKSSK.........'];
+const parseHead = a => a.map(r => [...r].map(c => MAP[c] || 0));
+const HF = parseHead(HEAD_F), HS = parseHead(HEAD_S);
 
-const cv = document.getElementById('hero'), txt = document.getElementById('heroText');
-const R = new THREE.WebGLRenderer({ canvas: cv, antialias: false, alpha: true });
-R.setClearColor(0xffffff, 0);
-const scene = new THREE.Scene(), cam = new THREE.OrthographicCamera(-1, 1, 1, -1, -10, 10);
-cam.position.set(0, 0, 5);
-scene.add(new THREE.HemisphereLight(0xffffff, 0x8a7f78, 1.25));
-const sun = new THREE.DirectionalLight(0xfff4ea, 1.6); sun.position.set(-2, 3, 4); scene.add(sun);
-const rim = new THREE.DirectionalLight(0xc8d4ff, .5); rim.position.set(3, 1, -2); scene.add(rim);
-
-/* ---------- материалы ---------- */
-const M = (c, o = {}) => new THREE.MeshLambertMaterial({ color: c, ...o });
-const SKIN = M(0xd2aa9e), TEE = M(0x1d1d20), TEE2 = M(0x2a2a2e), JEANS = M(0x44526a), JEANS2 = M(0x37435a),
-  SHOE = M(0xeeeeee), SOLE = M(0xb9b9b9), LACE = M(0x2b2b2b), NAIL = M(0xe6c3b8),
-  HAIRS = [M(0x4a2818, { flatShading: true }), M(0x5c3220, { flatShading: true }), M(0x3a1f12, { flatShading: true }), M(0x6e3e24, { flatShading: true })];
-const faceTex = new THREE.TextureLoader().load('face.jpg'); faceTex.colorSpace = THREE.SRGBColorSpace;
-faceTex.wrapS = faceTex.wrapT = THREE.ClampToEdgeWrapping;
-const FACE = M(0xffffff, { map: faceTex, emissive: 0x4a3c38 });
-
-/* ---------- геометрия ---------- */
-const mesh = (g, m, p) => { const o = new THREE.Mesh(g, m); if (p) p.add(o); return o; };
-const grp = (p, x = 0, y = 0, z = 0) => { const g = new THREE.Group(); g.position.set(x, y, z); if (p) p.add(g); return g; };
-// сегмент конечности: от сустава вниз на len
-function seg(p, rt, rb, len, m, sz = 1, n = 8) { const g = new THREE.CylinderGeometry(rt, rb, len, n); g.translate(0, -len / 2, 0); g.scale(1, 1, sz); return mesh(g, m, p); }
-const ball = (p, r, m, x = 0, y = 0, z = 0, sx = 1, sy = 1, sz = 1) => { const o = mesh(new THREE.SphereGeometry(r, 10, 8), m, p); o.position.set(x, y, z); o.scale.set(sx, sy, sz); return o; };
-const box = (p, w, h, d, m, x = 0, y = 0, z = 0) => { const o = mesh(new THREE.BoxGeometry(w, h, d), m, p); o.position.set(x, y, z); return o; };
-
-const root = grp(scene), hips = grp(root);
-/* таз + джинсы */
-seg(hips, .15, .155, .17, JEANS, .68, 10).position.y = .07;
-box(hips, .29, .03, .19, M(0x2c2c2c), 0, .07, 0); // ремень
-/* корпус */
-const spine = grp(hips, 0, .07, 0);
-{ const g = new THREE.CylinderGeometry(.175, .148, .5, 12); g.translate(0, .25, 0); g.scale(1, 1, .62); mesh(g, TEE, spine); }
-seg(spine, .158, .16, .07, TEE2, .66, 12).position.y = .03; // подол
-ball(spine, .1, TEE, 0, .4, .03, 1.5, .8, .62); // грудь
-const neckJ = grp(spine, 0, .52, 0);
-seg(neckJ, .058, .062, .09, SKIN, 1, 8).position.y = .07;
-
-
-/* голова: сфера с сужением к подбородку + проекция фото на лицо */
-const head = grp(neckJ, 0, .03, .01); head.scale.setScalar(1.27);
-{
-  const g = new THREE.SphereGeometry(.105, 20, 16), p = g.attributes.position, uv = g.attributes.uv;
-  for (let i = 0; i < p.count; i++) {
-    let x = p.getX(i), y = p.getY(i), z = p.getZ(i);
-    x *= .86; y *= 1.16; z *= .98;
-    if (y < 0) { const k = -y / .122; x *= 1 - .3 * k * k; z *= 1 - .12 * k * k; }
-    if (z > 0) { const ny = y + .04; z += .012 * Math.exp(-(x * x) / .0006 - (ny * ny) / .0012); }
-    p.setXYZ(i, x, y + .1, z);
-    uv.setXY(i, .5 + x / .142, (y + .119) / .182);
-  }
-  g.computeVertexNormals();
-  mesh(g, FACE, head);
-  // нос
-  // уши
-}
-/* волосы: текстура из фото + рваные пряди */
-const hairTex = new THREE.TextureLoader().load('hair.jpg'); hairTex.colorSpace = THREE.SRGBColorSpace; hairTex.wrapS = hairTex.wrapT = THREE.RepeatWrapping;
-const HAIR = M(0xb08878, { map: hairTex, side: THREE.DoubleSide });
-{
-  const rnd = (s => () => (s = s * 16807 % 2147483647) / 2147483647)(11);
-  const cap = new THREE.IcosahedronGeometry(.124, 3), p = cap.attributes.position, uv = [];
-  for (let i = 0; i < p.count; i++) {
-    let x = p.getX(i), y = p.getY(i), z = p.getZ(i);
-    const n = 1 + .09 * Math.sin(x * 55 + y * 31) * Math.cos(z * 47 - y * 23) + .05 * Math.sin(x * 120 - z * 90);
-    x *= 1.02 * n; y = y * 1.02 * n + .14; z = z * n - .014;
-    if (z > .02 && y < .2) { const k = Math.min(1, (z - .02) / .05) * Math.min(1, (.2 - y) / .045); z -= k * .1; y += k * .015; }
-    if (y < .06) { x *= 1.06; }
-    p.setXYZ(i, x, y, z); uv.push(Math.atan2(x, z) / Math.PI * 1.5 + 1, y * 4);
-  }
-  cap.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); cap.computeVertexNormals(); mesh(cap, HAIR, head);
-  const strand = (x, y, z, len, w, rx, rz) => {
-    const g = new THREE.ConeGeometry(w, len, 3, 1, true); g.translate(0, -len / 2, 0); g.scale(1, 1, .35);
-    const o = mesh(g, HAIR, head); o.position.set(x, y, z); o.rotation.set(rx, rnd() * 6, rz); return o;
-  };
-  for (let i = 0; i < 70; i++) {            // пряди от макушки вниз и в стороны
-    const a = rnd() * Math.PI * 2, b = .3 + rnd() * 1.3, r = .13;
-    const x = Math.sin(b) * Math.cos(a) * r, z = Math.sin(b) * Math.sin(a) * r - .015, y = Math.cos(b) * r + .14;
-    if (z > .05 && y < .2) continue;
-    strand(x, y, z, z > .02 && Math.abs(x) < .09 ? .025 + rnd() * .025 : .07 + rnd() * .09, .026 + rnd() * .016, -z * 7 + (rnd() - .5) * .5, x * 6 + (rnd() - .5) * .5);
-  }
-  for (let i = 0; i < 7; i++) {             // чёлка на лоб
-    const x = (rnd() - .5) * .17;
-    strand(x, .232, .085 - Math.abs(x) * .4, .022 + rnd() * .018, .02, -.45 - rnd() * .3, x * 4 + (rnd() - .5) * .5);
-  }
-  for (let i = 0; i < 26; i++) {            // торчащие вверх кудри
-    const a = rnd() * Math.PI * 2, b = rnd() * .9, r = .125;
-    const x = Math.sin(b) * Math.cos(a) * r, z = Math.sin(b) * Math.sin(a) * r - .02, y = Math.cos(b) * r + .14;
-    strand(x, y, z, .035 + rnd() * .04, .012 + rnd() * .008, Math.PI + z * 7 + (rnd() - .5) * .8, -x * 8 + (rnd() - .5) * .8);
+const GW = 72, GH = 104, OX = 36, OY = 66;           // локальная сетка, таз в (OX,OY)
+const buf = new Uint8Array(GW * GH);
+const put = (x, y, c) => { x = Math.round(x); y = Math.round(y); if (x >= 0 && y >= 0 && x < GW && y < GH) buf[y * GW + x] = c; };
+function seg(a, b, r, c) {
+  const x0 = Math.floor(Math.min(a[0], b[0]) - r - 1) + OX, x1 = Math.ceil(Math.max(a[0], b[0]) + r + 1) + OX, y0 = Math.floor(Math.min(a[1], b[1]) - r - 1) + OY, y1 = Math.ceil(Math.max(a[1], b[1]) + r + 1) + OY;
+  const dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy || 1;
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+    const px = x + .5 - OX, py = y + .5 - OY; let t = ((px - a[0]) * dx + (py - a[1]) * dy) / L; t = t < 0 ? 0 : t > 1 ? 1 : t;
+    const ex = a[0] + dx * t - px, ey = a[1] + dy * t - py; if (ex * ex + ey * ey <= r * r && x >= 0 && y >= 0 && x < GW && y < GH) buf[y * GW + x] = c;
   }
 }
-/* сигарета */
-const cig = grp(head, -.004, .032, .1);
-cig.rotation.set(-1.0, 0, -.5);
-{ seg(cig, .0055, .0055, .03, M(0x2a2622), 1, 6); const b = seg(cig, .0058, .0058, .065, M(0xe9b9e0), 1, 6); b.position.y = -.03;
-  const tip = mesh(new THREE.CylinderGeometry(.0058, .0058, .008, 6), new THREE.MeshBasicMaterial({ color: 0xff5a1f }), cig); tip.position.y = -.099; }
-const tipW = new THREE.Vector3();
-const tipObj = grp(cig, 0, -.104, 0);
-
-/* руки */
-function arm(s) {
-  const sh = grp(spine, s * .2, .47, 0);
-  ball(sh, .066, TEE, 0, -.015, 0, 1, .85, .82);
-  seg(sh, .068, .062, .17, TEE, .9, 10);
-  seg(sh, .046, .04, .3, SKIN);
-  const el = grp(sh, 0, -.3, 0); ball(el, .041, SKIN);
-  seg(el, .04, .031, .26, SKIN);
-  const wr = grp(el, 0, -.26, 0);
-  box(wr, .068, .085, .03, SKIN, 0, -.045, 0);
-  const fingers = [];
-  [[-.025, .046], [-.008, .052], [.009, .05], [.025, .04]].forEach(([x, l]) => {
-    const f1 = grp(wr, x * -s, -.085, 0); box(f1, .015, l * .55, .016, SKIN, 0, -l * .27, 0);
-    const f2 = grp(f1, 0, -l * .55, 0); box(f2, .014, l * .45, .015, SKIN, 0, -l * .22, 0); box(f2, .01, .008, .004, NAIL, 0, -l * .4, .008);
-    fingers.push(f1, f2);
-  });
-  const th = grp(wr, s * .036, -.025, .01); th.rotation.z = s * .5; box(th, .017, .04, .017, SKIN, 0, -.02, 0);
-  const th2 = grp(th, 0, -.04, 0); box(th2, .015, .03, .015, SKIN, 0, -.015, 0);
-  return { sh, el, wr, fingers, th, th2, s };
+function poly(P, c) {
+  const ys = P.map(p => p[1]), y0 = Math.floor(Math.min(...ys)), y1 = Math.ceil(Math.max(...ys));
+  for (let y = y0; y <= y1; y++) { const py = y + .5; const xs = [];
+    for (let i = 0; i < P.length; i++) { const a = P[i], b = P[(i + 1) % P.length]; if ((a[1] <= py) !== (b[1] <= py)) xs.push(a[0] + (py - a[1]) / (b[1] - a[1]) * (b[0] - a[0])); }
+    xs.sort((m, n) => m - n); for (let k = 0; k + 1 < xs.length; k += 2) for (let x = Math.round(xs[k]); x < Math.round(xs[k + 1]); x++) put(x + OX, y + OY, c); }
 }
-const AL = arm(-1), AR = arm(1);
-/* ноги */
-function leg(s) {
-  const hp = grp(hips, s * .085, 0, 0);
-  seg(hp, .085, .064, .45, JEANS); const kn = grp(hp, 0, -.45, 0); ball(kn, .06, JEANS);
-  seg(kn, .062, .052, .42, JEANS); seg(kn, .058, .06, .06, JEANS2).position.y = -.37;
-  const an = grp(kn, 0, -.42, 0);
-  box(an, .1, .08, .2, SHOE, 0, -.035, .04); box(an, .108, .025, .27, SOLE, 0, -.078, .04);
-  { const t = mesh(new THREE.CylinderGeometry(.05, .05, .1, 8, 1, false, 0, Math.PI), SHOE, an); t.rotation.z = Math.PI / 2; t.rotation.y = 0; t.position.set(0, -.04, .14); t.scale.set(1, .8, .9); t.rotation.x = 0; }
-  box(an, .06, .006, .1, LACE, 0, .006, .07);
-  return { hp, kn, an };
+const sprite = (S, x, y, flip) => S.forEach((r, j) => r.forEach((c, i) => { if (c) put(OX + x + (flip ? r.length - 1 - i : i), OY + y + j, c); }));
+
+const R = { TOR: 19, SHW: 6, HIP: 2.6, UA: 8.5, FA: 7.5, HAND: 2, TH: 12.5, SH: 12 };
+const dir = a => [Math.sin(a), Math.cos(a)], add = (p, a, l) => { const d = dir(a); return [p[0] + d[0] * l, p[1] + d[1] * l]; };
+function fk(p) {
+  const sy = -R.TOR + (p.br || 0), side = p.side, shw = side ? 1 : R.SHW;
+  const arm = (x, a) => { const s = [x, sy + 2], e = add(s, a[0], R.UA), w = add(e, a[0] + a[1], R.FA); return { s, e, w, h: add(w, a[0] + a[1], R.HAND) }; };
+  const leg = (x, l, ft) => { const hp = [x, 1], k = 1 - .2 * ft, kn = add(hp, l[0], R.TH * k), an = add(kn, l[0] + l[1], R.SH * k); return { hp, kn, an }; };
+  const hx = side ? .5 : R.HIP;
+  return { sy, aL: arm(-shw, p.aL), aR: arm(shw, p.aR), lL: leg(-hx, p.lL, p.ftL || 0), lR: leg(hx, p.lR, p.ftR || 0) };
 }
-const LL = leg(-1), LR = leg(1);
-// тень
-const shadow = mesh(new THREE.CircleGeometry(.32, 16), new THREE.MeshBasicMaterial({ color: 0, transparent: true, opacity: .13 }), scene);
-shadow.scale.set(1, .18, 1);
+function drawArm(a) {
+  seg(a.s, a.e, 1.45, 4); seg(a.e, a.w, 1.35, 4); seg(a.w, a.h, 1.75, 4);
+  const sl = add(a.s, Math.atan2(a.e[0] - a.s[0], a.e[1] - a.s[1]), 3.5); seg(a.s, sl, 2.3, 6);
+}
+function drawLeg(g, c1, c2, side) {
+  seg(g.hp, g.kn, 2.2, c1); seg(g.kn, g.an, 1.95, c1);
+  const f = side ? [g.an[0] - 3, g.an[1] + 1.2] : [g.an[0] + (g.hp[0] < 0 ? -.6 : .6), g.an[1] + 1.4];
+  seg([g.an[0] + (side ? .8 : 0), g.an[1] + 1], f, 1.5, 10); seg([f[0] - (side ? 1 : 1.3), f[1] + 1.4], [side ? g.an[0] + 1.5 : f[0] + 1.3, f[1] + 1.4], .6, 11);
+  seg([g.kn[0] + (side ? 1.2 : -1), g.kn[1] - 3], [g.an[0] + (side ? 1.1 : -.9), g.an[1] - 2], .5, c2);
+}
+function draw(p) {
+  buf.fill(0); const f = fk(p), sy = f.sy;
+  if (p.side) {                                   // профиль (смотрит влево)
+    drawArm(f.aR); drawLeg(f.lR, 9, 8, 1); drawLeg(f.lL, 8, 9, 1);
+    poly([[-3.5, 3], [3.5, 3], [3.5, -2], [-3, -2]], 8);
+    poly([[-3.5, sy + 1], [-1, sy - .5], [2, sy - .5], [4.2, sy + 2], [4, 3], [-4, 3]], 6); seg([-3, sy + 3], [-3, 0], .5, 7);
+    seg([0, sy - 2], [0, sy], 1.1, 5); sprite(HS, -10, sy - 18, 0);
+    drawArm(f.aL);
+  } else {                                        // анфас
+    poly([[-R.HIP - 3.4, -1], [R.HIP + 3.4, -1], [R.HIP + 3.2, 4], [-R.HIP - 3.2, 4]], 8);
+    drawLeg(f.lL, 8, 9, 0); drawLeg(f.lR, 8, 9, 0);
+    poly([[-R.SHW, sy + 1], [-2, sy - .5], [2, sy - .5], [R.SHW, sy + 1], [R.SHW - .5, sy + 8], [5, 3], [-5, 3], [-R.SHW + .5, sy + 8]], 6);
+    seg([-R.SHW + 1.5, sy + 3], [-4, 1], .5, 7); seg([2, sy + 9], [3, 0], .4, 7);
+    seg([-1, sy - 2], [1, sy - 2], .9, 5); sprite(HF, -8, sy - 18, 0);
+    if (!p.noCig) { seg([-.4, sy - 3.6], [-2.8, sy - 1.4], .6, 13); put(OX - 3, OY + sy - 1, 14); }
+    drawArm(f.aL); drawArm(f.aR);
+  }
+  if (p.blink) { for (const [x, y] of [[4, 10], [5, 10], [5, 11], [12, 10], [12, 11], [11, 10]]) put(OX - 8 + x, OY + sy - 18 + y, 4); }
+  // контур
+  const out = new Uint8Array(buf);
+  for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) if (!buf[y * GW + x] && ((x && buf[y * GW + x - 1] > 1) || (x < GW - 1 && buf[y * GW + x + 1] > 1) || (y && buf[(y - 1) * GW + x] > 1) || (y < GH - 1 && buf[(y + 1) * GW + x] > 1))) out[y * GW + x] = 1;
+  return { out, tip: p.side ? null : [-3, sy - 1] };
+}
 
-/* дым */
-const smokeM = new THREE.MeshBasicMaterial({ color: 0xa8a8a8, transparent: true, depthWrite: false });
-const puffs = Array.from({ length: 14 }, () => { const o = mesh(new THREE.CircleGeometry(.011, 6), smokeM.clone(), scene); o.visible = false; return o; });
-let puffI = 0, puffT = 0;
+/* ---------- SVG ---------- */
+let S = 3, W = 0, H = 0, G = 0, X0 = 0, XT = 0, t0 = 0, raf = 0, done = false, lastQ = -1;
+const paths = PAL.map((c, i) => { if (!i) return null; const p = document.createElementNS(NS, 'path'); p.setAttribute('fill', c); sv.append(p); return p; });
+const smokeG = document.createElementNS(NS, 'path'); smokeG.setAttribute('fill', '#b5b5b5'); sv.append(smokeG);
+function emit(o, ox, oy) {
+  const D = PAL.map(() => []);
+  for (let y = 0; y < GH; y++) { let run = 0, st = 0;
+    for (let x = 0; x <= GW; x++) { const c = x < GW ? o[y * GW + x] : 0; if (c !== run) { if (run) D[run].push(`M${ox + st} ${oy + y}h${x - st}v1h${st - x}z`); run = c; st = x; } } }
+  paths.forEach((p, i) => p && p.setAttribute('d', D[i].join('')));
+}
 
-/* ---------- позы ---------- */
+/* ---------- сцена ---------- */
 const lerp = (a, b, k) => a + (b - a) * k, ease = k => k <= 0 ? 0 : k >= 1 ? 1 : k * k * (3 - 2 * k);
-function mix(A, B, k) { const o = {}; for (const n in A) o[n] = typeof A[n] === 'number' ? lerp(A[n], B[n] ?? A[n], k) : A[n]; return o; }
-const STAND = { yaw: .3, lean: 0, hx: 0, hy: 0, hz: 0, // голова
-  aLz: -.12, aLx: .05, eLx: -.2, aRz: .12, aRx: .05, eRx: -.2, cL: .35, cR: .35,
-  lLx: 0, lLz: -.03, kL: .02, lRx: 0, lRz: .03, kR: .02, fL: 0, fR: 0, br: 0 };
-function apply(p) {
-  root.rotation.y = p.yaw; spine.rotation.x = p.lean + p.br * .02;
-  head.rotation.set(p.hx, p.hy, p.hz);
-  AL.sh.rotation.set(p.aLx, 0, p.aLz); AL.el.rotation.x = p.eLx;
-  AR.sh.rotation.set(p.aRx, 0, p.aRz); AR.el.rotation.x = p.eRx;
-  for (const [A, c] of [[AL, p.cL], [AR, p.cR]]) { A.fingers.forEach((f, i) => f.rotation.x = -c * (i % 2 ? 1.5 : 1.1)); A.th2.rotation.x = -c * .8; A.wr.rotation.x = -c * .2; }
-  LL.hp.rotation.set(p.lLx, 0, p.lLz); LL.kn.rotation.x = p.kL; LL.an.rotation.x = p.fL;
-  LR.hp.rotation.set(p.lRx, 0, p.lRz); LR.kn.rotation.x = p.kR; LR.an.rotation.x = p.fR;
+const STAND = { aL: [-.12, .05], aR: [.12, -.05], lL: [-.03, 0], lR: [.03, 0] };
+const TL = { drop: .45, pull: 1.0, slip: 1.7, one: 2.0, rel: 2.5 }, GR = 260;
+function hangPose(t) {
+  const kick = t > TL.drop ? 1 : 0, one = ease((t - TL.one) / .15), sw = .12 * Math.sin(Math.max(0, t - TL.drop) * 4.3);
+  const pull = t < TL.pull ? 0 : t < TL.slip ? ease((t - TL.pull) / .3) * (1 - ease((t - TL.slip + .2) / .2)) : 0;
+  const k1 = Math.sin(t * 9) * kick, k2 = Math.sin(t * 9 + 2) * kick;
+  return { aL: [Math.PI + .25 + pull * .8 + sw, -pull * 1.6], aR: [lerp(Math.PI - .25 - pull * .8 + sw, .7 + .5 * Math.sin(t * 12), one), lerp(pull * 1.6, .3, one)],
+    lL: [-.08 - .25 * k1, .3 * Math.max(0, k1)], lR: [.08 + .25 * k2, -.3 * Math.max(0, k2)], ftL: .4 * Math.max(0, k1), ftR: .4 * Math.max(0, k2) };
 }
-const v3 = new THREE.Vector3();
-function handTop() { root.updateMatrixWorld(true); let y = -9, x = 0; for (const A of [AL, AR]) { A.wr.getWorldPosition(v3); x += v3.x / 2; y = Math.max(y, v3.y); } return { x, y }; }
-function lowFoot() { root.updateMatrixWorld(true); let y = 9; for (const L of [LL, LR]) { L.an.getWorldPosition(v3); y = Math.min(y, v3.y - .09); } return y; }
-
-/* ---------- сцена во времени ---------- */
-let FH = 4, AW = 1, TOP = 2, GROUND = -.9, X0 = 0, XT = -1, done = false, t0 = 0, raf = 0, last = 0;
-const TL = { drop: .45, pull: 1.0, slip: 1.75, one: 2.05, rel: 2.55 }, G = 9;
-function hang(t) {
-  const k = Math.max(0, t - TL.drop), kick = t > TL.drop ? 1 : 0;
-  const pull = t < TL.pull ? 0 : t < TL.slip ? ease((t - TL.pull) / .35) * (1 - ease((t - TL.slip + .25) / .25)) : 0;
-  const one = ease((t - TL.one) / .2), sw = .14 * Math.sin(k * 4.4) * Math.exp(-k * .5);
-  const p = mix(STAND, {}, 0);
-  Object.assign(p, { yaw: .15, aLz: -(Math.PI - .3) + sw, aLx: -.15 - pull * .5, eLx: -pull * 2, cL: 1,
-    aRz: lerp(Math.PI - .3 + sw, .9 + .4 * Math.sin(t * 13), one), aRx: lerp(-.15 - pull * .5, -.4, one), eRx: lerp(-pull * 2, -.5, one), cR: lerp(1, .1, one),
-    lLx: -.5 * Math.sin(t * 9) * kick - .1, kL: .4 + .4 * Math.sin(t * 9 + 1) * kick, lRx: .5 * Math.sin(t * 9) * kick - .1, kR: .4 - .4 * Math.sin(t * 9 + 1) * kick,
-    lLz: -.06 + sw, lRz: .06 + sw, hx: -.25 + pull * .2, lean: -.05 });
-  return p;
-}
-function pose(t) {
-  if (t < TL.rel) {
-    const p = hang(t); apply(p); root.position.set(0, 0, 0);
-    const h = handTop(); let dy = 0;
-    if (t < TL.drop) { const u = t / TL.drop; dy = (1 - u * u) * (FH * .7); } else { const u = t - TL.drop; dy = -Math.sin(u * 26) * Math.exp(-u * 9) * .05; }
-    root.position.set(X0 - h.x, TOP + .02 - h.y + dy - ease((t - TL.one) / .2) * .05, 0);
-    return {};
-  }
-  // падение
-  const s = hang(TL.rel - 1e-3); apply(s); root.position.set(0, 0, 0); const h = handTop(), y0 = TOP + .02 - h.y - .05;
-  const pf = mix(STAND, {}, 0);
-  Object.assign(pf, { yaw: .15, aLz: -(Math.PI - .7) + .3 * Math.sin(t * 15), aRz: Math.PI - .7 + .3 * Math.sin(t * 15 + 1.5), aLx: -.3, aRx: -.3, eLx: -.4, eRx: -.4, cL: .1, cR: .1,
-    lLx: -.35, kL: .7, lRx: .1, kR: .3, hx: -.3 });
-  apply(pf); root.position.set(0, 0, 0); const fall = GROUND - lowFoot(), tl = TL.rel + Math.sqrt(2 * Math.max(.01, y0 - fall) / G);
-  if (t < tl) { const u = t - TL.rel; root.position.set(X0, y0 - G * u * u / 2, 0); return {}; }
-  // приземление
-  const u = t - tl, c = u < .08 ? ease(u / .08) : u < .5 ? 1 : 1 - ease((u - .5) / .65);
-  const crouch = Object.assign(mix(STAND, {}, 0), { yaw: .15, lean: .55, lLx: -1.25, kL: 2.1, lRx: -1.0, kR: 1.8, fL: -.85, fR: -.8, lLz: -.18, lRz: .18,
-    aLz: -.35, aLx: -.7, eLx: -.6, aRz: .45, aRx: -1.1, eRx: -.2, hx: .2, cL: .5, cR: .2 });
-  let p = mix(STAND, crouch, c), x = X0;
-  p.yaw = lerp(.15, STAND.yaw, ease(u / 1));
-  const tw = tl + 1.25, dist = X0 - XT, dur = Math.max(.6, dist / .9), tt = tw + .35;
-  if (t > tw) {
-    const turn = ease((t - tw) / .35) * (1 - ease((t - tt - dur) / .45));
-    const pw = Math.min(1, Math.max(0, (t - tt) / dur)), e = pw;
-    x = X0 - dist * e; const ph = (dist * e) / .55 * Math.PI, amp = t > tt && t < tt + dur ? Math.min(1, (t - tt) * 5, (tt + dur - t) * 5) : 0;
-    p = mix(STAND, {}, 0); p.yaw = lerp(STAND.yaw, -1.25, turn);
-    const sn = Math.sin(ph);
-    p.lLx = -.5 * sn * amp; p.lRx = .5 * sn * amp; p.kL = Math.max(0, sn) * .9 * amp + .02; p.kR = Math.max(0, -sn) * .9 * amp + .02;
-    p.aLx = .4 * sn * amp + .05; p.aRx = -.4 * sn * amp + .05; p.lean = .06 * amp;
-    const idle = t - (tt + dur);
-    if (idle > 0) { p.br = Math.sin(idle * 1.7); p.hy = .12 * Math.sin(idle * .5); p.hx = .03 * Math.sin(idle * .9); }
-  }
-  apply(p); root.position.set(0, 0, 0); const lf = lowFoot();
-  root.position.set(x, GROUND - lf, 0);
-  return { end: tw + .35 + dist / .9 };
+const handY = p => { const f = fk(p); return Math.min(f.aL.h[1], f.aR.h[1]); }, footY = p => { const f = fk(p); return Math.max(f.lL.an[1], f.lR.an[1]) + 2.5; };
+function scene(t) {
+  if (t < TL.rel) { const p = hangPose(t); let dy = 0;
+    if (t < TL.drop) { const u = t / TL.drop; dy = -(1 - u * u) * (H * .5 + 60); } else { const u = t - TL.drop; dy = Math.sin(u * 26) * Math.exp(-u * 9) * 3; }
+    return { p, x: X0, y: 1 - handY(p) + dy + ease((t - TL.one) / .15) * 2 }; }
+  const y0 = 1 - handY(hangPose(TL.rel - 1e-3)) + 2;
+  const pf = { aL: [Math.PI + .6 + .3 * Math.sin(t * 15), .3], aR: [Math.PI - .6 + .3 * Math.sin(t * 15 + 1), -.3], lL: [-.15, .25], lR: [.12, -.15] };
+  const yl = G - footY(pf), tl = TL.rel + Math.sqrt(2 * Math.max(1, yl - y0) / GR);
+  if (t < tl) { const u = t - TL.rel; return { p: pf, x: X0, y: y0 + GR * u * u / 2 }; }
+  const u = t - tl, c = u < .08 ? ease(u / .08) : u < .5 ? 1 : 1 - ease((u - .5) / .5);
+  const cr = { aL: [-.6, -.4], aR: [.6, .4], lL: [-.7, 1.35], lR: [.7, -1.35] };
+  let p = {}; for (const n in STAND) p[n] = STAND[n].map((v, i) => lerp(v, cr[n][i], c));
+  let x = X0; const tw = tl + 1.2, dist = X0 - XT, dur = dist / 26, end = tw + dur;
+  if (t >= tw && t < end) {                       // идёт влево, профиль
+    const e = (t - tw) / dur; x = X0 - dist * e; const ph = (dist * e) / 7 * Math.PI, sn = Math.sin(ph);
+    p = { side: 1, aL: [.45 * sn, -.25], aR: [-.45 * sn, -.25], lL: [.5 * sn, -.6 * Math.max(0, -sn) * 0 + (sn > 0 ? -.5 * sn : 0)], lR: [-.5 * sn, sn < 0 ? .5 * sn : 0] };
+    p.lL = [-.5 * sn, Math.max(0, sn) * .9]; p.lR = [.5 * sn, Math.max(0, -sn) * .9];
+  } else if (t >= end) { x = XT; const id = t - end; p.br = Math.sin(id * 1.8) > .3 ? 1 : 0; p.blink = id % 3.6 < .14; }
+  return { p, x, y: G - footY(p), end };
 }
 
 function layout() {
-  const w = innerWidth, h = innerHeight, mob = w < 700;
-  R.setPixelRatio(Math.min(devicePixelRatio, 2) * .75); R.setSize(w, h, false); cv.style.width = w + 'px'; cv.style.height = h + 'px';
-  FH = 1.9 / (mob ? .42 : .62); AW = FH * w / h; TOP = FH / 2;
-  cam.left = -AW / 2; cam.right = AW / 2; cam.top = TOP; cam.bottom = -TOP; cam.updateProjectionMatrix();
-  GROUND = -FH * (mob ? .2 : .26); X0 = 0; XT = mob ? -AW * .3 : -AW * .16;
-  const px = h / FH, sx = (XT + AW / 2) * px;
-  txt.style.left = Math.round(sx + .42 * px) + 'px'; txt.style.top = Math.round((TOP - (GROUND + 1.6)) * px) + 'px';
-  txt.style.maxWidth = Math.min(440, w - sx - .42 * px - 16) + 'px';
-  shadow.position.set(0, GROUND, -1);
+  const vw = innerWidth, vh = innerHeight; S = vw < 700 ? 2 : 3; W = Math.floor(vw / S); H = Math.floor(vh / S);
+  sv.setAttribute('viewBox', `0 0 ${W} ${H}`); sv.style.width = W * S + 'px'; sv.style.height = H * S + 'px';
+  G = Math.round(H / 2 + 30); X0 = Math.round(W / 2); XT = Math.round(vw < 700 ? W * .22 : W / 2 - W * .14);
+  txt.style.left = (XT + 18) * S + 'px'; txt.style.top = (G - 64) * S + 'px'; txt.style.maxWidth = Math.min(440, vw - (XT + 18) * S - 16) + 'px';
 }
-
+const puffs = [];
 function frame(now) {
-  const t = (now - t0) / 1000, dt = Math.min(.05, (now - last) / 1000); last = now;
-  const s = pose(t);
-  // тень под ногами только на земле
-  shadow.visible = t > TL.rel + .2; shadow.position.x = root.position.x;
-  // дым
-  cig.updateMatrixWorld(true); tipObj.getWorldPosition(tipW); puffT -= dt;
-  if (puffT <= 0) { puffT = .12; const o = puffs[puffI++ % puffs.length]; o.visible = true; o.position.copy(tipW); o.position.z = 2; o.userData.a = 0; }
-  puffs.forEach(o => { if (!o.visible) return; o.userData.a += dt; const a = o.userData.a;
-    o.position.y += dt * .2; o.position.x += (Math.sin(a * 4 + o.id) * .05 - .12) * dt; o.scale.setScalar(1 + a * 2.5); o.material.opacity = Math.max(0, .32 - a * .24); if (a > 1.4) o.visible = false; });
-  if (s.end && t > s.end + .2) txt.classList.add('on');
-  R.render(scene, cam);
+  const t = (now - t0) / 1000, q = Math.floor(t * 12);
+  if (q !== lastQ) {                               // 12 кадров в секунду — как у спрайтов
+    lastQ = q; const tq = q / 12, s = scene(tq), ox = Math.round(s.x) - OX, oy = Math.round(s.y) - OY, r = draw(s.p); emit(r.out, ox, oy);
+    if (r.tip && q % 3 === 0) puffs.push({ x: ox + OX + r.tip[0], y: oy + OY + r.tip[1] - 1, a: 0 });
+    puffs.forEach(o => { o.a++; o.y -= .6; o.x += Math.sin(o.a * .7) * .5 - .15; });
+    while (puffs.length && puffs[0].a > 22) puffs.shift();
+    smokeG.setAttribute('d', puffs.filter(o => o.a % 4 !== 3).map(o => `M${Math.round(o.x)} ${Math.round(o.y)}h1v1h-1z`).join(''));
+    if (t > s.end + .3) txt.classList.add('on');
+  }
   if (document.body.dataset.v === 'map') raf = requestAnimationFrame(frame);
 }
 function start(replay) {
-  cancelAnimationFrame(raf); layout();
+  cancelAnimationFrame(raf); layout(); lastQ = -1;
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches, q = new URLSearchParams(location.search).get('t');
   if (replay) txt.classList.remove('on');
-  t0 = performance.now() - (q ? +q * 1000 : (!replay && (done || calm)) ? 60000 : 0); last = performance.now(); done = true;
+  t0 = performance.now() - (q ? +q * 1000 : (!replay && (done || calm)) ? 60000 : 0); done = true;
   raf = requestAnimationFrame(frame);
 }
-cv.addEventListener('click', () => start(true));
-addEventListener('resize', () => { if (document.body.dataset.v === 'map') layout(); });
+sv.addEventListener('click', () => start(true));
+addEventListener('resize', () => { if (document.body.dataset.v === 'map') { layout(); lastQ = -1; } });
 window.HERO = { start };
 if (document.body.dataset.v === 'map') start();
+})();
