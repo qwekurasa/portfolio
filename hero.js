@@ -1,8 +1,8 @@
 /* Пиксельный qwekurasa: поза собирается из суставов, растеризуется в сетку пикселей и выводится в SVG */
 (() => {
 const sv = document.getElementById('hero'), txt = document.getElementById('heroText'), NS = 'http://www.w3.org/2000/svg';
-const PAL = ['', '#140e0c', '#5e3420', '#84502e', '#f1cfbb', '#d6a58f', '#1d1d22', '#383840', '#2c3242', '#40485c', '#151515', '#e9e9e9', '#2a1610', '#f3bfe2', '#ff5a1f', '#b9746a'];
-// 1 контур, 2-3 волосы, 4-5 кожа, 6-7 футболка, 8-9 джинсы, 10 обувь, 11 подошва, 12 глаза, 13 сигарета, 14 огонёк, 15 рот
+const PAL = ['', '#140e0c', '#5e3420', '#84502e', '#f1cfbb', '#d6a58f', '#1d1d22', '#383840', '#2c3242', '#40485c', '#151515', '#e9e9e9', '#2a1610', '#f3bfe2', '#ff5a1f', '#b9746a', '#6e4327', '#8f5b37', '#4f2e1a', '#4a4a53'];
+// 16-18 кожанка, 19 надпись на футболке; 1 контур, 2-3 волосы, 4-5 кожа, 6-7 футболка, 8-9 джинсы, 10 обувь, 11 подошва, 12 глаза, 13 сигарета, 14 огонёк, 15 рот
 const MAP = { K: 1, H: 2, h: 3, S: 4, s: 5, E: 12, m: 15 };
 const HEAD_F = [
   '...K.KK..KK.K.....',
@@ -71,9 +71,12 @@ function fk(p) {
   const hx = side ? .5 : R.HIP;
   return { sy, aL: arm(-shw, p.aL), aR: arm(shw, p.aR), lL: leg(-hx, p.lL, p.ftL || 0), lR: leg(hx, p.lR, p.ftR || 0) };
 }
-function drawArm(a) {
-  seg(a.s, a.e, 1.45, 4); seg(a.e, a.w, 1.35, 4); seg(a.w, a.h, 1.75, 4);
-  const sl = add(a.s, Math.atan2(a.e[0] - a.s[0], a.e[1] - a.s[1]), 3.5); seg(a.s, sl, 2.3, 6);
+function drawArm(a, cig) {
+  seg(a.w, a.h, 1.75, 4);
+  seg(a.s, a.e, 2, 16); seg(a.e, a.w, 1.8, 16);
+  seg(add(a.s, Math.atan2(a.e[0] - a.s[0], a.e[1] - a.s[1]), 1), a.e, .5, 17);
+  const cu = add(a.w, Math.atan2(a.e[0] - a.w[0], a.e[1] - a.w[1]), 1); seg(cu, a.w, 1.8, 18);
+  if (cig) { seg(a.h, [a.h[0] - 2.5, a.h[1] - .8], .55, 13); put(Math.round(a.h[0] - 3 + OX), Math.round(a.h[1] - 1 + OY), 14); }
 }
 function drawLeg(g, c1, c2, side) {
   seg(g.hp, g.kn, 2.2, c1); seg(g.kn, g.an, 1.95, c1);
@@ -86,29 +89,34 @@ function draw(p) {
   if (p.side) {                                   // профиль (смотрит влево)
     drawArm(f.aR); drawLeg(f.lR, 9, 8, 1); drawLeg(f.lL, 8, 9, 1);
     poly([[-3.5, 3], [3.5, 3], [3.5, -2], [-3, -2]], 8);
-    poly([[-3.5, sy + 1], [-1, sy - .5], [2, sy - .5], [4.2, sy + 2], [4, 3], [-4, 3]], 6); seg([-3, sy + 3], [-3, 0], .5, 7);
+    poly([[-3.5, sy + 1], [-1, sy - .5], [2, sy - .5], [4.2, sy + 2], [4, 3], [-4, 3]], 6);
+    poly([[-2.2, sy], [-1, sy - .7], [2.2, sy - .7], [4.6, sy + 2], [4.6, 4], [-2.4, 4], [-2.8, sy + 6]], 16); seg([-2.2, sy + 1], [-2.6, 3.5], .5, 18); seg([3.6, sy + 3], [3.6, 2], .5, 17);
     seg([0, sy - 2], [0, sy], 1.1, 5); sprite(HS, -10, sy - 18, 0);
     drawArm(f.aL);
   } else {                                        // анфас
     poly([[-R.HIP - 3.4, -1], [R.HIP + 3.4, -1], [R.HIP + 3.2, 4], [-R.HIP - 3.2, 4]], 8);
     drawLeg(f.lL, 8, 9, 0); drawLeg(f.lR, 8, 9, 0);
     poly([[-R.SHW, sy + 1], [-2, sy - .5], [2, sy - .5], [R.SHW, sy + 1], [R.SHW - .5, sy + 8], [5, 3], [-5, 3], [-R.SHW + .5, sy + 8]], 6);
-    seg([-R.SHW + 1.5, sy + 3], [-4, 1], .5, 7); seg([2, sy + 9], [3, 0], .4, 7);
+    for (const [x, y] of [[-1, 4], [0, 4], [1, 4], [-1, 6], [1, 6], [0, 7]]) put(OX + x, OY + sy + y, 19);
+    for (const k of [-1, 1]) { poly([[k * (R.SHW + .6), sy + 1], [k * 2.6, sy - .6], [k * 1.6, sy + 1.5], [k * 2.4, 4.5], [k * (R.SHW + .4), 4.5]], 16);
+      seg([k * 2.4, sy - .2], [k * 1.9, sy + 4], .6, 17); seg([k * 2.1, sy + 5], [k * 2.4, 4], .5, 18); seg([k * (R.SHW - 1), sy + 6], [k * (R.SHW - 1), 3.5], .4, k < 0 ? 17 : 18); }
     seg([-1, sy - 2], [1, sy - 2], .9, 5); sprite(HF, -8, sy - 18, 0);
     if (!p.noCig) { seg([-.4, sy - 3.6], [-2.8, sy - 1.4], .6, 13); put(OX - 3, OY + sy - 1, 14); }
-    drawArm(f.aL); drawArm(f.aR);
+    drawArm(f.aL, p.cigHand); drawArm(f.aR);
   }
   if (p.blink) { for (const [x, y] of [[4, 10], [5, 10], [5, 11], [12, 10], [12, 11], [11, 10]]) put(OX - 8 + x, OY + sy - 18 + y, 4); }
   // контур
   const out = new Uint8Array(buf);
   for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) if (!buf[y * GW + x] && ((x && buf[y * GW + x - 1] > 1) || (x < GW - 1 && buf[y * GW + x + 1] > 1) || (y && buf[(y - 1) * GW + x] > 1) || (y < GH - 1 && buf[(y + 1) * GW + x] > 1))) out[y * GW + x] = 1;
-  return { out, tip: p.side ? null : [-3, sy - 1] };
+  return { out, tip: p.side || p.noCig ? null : [-3, sy - 1], hand: f.aL.h };
 }
 
 /* ---------- SVG ---------- */
 let S = 3, W = 0, H = 0, G = 0, X0 = 0, XT = 0, t0 = 0, raf = 0, done = false, lastQ = -1;
 const paths = PAL.map((c, i) => { if (!i) return null; const p = document.createElementNS(NS, 'path'); p.setAttribute('fill', c); sv.append(p); return p; });
 const smokeG = document.createElementNS(NS, 'path'); smokeG.setAttribute('fill', '#b5b5b5'); sv.append(smokeG);
+const cigG = document.createElementNS(NS, 'path'); cigG.setAttribute('fill', PAL[13]); sv.append(cigG);
+const cigT = document.createElementNS(NS, 'path'); cigT.setAttribute('fill', PAL[14]); sv.append(cigT);
 function emit(o, ox, oy) {
   const D = PAL.map(() => []);
   for (let y = 0; y < GH; y++) { let run = 0, st = 0;
@@ -139,20 +147,33 @@ function scene(t) {
   const u = t - tl, c = u < .08 ? ease(u / .08) : u < .5 ? 1 : 1 - ease((u - .5) / .5);
   const cr = { aL: [-.6, -.4], aR: [.6, .4], lL: [-.7, 1.35], lR: [.7, -1.35] };
   let p = {}; for (const n in STAND) p[n] = STAND[n].map((v, i) => lerp(v, cr[n][i], c));
-  let x = X0; const tw = tl + 1.2, dist = X0 - XT, dur = dist / 26, end = tw + dur;
+  let x = X0, cig = null; const tw = tl + 1.2, dist = X0 - XT, dur = dist / 39, end = tw + dur;
   if (t >= tw && t < end) {                       // идёт влево, профиль
     const e = (t - tw) / dur; x = X0 - dist * e; const ph = (dist * e) / 7 * Math.PI, sn = Math.sin(ph);
     p = { side: 1, aL: [.45 * sn, -.25], aR: [-.45 * sn, -.25], lL: [.5 * sn, -.6 * Math.max(0, -sn) * 0 + (sn > 0 ? -.5 * sn : 0)], lR: [-.5 * sn, sn < 0 ? .5 * sn : 0] };
     p.lL = [-.5 * sn, Math.max(0, sn) * .9]; p.lR = [.5 * sn, Math.max(0, -sn) * .9];
-  } else if (t >= end) { x = XT; const id = t - end; p.br = Math.sin(id * 1.8) > .3 ? 1 : 0; p.blink = id % 3.6 < .14; }
-  return { p, x, y: G - footY(p), end };
+  } else if (t >= end) {
+    x = XT; const id = t - end, th = id - 2.3;          // через ~2 c после появления текста: бросок и посадка
+    p.br = Math.sin(id * 1.8) > .3 ? 1 : 0; p.blink = id % 3.6 < .14;
+    if (th > 0) {
+      const up = ease(th / .25), out = ease((th - .3) / .15), back = ease((th - .55) / .3);
+      p.aL = [lerp(lerp(-.12, -2.5, up), -1.6, out), lerp(lerp(.05, -1.9, up), -.1, out)];
+      p.aL = p.aL.map((v, i) => lerp(v, STAND.aL[i], back));
+      p.noCig = th > .2; p.cigHand = th > .2 && th < .45;
+      const sit = { aL: [-.35, .55], aR: [.35, -.55], lL: [-2.45, 2.25], lR: [2.45, -2.25] }, k = ease((th - .9) / .6);
+      if (k > 0) for (const n in sit) p[n] = p[n].map((v, i) => lerp(v, sit[n][i], k));
+      p.seat = k;
+      if (th > .45) { const u = th - .45, h0 = fk(Object.assign({}, p, { aL: [-1.6, -.1] })).aL.h; cig = { x: x + h0[0] - 2 - 70 * u, y: G - footY(STAND) + h0[1] - 1 - 70 * u + 170 * u * u, a: u * 14 }; }
+    }
+  }
+  return { p, x, y: lerp(G - footY(p), G - 5, p.seat || 0), end, cig };
 }
 
 function layout() {
   const vw = innerWidth, vh = innerHeight; S = vw < 700 ? 2 : 3; W = Math.floor(vw / S); H = Math.floor(vh / S);
   sv.setAttribute('viewBox', `0 0 ${W} ${H}`); sv.style.width = W * S + 'px'; sv.style.height = H * S + 'px';
   G = Math.round(H / 2 + 30); X0 = Math.round(W / 2); XT = Math.round(vw < 700 ? W * .22 : W / 2 - W * .14);
-  txt.style.left = (XT + 18) * S + 'px'; txt.style.top = (G - 64) * S + 'px'; txt.style.maxWidth = Math.min(440, vw - (XT + 18) * S - 16) + 'px';
+  txt.style.left = (XT + 23) * S + 'px'; txt.style.top = (G - 64) * S + 'px'; txt.style.maxWidth = Math.min(440, vw - (XT + 23) * S - 16) + 'px';
 }
 const puffs = [];
 function frame(now) {
@@ -164,6 +185,9 @@ function frame(now) {
     while (puffs.length && puffs[0].a > 22) puffs.shift();
     smokeG.setAttribute('d', puffs.filter(o => o.a % 4 !== 3).map(o => `M${Math.round(o.x)} ${Math.round(o.y)}h1v1h-1z`).join(''));
     if (t > s.end + .3) txt.classList.add('on');
+    if (s.cig && s.cig.y < H + 4) { const c = s.cig, dx = Math.round(Math.cos(c.a) * 1.5), dy = Math.round(Math.sin(c.a) * 1.5), X = Math.round(c.x), Y = Math.round(c.y);
+      cigG.setAttribute('d', [[-dx, -dy], [0, 0], [dx, dy]].map(([a, b]) => `M${X + a} ${Y + b}h1v1h-1z`).join('')); cigT.setAttribute('d', `M${X + 2 * dx} ${Y + 2 * dy}h1v1h-1z`); }
+    else { cigG.setAttribute('d', ''); cigT.setAttribute('d', ''); }
   }
   if (document.body.dataset.v === 'map') raf = requestAnimationFrame(frame);
 }
