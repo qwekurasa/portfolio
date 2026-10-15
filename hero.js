@@ -171,10 +171,17 @@ function scene(t) {
 }
 
 function layout() {
-  const vw = innerWidth, vh = innerHeight; S = vw < 700 ? 2 : 3; W = Math.floor(vw / S); H = Math.floor(vh / S);
+  const vw = innerWidth, vh = innerHeight, mob = vw < 700;
+  S = mob ? (vh < 640 ? 2 : 3) : 3; W = Math.floor(vw / S); H = Math.floor(vh / S);
   sv.setAttribute('viewBox', `0 0 ${W} ${H}`); sv.style.width = W * S + 'px'; sv.style.height = H * S + 'px';
-  G = Math.round(H / 2 + 30); X0 = Math.round(W / 2); XT = Math.round(vw < 700 ? W * .22 : W / 2 - W * .14);
-  txt.style.left = (XT + 23) * S + 'px'; txt.style.top = (G - 64) * S + 'px'; txt.style.maxWidth = Math.min(440, vw - (XT + 23) * S - 16) + 'px';
+  X0 = Math.round(W / 2);
+  if (mob) {                                       // телефон: персонаж сверху, текст под ним на всю ширину
+    G = Math.round(H * .44); XT = Math.round(W * .36);
+    Object.assign(txt.style, { left: '20px', top: (G + 12) * S + 'px', maxWidth: vw - 40 + 'px' });
+  } else {
+    G = Math.round(H / 2 + 30); XT = Math.round(W / 2 - W * .14);
+    Object.assign(txt.style, { left: (XT + 23) * S + 'px', top: (G - 64) * S + 'px', maxWidth: Math.min(440, vw - (XT + 23) * S - 16) + 'px' });
+  }
 }
 const puffs = [];
 function frame(now) {
