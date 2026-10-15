@@ -66,7 +66,7 @@ const R = { TOR: 19, SHW: 6, HIP: 2.6, UA: 8.5, FA: 7.5, HAND: 2, TH: 12.5, SH: 
 const dir = a => [Math.sin(a), Math.cos(a)], add = (p, a, l) => { const d = dir(a); return [p[0] + d[0] * l, p[1] + d[1] * l]; };
 function fk(p) {
   const sy = -R.TOR + (p.br || 0), side = p.side, shw = side ? 1 : R.SHW;
-  const arm = (x, a) => { const s = [x, sy + 2], e = add(s, a[0], R.UA), w = add(e, a[0] + a[1], R.FA); return { s, e, w, h: add(w, a[0] + a[1], R.HAND) }; };
+  const ln = p.ln || 0, arm = (x, a) => { const s = [x + ln, sy + 2], e = add(s, a[0], R.UA), w = add(e, a[0] + a[1], R.FA); return { s, e, w, h: add(w, a[0] + a[1], R.HAND) }; };
   const leg = (x, l, ft) => { const hp = [x, 1], k = 1 - .2 * ft, kn = add(hp, l[0], R.TH * k), an = add(kn, l[0] + l[1], R.SH * k); return { hp, kn, an }; };
   const hx = side ? .5 : R.HIP;
   return { sy, aL: arm(-shw, p.aL), aR: arm(shw, p.aR), lL: leg(-hx, p.lL, p.ftL || 0), lR: leg(hx, p.lR, p.ftR || 0) };
@@ -85,7 +85,8 @@ function drawLeg(g, c1, c2, side) {
   seg([g.kn[0] + (side ? 1.2 : -1), g.kn[1] - 3], [g.an[0] + (side ? 1.1 : -.9), g.an[1] - 2], .5, c2);
 }
 function draw(p) {
-  buf.fill(0); const f = fk(p), sy = f.sy;
+  buf.fill(0); const f = fk(p), sy = f.sy, ln = p.ln || 0, hx = ln + (p.hdx || 0), hy = p.hdy || 0;
+  const sh = P => P.map(([x, y]) => [x + ln * Math.max(0, Math.min(1, (3 - y) / (3 - sy))), y]);
   if (p.side) {                                   // профиль (смотрит влево)
     drawArm(f.aR); drawLeg(f.lR, 9, 8, 1); drawLeg(f.lL, 8, 9, 1);
     poly([[-3.5, 3], [3.5, 3], [3.5, -2], [-3, -2]], 8);
@@ -95,16 +96,16 @@ function draw(p) {
     drawArm(f.aL);
   } else {                                        // анфас
     poly([[-R.HIP - 3.4, -1], [R.HIP + 3.4, -1], [R.HIP + 3.2, 4], [-R.HIP - 3.2, 4]], 8);
-    drawLeg(f.lL, 8, 9, 0); drawLeg(f.lR, 8, 9, 0);
-    poly([[-R.SHW, sy + 1], [-2, sy - .5], [2, sy - .5], [R.SHW, sy + 1], [R.SHW - .5, sy + 8], [5, 3], [-5, 3], [-R.SHW + .5, sy + 8]], 6);
-    for (const [x, y] of [[-1, 4], [0, 4], [1, 4], [-1, 6], [1, 6], [0, 7]]) put(OX + x, OY + sy + y, 19);
-    for (const k of [-1, 1]) { poly([[k * (R.SHW + .6), sy + 1], [k * 2.6, sy - .6], [k * 1.6, sy + 1.5], [k * 2.4, 4.5], [k * (R.SHW + .4), 4.5]], 16);
+    drawLeg(f.lL, 8, 9, 0); const kneeUp = (p.seat || 0) > .5; if (!kneeUp) drawLeg(f.lR, 8, 9, 0);
+    poly(sh([[-R.SHW, sy + 1], [-2, sy - .5], [2, sy - .5], [R.SHW, sy + 1], [R.SHW - .5, sy + 8], [5, 3], [-5, 3], [-R.SHW + .5, sy + 8]]), 6);
+    for (const [x, y] of [[-1, 4], [0, 4], [1, 4], [-1, 6], [1, 6], [0, 7]]) put(OX + x + Math.round(ln * .7), OY + sy + y, 19);
+    for (const k of [-1, 1]) { poly(sh([[k * (R.SHW + .6), sy + 1], [k * 2.6, sy - .6], [k * 1.6, sy + 1.5], [k * 2.4, 4.5], [k * (R.SHW + .4), 4.5]]), 16);
       seg([k * 2.4, sy - .2], [k * 1.9, sy + 4], .6, 17); seg([k * 2.1, sy + 5], [k * 2.4, 4], .5, 18); seg([k * (R.SHW - 1), sy + 6], [k * (R.SHW - 1), 3.5], .4, k < 0 ? 17 : 18); }
-    seg([-1, sy - 2], [1, sy - 2], .9, 5); sprite(HF, -8, sy - 18, 0);
+    seg([-1 + ln, sy - 2], [1 + ln, sy - 2], .9, 5); sprite(HF, Math.round(-8 + hx), Math.round(sy - 18 + hy), 0);
     if (!p.noCig) { seg([-.4, sy - 3.6], [-2.8, sy - 1.4], .6, 13); put(OX - 3, OY + sy - 1, 14); }
-    drawArm(f.aL, p.cigHand); drawArm(f.aR);
+    if (kneeUp) drawLeg(f.lR, 8, 9, 0); drawArm(f.aL, p.cigHand); drawArm(f.aR);
   }
-  if (p.blink) { for (const [x, y] of [[4, 10], [5, 10], [5, 11], [12, 10], [12, 11], [11, 10]]) put(OX - 8 + x, OY + sy - 18 + y, 4); }
+  if (p.blink) { for (const [x, y] of [[4, 10], [5, 10], [5, 11], [12, 10], [12, 11], [11, 10]]) put(OX - 8 + Math.round(hx) + x, OY + Math.round(sy - 18 + hy) + y, 4); }
   // контур
   const out = new Uint8Array(buf);
   for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) if (!buf[y * GW + x] && ((x && buf[y * GW + x - 1] > 1) || (x < GW - 1 && buf[y * GW + x + 1] > 1) || (y && buf[(y - 1) * GW + x] > 1) || (y < GH - 1 && buf[(y + 1) * GW + x] > 1))) out[y * GW + x] = 1;
@@ -160,8 +161,8 @@ function scene(t) {
       p.aL = [lerp(lerp(-.12, -2.5, up), -1.6, out), lerp(lerp(.05, -1.9, up), -.1, out)];
       p.aL = p.aL.map((v, i) => lerp(v, STAND.aL[i], back));
       p.noCig = th > .2; p.cigHand = th > .2 && th < .45;
-      const sit = { aL: [-.35, .55], aR: [.35, -.55], lL: [-2.45, 2.25], lR: [2.45, -2.25] }, k = ease((th - .9) / .6);
-      if (k > 0) for (const n in sit) p[n] = p[n].map((v, i) => lerp(v, sit[n][i], k));
+      const sit = { aL: [-.25, .5], aR: [-.05, -1.6], lL: [-1.35, 2.55], lR: [2.5, -2.3] }, k = ease((th - .9) / .6);
+      if (k > 0) { for (const n in sit) p[n] = p[n].map((v, i) => lerp(v, sit[n][i], k)); p.ln = 4 * k; p.hdx = 3 * k; p.hdy = 4 * k; p.br = 0; }
       p.seat = k;
       if (th > .45) { const u = th - .45, h0 = fk(Object.assign({}, p, { aL: [-1.6, -.1] })).aL.h; cig = { x: x + h0[0] - 2 - 70 * u, y: G - footY(STAND) + h0[1] - 1 - 70 * u + 170 * u * u, a: u * 14 }; }
     }
