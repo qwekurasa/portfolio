@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>qwekurasa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap">
 <style>
 
 :root{
@@ -91,35 +91,49 @@ body:not([data-v=index]) .ticks{display:none}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}}
 
 /* ---------- проект: рабочий стол с окнами ---------- */
-body[data-v=project]{background:var(--desk)}
-#project{--desk:#ffffff;--soft:#8a8a8a;background:var(--desk);min-height:100%;padding:calc(22px + env(safe-area-inset-top,0px)) var(--gr) calc(90px + env(safe-area-inset-bottom,0px)) var(--gl)}
-.w-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
-.w-head>a{font-size:15px;font-weight:700}
-.w-head nav{display:flex;gap:18px}
-.w-head a:hover{text-decoration:underline;text-underline-offset:3px}
-.pj{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,600px) minmax(0,1fr);gap:40px;margin-top:60px;align-items:start}
-.pj-main{grid-column:2;display:flex;flex-direction:column;gap:28px}
-.pj-side{grid-column:3;position:sticky;top:24px;max-width:340px}
-.pj-name{position:relative;display:inline-block;margin:0 0 18px;padding:14px 34px 18px 26px;font:600 clamp(48px,5vw,76px)/.9 "Caveat",cursive;color:#1c1c1c}
-.pj-name span{filter:url(#pencil)}
-.pj-ring{position:absolute;inset:-6px -14px -4px -10px;width:calc(100% + 24px);height:calc(100% + 10px);overflow:visible;fill:none;stroke:#1c1c1c;stroke-width:1.7;stroke-linecap:round;filter:url(#pencil);pointer-events:none}
-.w-desc{margin:0 0 20px;font-size:15px;line-height:1.45}
-.w-meta{display:grid;grid-template-columns:7.5em 1fr;gap:3px 12px;margin:0;padding-top:14px;border-top:1px solid var(--ink);font:13px/1.45 var(--mono)}
-.w-meta dt{color:var(--soft)}.w-meta dd{margin:0}
-.w-meta a,.it a{text-decoration:underline;text-underline-offset:3px}
-.it{border-bottom:1px solid #d9d9d9;padding-bottom:22px}
-.it-img{margin:0;background:#111;display:grid;place-items:center;padding:22px 0}
-.it-img img{display:block;width:min(240px,70%);filter:grayscale(1)}
-.it-blank{aspect-ratio:2.4;background:#ededed}
-.it h3{margin:0 0 12px;padding:7px 10px;background:var(--ink);color:#fff;font-size:17px;font-weight:400}
-.it-photo{margin:0}.it-photo img{display:block;width:100%;height:auto}
-.it p{margin:0 0 8px;font:14px/1.5 var(--mono);color:#222}
-.it ul{list-style:none;margin:0;padding:0;font:14px/1.6 var(--mono)}
-.it li::before{content:"▪ ";color:var(--soft)}
-.it dl{margin:10px 0 0;display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font:12px/1.4 var(--mono)}
-.it dt{color:var(--soft)}.it dd{margin:0;text-align:right}
-.w-foot{display:flex;justify-content:space-between;gap:16px;margin-top:60px;font:12px var(--mono)}
-.w-foot a:hover{text-decoration:underline;text-underline-offset:3px}
+/* ---------- проект: старый Yahoo ---------- */
+body[data-v=project]{background:#fff}
+#project{background:#fff;color:#000;min-height:100%;padding:12px 10px 40px;font:13px/1.35 Arial,Helvetica,sans-serif}
+.yh{max-width:760px;margin:0 auto}
+.yh a{color:#00c;text-decoration:underline}.yh a:visited{color:#551a8b}.yh a:hover{color:#c00}
+.yh-top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.yh-logo{font:italic 700 44px/1 Georgia,"Times New Roman",serif;letter-spacing:-1px;color:#000!important;text-decoration:none!important}
+.yh-logo b{color:#c00}
+.yh-tools{display:flex;gap:14px;font-size:11px;text-align:center}
+.yh-tools a{display:flex;flex-direction:column;align-items:center;gap:2px}
+.yh-tools i{display:block;width:26px;height:22px;border:1px solid #888;background:linear-gradient(#fff,#cfcfcf);font:700 13px/20px Arial;color:#c00;font-style:normal}
+.yh-search{display:flex;justify-content:center;gap:6px;margin:12px 0 4px;flex-wrap:wrap}
+.yh-search input{width:min(300px,60vw);font:13px Arial;padding:2px 4px;border:2px inset #ddd}
+.yh-search button{font:12px Arial;padding:1px 8px;border:2px outset #ddd;background:#e8e8e8;cursor:pointer}
+.yh-note{text-align:center;font-size:11px;min-height:14px;color:#c00}
+.yh-bar{background:#dcdcdc;border-top:1px solid #999;border-bottom:1px solid #999;padding:3px 6px;margin:8px 0 12px;font-size:12px}
+.yh-wrap{display:flex;gap:14px;align-items:flex-start}
+.yh-main{flex:1;min-width:0}
+.yh-side{width:190px;flex:none}
+.yh h1{margin:0;font:700 26px/1.1 "Times New Roman",Times,serif}
+.yh-sub{color:#666;font-size:11px;margin:2px 0 10px}
+.yh-new{color:#c00;font:italic 700 11px Arial;margin-left:6px;vertical-align:super}
+.yh-desc{margin:0 0 10px;font:15px/1.4 "Times New Roman",Times,serif}
+.yh-meta{margin:0 0 6px;padding:0;list-style:none;font-size:12px}
+.yh-meta b{display:inline-block;min-width:88px}
+.yh-sec{background:#eee;border-left:6px solid #c00;padding:3px 6px;margin:16px 0 8px;font-weight:700;font-size:13px}
+.yh-shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px 10px}
+.yh-shot img{display:block;width:100%;max-width:150px;height:auto;border:2px solid #00c;background:#111}
+.yh-shot .yh-ph{display:block;width:100%;aspect-ratio:1.2;border:2px solid #00c;background:#eee}
+.yh-shot b{display:block;margin:4px 0 1px}
+.yh-shot span,.yh-dir span{font-size:11px;color:#333}
+.yh-dir{margin:0;padding:0 0 0 2px;list-style:none}
+.yh-dir>li{margin:0 0 9px}
+.yh-dir>li>b{color:#00c;text-decoration:underline}
+.yh-dir ul{margin:2px 0 0 18px;padding:0;font-size:12px;list-style:square}
+.yh-box{border:1px solid #999;margin:0 0 10px;font-size:12px}
+.yh-box h4{margin:0;background:#9cf;background:#c6d4ef;border-bottom:1px solid #999;padding:3px 6px;font-size:12px}
+.yh-box ul{margin:0;padding:6px 6px 6px 22px}
+.yh-box li{margin:0 0 3px}
+.yh-cur{font-weight:700}
+.yh-foot{border-top:1px solid #999;margin-top:22px;padding-top:8px;text-align:center;font-size:11px;color:#555}
+.yh-foot p{margin:0 0 4px}
+@media(max-width:640px){.yh-wrap{flex-direction:column}.yh-side{width:100%}.yh-logo{font-size:34px}.yh-shots{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:900px){.pj{grid-template-columns:1fr;gap:36px;margin-top:40px}.pj-main,.pj-side{grid-column:1}.pj-side{position:static;order:-1;max-width:none}}
 @media (max-width:760px){
   .m-old{top:auto;bottom:calc(52px + env(safe-area-inset-bottom,0px));left:var(--gl);transform:none;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;gap:2px 12px}
@@ -134,7 +148,7 @@ body[data-v=project]{background:var(--desk)}
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="pencil" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3" result="d"/><feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves="1" seed="8" result="g"/><feColorMatrix in="g" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3.2 0 0 0 -.25" result="ga"/><feComposite in="d" in2="ga" operator="in"/></filter></svg>
+
 
 <script>document.body.dataset.v="map"</script>
 
@@ -230,16 +244,28 @@ const cloud=(x,y,t,k)=>{const a=Math.sin(x*.9+t*.35+k)+Math.sin(y*1.3-t*.25+k*2)
 function openProject(id,direct){if(direct){location.hash='p-'+id;return}pendingOpen=id;location.hash='index'}
 
 /* ---------- проект ---------- */
-function item(w,p){const img=w.img?`<figure class="it-photo"><img src="${w.img}" alt="${p.name}: ${w.h}" loading="lazy"></figure>`:w.k!==undefined?`<figure class="it-img"><img src="${p.ph?.[w.k]||''}" alt="${p.name}: ${w.h}"></figure>`:w.blank?'<div class="it-blank"></div>':'';
-  return `<article class="it">${img}${w.h?`<h3>${w.h}</h3>`:''}${w.p?`<p>${w.p}</p>`:''}${w.ul?`<ul>${w.ul.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}${w.dl?`<dl>${w.dl.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl>`:''}</article>`}
 function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=P[(i+1)%P.length],pv=P[(i+P.length-1)%P.length];
-  const wins=p.wins||[{h:'В работе',blank:true,p:'Скоро здесь появятся описание и экраны проекта.'}];
-  const meta=[['Проект',p.code],['Тип',p.type],['Создан',p.created||'—'],...(p.meta||[])];
-  $('#project').innerHTML=`
-  <header class="w-head"><a href="#map">qwekurasa</a><nav class="up"><a href="#map">Главная</a><a href="#index">Проекты</a></nav></header>
-  <div class="pj"><div class="pj-main">${wins.map(w=>item(w,p)).join('')}</div>
-  <aside class="pj-side"><h1 class="pj-name"><span>${p.name}</span><svg class="pj-ring" viewBox="0 0 200 100" preserveAspectRatio="none"><path vector-effect="non-scaling-stroke" d="M150 9C110 0 42 6 16 30 -4 50 10 82 60 93 112 104 186 92 196 58 205 26 166 6 112 7 84 8 58 14 46 21"/><path vector-effect="non-scaling-stroke" d="M146 12C104 5 40 12 20 34 6 52 18 80 64 89 114 99 182 86 192 56 199 30 168 11 120 10" opacity=".55"/></svg></h1><p class="w-desc">${p.desc||'Проект в работе.'}</p><dl class="w-meta">${meta.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl></aside></div>
-  <footer class="w-foot"><a href="#p-${pv.id}">← ${pv.code} ${pv.name}</a><a href="#p-${nx.id}">${nx.code} ${nx.name} →</a></footer>`}
+  const wins=p.wins||[],shots=wins.filter(w=>w.img||w.k!==undefined),info=wins.filter(w=>!w.img&&w.k===undefined);
+  const meta=[['Тип',p.type],['Создан',p.created||'—'],...(p.meta||[])];
+  const shot=w=>`<div class="yh-shot">${w.img||p.ph?.[w.k]?`<img src="${w.img||p.ph[w.k]}" alt="${p.name}: ${w.h}" loading="lazy">`:'<span class="yh-ph"></span>'}${w.h?`<b><a href="#p-${p.id}">${w.h}</a></b>`:''}${w.p?`<span>${w.p}</span>`:''}</div>`;
+  $('#project').innerHTML=`<div class="yh">
+  <div class="yh-top"><a class="yh-logo" href="#map">qwekurasa<b>!</b></a>
+    <nav class="yh-tools"><a href="#map"><i>⌂</i>Главная</a><a href="#index"><i>☰</i>Проекты</a><a href="https://t.me/qwekurasa" target="_blank" rel="noopener"><i>✉</i>Telegram</a></nav></div>
+  <form class="yh-search" id="yhs"><input name="q" placeholder="" aria-label="Поиск по проектам"><button>Найти</button></form>
+  <div class="yh-note" id="yhn"></div>
+  <div class="yh-bar"><a href="#map">Главная</a> &gt; <a href="#index">Проекты</a> &gt; <b>${p.name}</b></div>
+  <div class="yh-wrap"><div class="yh-main">
+    <h1>${p.name}${i===0?'<span class="yh-new">new!</span>':''}</h1><div class="yh-sub">${p.code} · ${p.type}</div>
+    <p class="yh-desc">${p.desc||'Проект в работе. Скоро здесь появятся описание и экраны.'}</p>
+    <ul class="yh-meta">${meta.map(r=>`<li><b>${r[0]}:</b> ${r[1]}</li>`).join('')}</ul>
+    ${shots.length?`<div class="yh-sec">Экраны (${shots.length})</div><div class="yh-shots">${shots.map(shot).join('')}</div>`:''}
+    ${info.length?`<div class="yh-sec">${p.empty?'Статус':'Функции'}</div><ul class="yh-dir">${info.map(w=>`<li><b>${w.h}</b>${w.p?` — <span>${w.p}</span>`:''}${w.ul?`<ul>${w.ul.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}${w.dl?`<ul>${w.dl.map(r=>`<li>${r[0]}: ${r[1]}</li>`).join('')}</ul>`:''}</li>`).join('')}</ul>`:''}
+  </div><aside class="yh-side">
+    <div class="yh-box"><h4>Все проекты</h4><ul>${P.map(q=>`<li${q===p?' class="yh-cur"':''}><a href="#p-${q.id}">${q.name}</a></li>`).join('')}</ul></div>
+    <div class="yh-box"><h4>Навигация</h4><ul><li><a href="#p-${pv.id}">← ${pv.name}</a></li><li><a href="#p-${nx.id}">${nx.name} →</a></li></ul></div>
+  </aside></div>
+  <div class="yh-foot"><p><a href="#map">Главная</a> - <a href="#index">Проекты</a> - <a href="https://t.me/qwekurasa" target="_blank" rel="noopener">Telegram</a> - <a href="https://www.instagram.com/qwekurasa/" target="_blank" rel="noopener">Instagram</a></p><p>Copyright © 2026 qwekurasa. All rights reserved.</p></div></div>`;
+  $('#yhs').onsubmit=e=>{e.preventDefault();const q=e.target.q.value.trim().toLowerCase(),m=q&&P.find(x=>(x.name+' '+x.type).toLowerCase().includes(q));if(m)location.hash='p-'+m.id;else $('#yhn').textContent=q?'Ничего не найдено по запросу «'+q+'»':''}}
 
 /* ---------- роутер ---------- */
 function route(){let h=location.hash.slice(1)||'map',v=h;
