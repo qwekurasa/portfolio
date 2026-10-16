@@ -206,7 +206,6 @@ function start(replay) {
   t0 = performance.now() - (q ? +q * 1000 : (!replay && (done || calm)) ? 60000 : 0); done = true;
   raf = requestAnimationFrame(frame);
 }
-sv.addEventListener('click', () => start(true));
 addEventListener('resize', () => { if (document.body.dataset.v === 'map') { layout(); lastQ = -1; } });
 window.HERO = { start };
 if (document.body.dataset.v === 'map') start();
