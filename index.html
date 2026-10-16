@@ -91,49 +91,55 @@ body:not([data-v=index]) .ticks{display:none}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}}
 
 /* ---------- проект: рабочий стол с окнами ---------- */
-/* ---------- проект: старый Yahoo ---------- */
+/* ---------- проект: рабочий стол Smalltalk-80 ---------- */
 body[data-v=project]{background:#fff}
-#project{background:#fff;color:#000;min-height:100%;padding:12px 10px 40px;font:13px/1.35 Arial,Helvetica,sans-serif}
-.yh{max-width:760px;margin:0 auto}
-.yh a{color:#00c;text-decoration:underline}.yh a:visited{color:#551a8b}.yh a:hover{color:#c00}
-.yh-top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.yh-logo{font:italic 700 44px/1 Georgia,"Times New Roman",serif;letter-spacing:-1px;color:#000!important;text-decoration:none!important}
-.yh-logo b{color:#c00}
-.yh-tools{display:flex;gap:14px;font-size:11px;text-align:center}
-.yh-tools a{display:flex;flex-direction:column;align-items:center;gap:2px}
-.yh-tools i{display:block;width:26px;height:22px;border:1px solid #888;background:linear-gradient(#fff,#cfcfcf);font:700 13px/20px Arial;color:#c00;font-style:normal}
-.yh-search{display:flex;justify-content:center;gap:6px;margin:12px 0 4px;flex-wrap:wrap}
-.yh-search input{width:min(300px,60vw);font:13px Arial;padding:2px 4px;border:2px inset #ddd}
-.yh-search button{font:12px Arial;padding:1px 8px;border:2px outset #ddd;background:#e8e8e8;cursor:pointer}
-.yh-note{text-align:center;font-size:11px;min-height:14px;color:#c00}
-.yh-bar{background:#dcdcdc;border-top:1px solid #999;border-bottom:1px solid #999;padding:3px 6px;margin:8px 0 12px;font-size:12px}
-.yh-wrap{display:flex;gap:14px;align-items:flex-start}
-.yh-main{flex:1;min-width:0}
-.yh-side{width:190px;flex:none}
-.yh h1{margin:0;font:700 26px/1.1 "Times New Roman",Times,serif}
-.yh-sub{color:#666;font-size:11px;margin:2px 0 10px}
-.yh-new{color:#c00;font:italic 700 11px Arial;margin-left:6px;vertical-align:super}
-.yh-desc{margin:0 0 10px;font:15px/1.4 "Times New Roman",Times,serif}
-.yh-meta{margin:0 0 6px;padding:0;list-style:none;font-size:12px}
-.yh-meta b{display:inline-block;min-width:88px}
-.yh-sec{background:#eee;border-left:6px solid #c00;padding:3px 6px;margin:16px 0 8px;font-weight:700;font-size:13px}
-.yh-shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px 10px}
-.yh-shot img{display:block;width:100%;max-width:150px;height:auto;border:2px solid #00c;background:#111}
-.yh-shot .yh-ph{display:block;width:100%;aspect-ratio:1.2;border:2px solid #00c;background:#eee}
-.yh-shot b{display:block;margin:4px 0 1px}
-.yh-shot span,.yh-dir span{font-size:11px;color:#333}
-.yh-dir{margin:0;padding:0 0 0 2px;list-style:none}
-.yh-dir>li{margin:0 0 9px}
-.yh-dir>li>b{color:#00c;text-decoration:underline}
-.yh-dir ul{margin:2px 0 0 18px;padding:0;font-size:12px;list-style:square}
-.yh-box{border:1px solid #999;margin:0 0 10px;font-size:12px}
-.yh-box h4{margin:0;background:#9cf;background:#c6d4ef;border-bottom:1px solid #999;padding:3px 6px;font-size:12px}
-.yh-box ul{margin:0;padding:6px 6px 6px 22px}
-.yh-box li{margin:0 0 3px}
-.yh-cur{font-weight:700}
-.yh-foot{border-top:1px solid #999;margin-top:22px;padding-top:8px;text-align:center;font-size:11px;color:#555}
-.yh-foot p{margin:0 0 4px}
-@media(max-width:640px){.yh-wrap{flex-direction:column}.yh-side{width:100%}.yh-logo{font-size:34px}.yh-shots{grid-template-columns:repeat(2,1fr)}}
+#project{min-height:100%;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3C/svg%3E");color:#000;font:13px/1.4 var(--sans)}
+.st{padding:16px 16px 60px}
+.st-desk{position:relative;width:1040px;height:1500px;margin:0 auto}
+.st-w{position:absolute;background:#fff;border:2px solid #000}
+.st-t{position:absolute;bottom:100%;left:-2px;margin:0;background:#fff;border:2px solid #000;border-bottom:0;padding:2px 8px;font:400 13px var(--sans);letter-spacing:.03em;white-space:nowrap;cursor:grab;user-select:none;touch-action:none}
+.st-fl .st-t{background:#000;color:#fff}
+.st-menu{position:absolute;left:20px;top:0;display:flex;flex-wrap:wrap;border:2px solid #000;background:#fff;z-index:2}
+.st-menu a{padding:2px 10px;border-right:2px solid #000;color:#000}.st-menu a:last-child{border-right:0}
+.st-menu a:hover,.st-pane a:hover{background:#000;color:#fff}
+.st-br{width:600px}
+.st-panes{display:grid;grid-template-columns:1.3fr 1fr 1fr;border-bottom:2px solid #000;height:168px}
+.st-pane{list-style:none;margin:0;padding:3px 0;overflow:auto;border-right:2px solid #000;line-height:1.5}
+.st-pane:last-child{border-right:0}
+.st-pane li{padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-pane li.on{outline:1px dotted #000;outline-offset:-2px}
+.st-pane a{color:#000;display:block}
+.st-code{padding:8px 12px 14px}
+.st-com{font:italic 15px/1.45 "Times New Roman",Times,serif;margin:6px 0 10px 22px}
+.st-code pre{margin:0 0 0 22px;font:13px/1.6 var(--sans);white-space:pre-wrap}
+.st-a{color:#000;text-decoration:underline}
+.st-shot{width:250px}
+.st-art{padding:10px;border-bottom:2px solid #000}
+.ks{display:block;width:100%;height:auto;font-family:var(--sans)}
+.st-art img{display:block;width:100%;filter:grayscale(1) contrast(1.5)}
+.st-cap{margin:0;padding:8px 10px;font-size:12px}
+.st-fl{width:520px}
+.st-path{padding:3px 8px;border-bottom:2px solid #000}
+.st-files{list-style:none;margin:0;padding:4px 8px;border-bottom:2px solid #000;line-height:1.5}
+.st-files li[data-j]{cursor:pointer;padding:0 2px}
+.st-files li.on{background:#000;color:#fff}
+.st-out{margin:8px;padding:8px 12px;min-height:110px;background:#000;color:#fff;white-space:pre-wrap;line-height:1.6}
+.st-mail{position:absolute;left:908px;top:6px;width:54px}
+.st-clock{position:absolute;left:966px;top:2px;width:74px}
+.st-mail svg,.st-clock svg{display:block;width:100%}
+.st-cal{position:absolute;left:908px;top:92px;border-collapse:collapse;font-size:9px}
+.st-cal td{width:18px;height:14px;padding:0 2px;border:1px solid #000;background:#fff;text-align:right;line-height:1}
+.st-cal td.e{background:transparent;border:0}.st-cal td.on{background:#000;color:#fff}
+@media(max-width:1079px){
+  .st-desk{width:auto;height:auto;display:flex;flex-direction:column;gap:46px;max-width:620px}
+  .st-w{position:relative!important;left:auto!important;top:auto!important;width:auto!important}
+  .st-menu{position:static}
+  .st-menu{align-self:flex-start;margin-bottom:-20px}
+  .st-mail,.st-clock,.st-cal{display:none}
+  .st-panes{grid-template-columns:1fr;height:auto}
+  .st-pane{max-height:132px;border-right:0;border-bottom:2px solid #000}.st-pane:last-child{border-bottom:0}
+  .st-art .ks,.st-art img{max-width:300px;margin:0 auto}
+}
 @media (max-width:900px){.pj{grid-template-columns:1fr;gap:36px;margin-top:40px}.pj-main,.pj-side{grid-column:1}.pj-side{position:static;order:-1;max-width:none}}
 @media (max-width:760px){
   .m-old{top:auto;bottom:calc(52px + env(safe-area-inset-bottom,0px));left:var(--gl);transform:none;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;gap:2px 12px}
@@ -202,19 +208,6 @@ const P=[
 ];
 while(P.length<10)P.push({id:'p'+(P.length+1),name:'Проект '+String(P.length+1).padStart(2,'0'),type:'В работе',empty:true});
 P.forEach((p,i)=>{p.code='P'+String(i+1).padStart(3,'0');p.shots=p.shots||GENERIC});
-const ALL=[];P.forEach(p=>p.shots.forEach((t,k)=>ALL.push({p,k,t})));
-const N=ALL.length;
-const src=(p,k)=>ALL.find(a=>a.p===p&&a.k===k).src||'';
-
-/* ---------- генерация заглушек ---------- */
-const W=800,H=500;let noise,sprite;
-const KESH={src:'kesh.webp',x:[0,284,568,852,1136],y:0};
-const loadImg=u=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=u});
-function T(x,s,X,Y,font,col,al){x.font=font;x.fillStyle=col;x.textAlign=al||'left';x.fillText(s,X,Y)}
-function makeNoise(){noise=document.createElement('canvas');noise.width=noise.height=160;const x=noise.getContext('2d'),d=x.createImageData(160,160);for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255}x.putImageData(d,0,0)}
-
-function shot(p,k){const cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
-  x.fillStyle=p.empty?'#fff':'#0b0b0b';x.fillRect(0,0,W,H);if(p===P[0]&&sprite)x.drawImage(sprite,KESH.x[k],KESH.y,284,480,(W-284)/2,10,284,480);return cv.toDataURL('image/jpeg',.84)}
 /* ---------- индекс ---------- */
 let pendingOpen=null,pendingShot=null;
 $('#list').innerHTML=P.map(p=>`
@@ -244,28 +237,86 @@ const cloud=(x,y,t,k)=>{const a=Math.sin(x*.9+t*.35+k)+Math.sin(y*1.3-t*.25+k*2)
 function openProject(id,direct){if(direct){location.hash='p-'+id;return}pendingOpen=id;location.hash='index'}
 
 /* ---------- проект ---------- */
+/* ---------- экраны Кэша: чёрно-белые векторные перерисовки ---------- */
+const KS=(()=>{
+  const t=(x,y,s,o={})=>`<text x="${x}" y="${y}" font-size="${o.z||9}"${o.b?' font-weight="700"':''}${o.a?` text-anchor="${o.a}"`:''}${o.f?` fill="${o.f}"`:''}${o.l?` letter-spacing="${o.l}"`:''}>${s}</text>`;
+  const r=(x,y,w,h,o={})=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${o.rx??4}" fill="${o.f||'#fff'}" stroke="${o.s||'#000'}" stroke-width="${o.sw??1}"/>`;
+  const cat=(x,y,s=1,f='#000')=>`<g transform="translate(${x} ${y}) scale(${s})" fill="${f}"><path d="M-7 6V-6l4 4h6l4-4V6z"/><circle cx="-2.5" cy="1.5" r="1" fill="${f==='#000'?'#fff':'#000'}"/><circle cx="2.5" cy="1.5" r="1" fill="${f==='#000'?'#fff':'#000'}"/></g>`;
+  const bars=(x,y,w,h,v,o={})=>{const n=v.length,bw=w/n;return v.map((a,i)=>`<rect x="${(x+i*bw+.6).toFixed(1)}" y="${(y+h-a*h).toFixed(1)}" width="${(bw-1.2).toFixed(1)}" height="${(a*h).toFixed(1)}" fill="${o.d&&i%2?'url(#dz)':'#000'}"/>`).join('')+`<line x1="${x}" y1="${y+h+.5}" x2="${x+w}" y2="${y+h+.5}" stroke="#000" stroke-dasharray="2 2"/>`};
+  const nav=y=>`<line x1="14" y1="${y}" x2="226" y2="${y}" stroke="#000"/>`+[36,78,162,204].map((x,i)=>i===0?`<path d="M${x-6} ${y+18}l6-6 6 6v6h-12z" fill="none" stroke="#000"/>`:i===1?`<path d="M${x-5} ${y+24}v-8M${x} ${y+24}v-12M${x+5} ${y+24}v-5" stroke="#000" stroke-width="2"/>`:i===2?`<circle cx="${x}" cy="${y+18}" r="6" fill="none" stroke="#000"/><path d="M${x} ${y+14}v4h3" stroke="#000" fill="none"/>`:`<rect x="${x-6}" y="${y+12}" width="12" height="12" rx="2" fill="none" stroke="#000"/><circle cx="${x}" cy="${y+18}" r="2.5" fill="none" stroke="#000"/>`).join('')+`<circle cx="120" cy="${y+18}" r="11" fill="#000"/><path d="M114 ${y+18}h12M120 ${y+12}v12" stroke="#fff" stroke-width="2"/>`;
+  const frame=b=>`<svg viewBox="0 0 240 430" class="ks" role="img"><rect x="4" y="4" width="232" height="422" rx="26" fill="#fff" stroke="#000" stroke-width="2.5"/><rect x="96" y="12" width="48" height="7" rx="3.5" fill="#000"/>${b}</svg>`;
+  return [
+  /* 0 знакомство */
+  ()=>frame(`<rect x="22" y="40" width="196" height="160" rx="10" fill="url(#dz)"/>${cat(120,118,4.2,'#000')}
+    <rect x="170" y="48" width="40" height="16" rx="8" fill="#fff" stroke="#000"/><rect x="172" y="50" width="18" height="12" rx="6" fill="#000"/>${t(181,59,'RU',{z:7,a:'middle',f:'#fff',b:1})}${t(200,59,'EN',{z:7,a:'middle'})}
+    <line x1="22" y1="232" x2="218" y2="232" stroke="#000"/>${t(22,262,'Привет! Я Кэш.',{z:17,b:1})}
+    ${t(22,284,'Считаю траты, не спрашиваю')}${t(22,297,'лишнего и живу только')}${t(22,310,'на твоём телефоне.')}
+    ${r(22,370,196,30,{rx:8,f:'#000'})}${t(120,389,'Начать',{z:11,a:'middle',f:'#fff',b:1})}${cat(200,385,.8,'#fff')}`),
+  /* 1 главная */
+  ()=>frame(`<circle cx="32" cy="42" r="10" fill="#000"/>${cat(32,42,.7,'#fff')}${t(48,40,'Артём',{z:10,b:1})}${t(48,51,'Октябрь 2026',{z:7})}${t(200,46,'‹  ›',{z:11})}
+    ${t(22,76,'РАСХОДЫ ЗА МЕСЯЦ',{z:7,l:1})}${t(22,104,'36 640 ₽',{z:26,b:1})}${r(150,88,34,14,{rx:3,f:'#000'})}${t(167,98,'↑ 36%',{z:7,a:'middle',f:'#fff'})}${t(22,118,'За 1–13 сентября было 26 974 ₽',{z:7})}
+    ${[['СЕГОДНЯ','97 ₽'],['ДОХОДЫ','+92 000 ₽'],['В ДЕНЬ','2 818 ₽']].map((c,i)=>r(14+i*72,128,68,38)+t(20+i*72,141,c[0],{z:6,l:.5})+t(20+i*72,157,c[1],{z:9,b:1})).join('')}
+    ${r(14,174,212,96)}${t(22,190,'По дням',{z:9,b:1})}${t(214,190,'1М',{z:7,a:'end'})}${bars(22,198,196,58,[.2,.35,.3,.55,.9,.6,.4,.75,.1,.3,.15,0,.02,.02,.02,.02,.02,.02,.02,.02,.02,.02],{d:1})}
+    ${r(14,278,212,92)}${t(22,294,'СЕГОДНЯ · 13 ОКТ',{z:7,l:.5})}${t(216,294,'−97 ₽',{z:7,a:'end'})}
+    ${r(22,302,16,16,{rx:3,f:'url(#dz)'})}${t(46,314,'Транспорт',{z:9})}${t(216,314,'97 ₽',{z:9,a:'end',b:1})}<line x1="22" y1="328" x2="218" y2="328" stroke="#000" stroke-dasharray="1 2"/>
+    ${t(22,344,'ВЧЕРА · 12 ОКТ',{z:7,l:.5})}${r(22,350,16,16,{rx:3})}${t(46,362,'Кофе',{z:9})}${t(216,362,'240 ₽',{z:9,a:'end',b:1})}${nav(384)}`),
+  /* 2 ввод */
+  ()=>frame(`${t(22,46,'‹',{z:16})}${r(80,32,80,20,{rx:10})}${r(81,33,40,18,{rx:9,f:'#000',s:'#000'})}${t(101,46,'РАСХОД',{z:6,a:'middle',f:'#fff',b:1})}${t(140,46,'ДОХОД',{z:6,a:'middle'})}${r(204,34,14,14,{rx:2})}
+    ${t(112,104,'6 800',{z:34,a:'middle',b:1})}${t(168,104,'₽',{z:14})}${cat(196,92,1.3)}${t(120,122,'Хм… уверен?',{z:8,a:'middle'})}
+    ${t(18,146,'ЧАСТЫЕ',{z:6,l:1})}${t(222,146,'ВСЕ КАТЕГОРИИ',{z:6,a:'end',l:1})}
+    ${['Транспорт','Маркетпл.','Кофе','Рестораны'].map((c,i)=>r(16+i*52,152,48,40,{f:i===1?'#000':'#fff'})+`<rect x="${34+i*52}" y="${160}" width="12" height="12" rx="2" fill="${i===1?'#fff':'none'}" stroke="${i===1?'#fff':'#000'}"/>`+t(40+i*52,186,c,{z:6,a:'middle',f:i===1?'#fff':'#000'})).join('')}
+    ${r(16,200,208,22)}${t(24,215,'Комментарий',{z:8,f:'#666'})}
+    ${['1','2','3','4','5','6','7','8','9',',','0','⌫'].map((k,i)=>r(16+(i%3)*70,230+Math.floor(i/3)*30,66,26,{rx:5})+t(49+(i%3)*70,247+Math.floor(i/3)*30,k,{z:11,a:'middle'})).join('')}
+    ${r(16,360,208,32,{rx:8,f:'#000'})}${t(120,380,'Сохранить · −6 800 ₽',{z:10,a:'middle',f:'#fff',b:1})}`),
+  /* 3 аналитика */
+  ()=>frame(`${t(18,46,'Аналитика',{z:13,b:1})}${r(140,34,84,18,{rx:9})}${r(168,35,28,16,{rx:8,f:'#000'})}${t(154,46,'НЕД',{z:6,a:'middle'})}${t(182,46,'МЕС',{z:6,a:'middle',f:'#fff',b:1})}${t(210,46,'ГОД',{z:6,a:'middle'})}
+    ${[['РАСХОДЫ','36 640 ₽','↑36%'],['ДОХОДЫ','+92 000 ₽','↑2%'],['РАЗНИЦА','+55 360 ₽','↑12%']].map((c,i)=>r(14+i*72,60,68,42)+t(20+i*72,73,c[0],{z:6,l:.5})+t(20+i*72,88,c[1],{z:8,b:1})+t(20+i*72,98,c[2],{z:6})).join('')}
+    ${r(14,110,212,110)}${t(22,126,'Динамика',{z:9,b:1})}${t(214,126,'ОКТ / СЕН',{z:6,a:'end'})}${bars(22,134,196,66,[.15,.3,.2,.6,.9,.4,.7,.25,.95,.3,.5,.05,.04,.04,.04,.04,.04,.04,.04,.04],{d:1})}${t(22,212,'■ октябрь  ▒ сентябрь',{z:6})}
+    ${r(14,228,212,150)}${t(22,244,'Куда ушли деньги',{z:9,b:1})}${t(214,244,'100 = 36 640 ₽',{z:6,a:'end'})}
+    ${Array.from({length:80},(_,i)=>{const x=22+(i%10)*8.4,y=252+Math.floor(i/10)*8.4,f=i<34?'#000':i<57?'url(#dz)':i<78?'#fff':'#000';return`<rect x="${x}" y="${y}" width="7" height="7" fill="${f}" stroke="#000" stroke-width=".6"/>`}).join('')}
+    ${[['■','Маркетплейсы','34%'],['▒','Продукты','23%'],['□','Рестораны','21%'],['■','Подписки','11%'],['□','Кофе','6%']].map((c,i)=>t(112,262+i*14,c[0]+' '+c[1],{z:7})+t(218,262+i*14,c[2],{z:7,a:'end'})).join('')}
+    ${nav(386)}`),
+  /* 4 бюджет */
+  ()=>frame(`${t(18,46,'Бюджет · октябрь',{z:13,b:1})}
+    ${r(14,58,212,84)}${t(22,74,'ОСТАЛОСЬ НА МЕСЯЦ',{z:6,l:1})}${t(22,102,'26 309 ₽',{z:26,b:1})}${t(214,98,'из 47 000 ₽',{z:6,a:'end'})}
+    ${Array.from({length:30},(_,i)=>`<rect x="${22+i*6.5}" y="110" width="4.5" height="12" fill="${i<13?'#000':'url(#dz)'}"/>`).join('')}${t(22,134,'Потрачено 44%',{z:7})}${t(218,134,'≈ 1 384 ₽ в день',{z:7,a:'end'})}
+    ${r(14,150,212,214)}${t(22,168,'Лимиты категорий',{z:9,b:1})}${t(214,168,'+',{z:11,a:'end'})}
+    ${[['Продукты','8 585 / 24 000',.36],['Рестораны','7 814 / 12 000',.65],['Транспорт','382 / 6 800',.06],['Подписки','3 990 / 5 000',.8],['Кофе','1 120 / 3 000',.37]].map((c,i)=>{const y=180+i*36;return r(22,y,16,16,{rx:3,f:i%2?'url(#dz)':'#fff'})+t(46,y+11,c[0],{z:8})+t(218,y+11,c[1],{z:7,a:'end'})+`<rect x="46" y="${y+19}" width="172" height="3" fill="url(#dz)"/><rect x="46" y="${y+19}" width="${172*c[2]}" height="3" fill="#000"/>`}).join('')}
+    ${nav(386)}`)
+  ];
+})();
+
+/* ---------- проект: рабочий стол в духе Smalltalk-80 ---------- */
+let stZ=10;
 function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=P[(i+1)%P.length],pv=P[(i+P.length-1)%P.length];
   const wins=p.wins||[],shots=wins.filter(w=>w.img||w.k!==undefined),info=wins.filter(w=>!w.img&&w.k===undefined);
-  const meta=[['Тип',p.type],['Создан',p.created||'—'],...(p.meta||[])];
-  const shot=w=>`<div class="yh-shot">${w.img||p.ph?.[w.k]?`<img src="${w.img||p.ph[w.k]}" alt="${p.name}: ${w.h}" loading="lazy">`:'<span class="yh-ph"></span>'}${w.h?`<b><a href="#p-${p.id}">${w.h}</a></b>`:''}${w.p?`<span>${w.p}</span>`:''}</div>`;
-  $('#project').innerHTML=`<div class="yh">
-  <div class="yh-top"><a class="yh-logo" href="#map">qwekurasa<b>!</b></a>
-    <nav class="yh-tools"><a href="#map"><i>⌂</i>Главная</a><a href="#index"><i>☰</i>Проекты</a><a href="https://t.me/qwekurasa" target="_blank" rel="noopener"><i>✉</i>Telegram</a></nav></div>
-  <form class="yh-search" id="yhs"><input name="q" placeholder="" aria-label="Поиск по проектам"><button>Найти</button></form>
-  <div class="yh-note" id="yhn"></div>
-  <div class="yh-bar"><a href="#map">Главная</a> &gt; <a href="#index">Проекты</a> &gt; <b>${p.name}</b></div>
-  <div class="yh-wrap"><div class="yh-main">
-    <h1>${p.name}${i===0?'<span class="yh-new">new!</span>':''}</h1><div class="yh-sub">${p.code} · ${p.type}</div>
-    <p class="yh-desc">${p.desc||'Проект в работе. Скоро здесь появятся описание и экраны.'}</p>
-    <ul class="yh-meta">${meta.map(r=>`<li><b>${r[0]}:</b> ${r[1]}</li>`).join('')}</ul>
-    ${shots.length?`<div class="yh-sec">Экраны (${shots.length})</div><div class="yh-shots">${shots.map(shot).join('')}</div>`:''}
-    ${info.length?`<div class="yh-sec">${p.empty?'Статус':'Функции'}</div><ul class="yh-dir">${info.map(w=>`<li><b>${w.h}</b>${w.p?` — <span>${w.p}</span>`:''}${w.ul?`<ul>${w.ul.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}${w.dl?`<ul>${w.dl.map(r=>`<li>${r[0]}: ${r[1]}</li>`).join('')}</ul>`:''}</li>`).join('')}</ul>`:''}
-  </div><aside class="yh-side">
-    <div class="yh-box"><h4>Все проекты</h4><ul>${P.map(q=>`<li${q===p?' class="yh-cur"':''}><a href="#p-${q.id}">${q.name}</a></li>`).join('')}</ul></div>
-    <div class="yh-box"><h4>Навигация</h4><ul><li><a href="#p-${pv.id}">← ${pv.name}</a></li><li><a href="#p-${nx.id}">${nx.name} →</a></li></ul></div>
-  </aside></div>
-  <div class="yh-foot"><p><a href="#map">Главная</a> - <a href="#index">Проекты</a> - <a href="https://t.me/qwekurasa" target="_blank" rel="noopener">Telegram</a> - <a href="https://www.instagram.com/qwekurasa/" target="_blank" rel="noopener">Instagram</a></p><p>Copyright © 2026 qwekurasa. All rights reserved.</p></div></div>`;
-  $('#yhs').onsubmit=e=>{e.preventDefault();const q=e.target.q.value.trim().toLowerCase(),m=q&&P.find(x=>(x.name+' '+x.type).toLowerCase().includes(q));if(m)location.hash='p-'+m.id;else $('#yhn').textContent=q?'Ничего не найдено по запросу «'+q+'»':''}}
+  const meta=[['type',p.type],['created',p.created||'—'],...(p.meta||[]).map(m=>[{'Стек':'stack','Платформы':'platforms','Приложение':'app','Ссылка':'link'}[m[0]]||m[0],m[1]])];
+  const W=(cls,title,body,style='')=>`<section class="st-w ${cls}" style="${style}"><h2 class="st-t">${title}</h2>${body}</section>`;
+  const pos=[[640,28],[742,330],[470,870],[40,960],[760,900]];
+  const shotWin=(w,k)=>W('st-shot',`Form Editor · ${w.h||'Экран '+(k+1)}`,`<div class="st-art">${w.k!==undefined&&p===P[0]?KS[w.k]():`<img src="${w.img}" alt="${p.name}: ${w.h}" loading="lazy">`}</div>${w.p?`<p class="st-cap">${w.p}</p>`:''}`,`left:${pos[k%5][0]+Math.floor(k/5)*30}px;top:${pos[k%5][1]+Math.floor(k/5)*30}px`);
+  const day=new Date(),mm=day.getMonth(),yy=day.getFullYear(),first=(new Date(yy,mm,1).getDay()+6)%7,dim=new Date(yy,mm+1,0).getDate();
+  $('#project').innerHTML=`<svg width="0" height="0" style="position:absolute"><defs><pattern id="dz" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="1" height="1"/><rect x="1" y="1" width="1" height="1"/></pattern></defs></svg>
+  <div class="st"><div class="st-desk">
+    <nav class="st-menu"><a href="#map">qwekurasa</a><a href="#index">Проекты</a><a href="#p-${pv.id}">← ${pv.name}</a><a href="#p-${nx.id}">${nx.name} →</a></nav>
+    ${W('st-br','System Browser',`<div class="st-panes">
+      <ul class="st-pane">${P.map(q=>`<li${q===p?' class="on"':''}><a href="#p-${q.id}">Projects-${q.name}</a></li>`).join('')}</ul>
+      <ul class="st-pane">${[p.code,p.type,p.created||'—'].map((x,j)=>`<li${j===1?' class="on"':''}>${x}</li>`).join('')}<li>------------</li></ul>
+      <ul class="st-pane">${(shots.length?shots:[{h:'нет экранов'}]).map((w,j)=>`<li${j===0?' class="on"':''}>${w.h||'экран '+(j+1)}</li>`).join('')}<li>------------</li></ul></div>
+      <div class="st-code"><b>${p.name}: aProject</b><p class="st-com">"${p.desc||'Проект в работе. Скоро здесь появятся описание и экраны.'}"</p>
+      <pre>| ${p.name.toLowerCase().replace(/\s+/g,'')} |\n${meta.map(m=>`${m[0]} ← ${String(m[1]).replace(/<a /,'<a class="st-a" ')}.`).join('\n')}</pre></div>`,'left:20px;top:56px')}
+    ${shots.map(shotWin).join('')}
+    ${info.length?W('st-fl','File List',`<div class="st-path">[]&lt;${p.name}&gt;Функции&gt;*▴</div><ul class="st-files">${info.map((w,j)=>`<li data-j="${j}"${j===0?' class="on"':''}>[${p.code}]&lt;${p.name}&gt;${w.h}.st</li>`).join('')}<li>------------</li></ul><div class="st-out" id="stOut"></div>`,'left:30px;top:520px'):''}
+    <a class="st-mail" href="https://t.me/qwekurasa" target="_blank" rel="noopener" title="Написать в Telegram"><svg viewBox="0 0 60 64"><path d="M8 16h32a10 10 0 0 1 10 10v14H8z" fill="#fff" stroke="#000" stroke-width="2"/><path d="M8 16a10 10 0 0 1 10 10v14" fill="none" stroke="#000" stroke-width="2"/><path d="M40 4v16M40 4h10v6H40" stroke="#000" stroke-width="2" fill="#000"/><path d="M27 40v22M23 62h8" stroke="#000" stroke-width="3"/><path d="M14 54c4-2 6 2 10 0M30 56c4-3 7 1 10-1" stroke="#000" fill="none"/></svg></a>
+    <div class="st-clock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#000" stroke-width="3"/><line id="stH" x1="50" y1="50" x2="50" y2="28" stroke="#000" stroke-width="4" stroke-linecap="round"/><line id="stM" x1="50" y1="50" x2="50" y2="14" stroke="#000" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+    <table class="st-cal">${Array.from({length:Math.ceil((first+dim)/7)},(_,w)=>'<tr>'+Array.from({length:7},(_,d)=>{const n=w*7+d-first+1;return n>0&&n<=dim?`<td${n===day.getDate()?' class="on"':''}>${n}</td>`:'<td class="e"></td>'}).join('')+'</tr>').join('')}</table>
+  </div></div>`;
+  const out=$('#stOut'),show=j=>{const w=info[j];if(!out||!w)return;out.innerHTML=`<b>${w.h}</b>\n${w.p?`    ${w.p}\n`:''}${(w.ul||[]).map(x=>`    ${x}.`).join('\n')}${(w.dl||[]).map(r=>`    ${r[0]}: ${r[1]}.`).join('\n')}`};show(0);
+  $('#project').querySelectorAll('.st-files li[data-j]').forEach(li=>li.onclick=()=>{$('#project').querySelectorAll('.st-files li').forEach(x=>x.classList.toggle('on',x===li));show(+li.dataset.j)});
+  // окна: клик поднимает наверх, тянуть за заголовок
+  $('#project').querySelectorAll('.st-w').forEach(w=>{w.style.zIndex=++stZ;w.addEventListener('pointerdown',()=>w.style.zIndex=++stZ);
+    const t=w.querySelector('.st-t');t.addEventListener('pointerdown',e=>{if(innerWidth<1080)return;e.preventDefault();t.setPointerCapture(e.pointerId);const sx=e.clientX-w.offsetLeft,sy=e.clientY-w.offsetTop;
+      t.onpointermove=ev=>{w.style.left=ev.clientX-sx+'px';w.style.top=ev.clientY-sy+'px'};t.onpointerup=()=>t.onpointermove=null})});
+  const tick=()=>{if(!$('#stH'))return;const d=new Date(),h=(d.getHours()%12+d.getMinutes()/60)*30,m=d.getMinutes()*6;$('#stH').setAttribute('transform',`rotate(${h} 50 50)`);$('#stM').setAttribute('transform',`rotate(${m} 50 50)`)};tick();clearInterval(renderProject.iv);renderProject.iv=setInterval(tick,20000)}
 
 /* ---------- роутер ---------- */
 function route(){let h=location.hash.slice(1)||'map',v=h;
@@ -285,10 +336,7 @@ addEventListener('hashchange',route);
 
 /* ---------- загрузка ---------- */
 (async function boot(){
-  makeNoise();route();
-  sprite=await loadImg(KESH.src);if(sprite)P[0].ph=[0,1,2,3,4].map(k=>{const c=document.createElement('canvas');c.width=284;c.height=480;c.getContext('2d').drawImage(sprite,KESH.x[k],KESH.y,284,480,0,0,284,480);return c.toDataURL('image/webp',.9)});
-  ALL.forEach(it=>it.src=shot(it.p,it.k));
-  if(document.body.dataset.v==='project')route();
+  route();
 })();
 </script>
 <script src="hero.js"></script>
