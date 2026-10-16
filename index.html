@@ -9,7 +9,7 @@
 <style>
 
 :root{
-  --paper:#ffffff;--ink:#0b0b0b;--mute:#9b9b9b;--line:#e3e3e3;
+  --paper:#ffffff;--dot:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3C/svg%3E");--ink:#0b0b0b;--mute:#9b9b9b;--line:#e3e3e3;
   --blue:#2234e6;--night:#000000;--snow:#efefef;
   --sans:"Arimo","Helvetica Neue",Helvetica,Arial,sans-serif;
   --mono:var(--sans);
@@ -35,13 +35,13 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 
 /* ---------- карта (лента) ---------- */
-#map{position:fixed;inset:0;overflow:hidden;background:var(--paper);touch-action:none}
+#map{position:fixed;inset:0;overflow:hidden;background:var(--dot);touch-action:none}
 #hero{position:absolute;left:0;top:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.hero-text{position:absolute;max-width:440px;font-size:15px;line-height:1.5;opacity:0;transform:translateY(6px);transition:opacity .8s,transform .8s;pointer-events:none}
+.hero-text{position:absolute;max-width:440px;background:#fff;border:2px solid #000;padding:12px 16px 4px;font-size:15px;line-height:1.5;opacity:0;transform:translateY(6px);transition:opacity .8s,transform .8s;pointer-events:none}
 .hero-text.on{opacity:1;transform:none;pointer-events:auto}
 .hero-text p{margin:0 0 12px}
-.ht-name{font-weight:700;font-size:13px}
-.ht-links{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:20px!important}
+.ht-name{position:absolute;bottom:100%;left:-2px;margin:0!important;padding:2px 8px;background:#000;color:#fff;border:2px solid #000;border-bottom:0;font-size:13px;letter-spacing:.03em}
+.ht-links{display:flex;flex-wrap:wrap;gap:6px 18px;margin:16px -16px 0!important;padding:6px 16px 8px;border-top:2px solid #000}
 .ht-links a{text-decoration:underline;text-underline-offset:3px}
 @media(max-width:700px){.hero-text{font-size:14px}}
 .boards{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:30px 40px;padding-inline:var(--gl)}
@@ -59,10 +59,14 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .dots{position:fixed;z-index:30;left:var(--gl);bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;gap:5px}
 .dots a{width:9px;height:9px;border:1px solid var(--ink);border-radius:50%}
 .dots a.on{background:var(--ink)}
-body[data-v=map] .dots,body[data-v=project] .dots,body.loading .dots{display:none}
+.dots{display:none}
 
 /* ---------- индекс ---------- */
-#index{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+body[data-v=index]{background:var(--dot)}
+#index{padding:52px 16px calc(80px + env(safe-area-inset-bottom,0px))}
+.ix-win{position:relative;max-width:1180px;margin:0 auto;background:#fff;border:2px solid #000;padding-bottom:24px}
+.ix-tab{position:absolute;bottom:100%;left:-2px;margin:0;padding:2px 8px;background:#fff;border:2px solid #000;border-bottom:0;font:400 13px var(--sans);letter-spacing:.03em}
+.row button[aria-expanded=true]{background:#000;color:#fff;margin-left:-6px;padding-inline:6px}
 .cols{display:grid;grid-template-columns:21% 1fr 1fr 1fr;padding-left:var(--gl);padding-right:var(--gr)}
 .cols>*{grid-column:2}
 .ticks{position:fixed;left:0;right:0;z-index:5;pointer-events:none}
@@ -70,7 +74,7 @@ body[data-v=map] .dots,body[data-v=project] .dots,body.loading .dots{display:non
 .ticks i:first-child{grid-column:2}
 .ticks.top{top:env(safe-area-inset-top,0px)}.ticks.bot{bottom:env(safe-area-inset-bottom,0px)}
 body:not([data-v=index]) .ticks{display:none}
-.i-head{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:var(--paper);padding-block:26px 30px}
+.i-head{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:#fff;padding-block:10px 10px;border-bottom:2px solid #000;margin-bottom:18px}
 .i-head a{grid-column:auto}.i-head a:first-child{grid-column:2}
 .i-head a:hover{text-decoration:underline;text-underline-offset:3px}
 .i-tools{padding-block:8px 26px}
@@ -93,7 +97,7 @@ body:not([data-v=index]) .ticks{display:none}
 /* ---------- проект: рабочий стол с окнами ---------- */
 /* ---------- проект: рабочий стол Smalltalk-80 ---------- */
 body[data-v=project]{background:#fff}
-#project{min-height:100%;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3C/svg%3E");color:#000;font:13px/1.4 var(--sans)}
+#project{min-height:100%;background:var(--dot);color:#000;font:13px/1.4 var(--sans)}
 .st{padding:16px 16px 60px}
 .st-desk{position:relative;width:1040px;height:1500px;margin:0 auto}
 .st-w{position:absolute;background:#fff;border:2px solid #000}
@@ -124,10 +128,7 @@ body[data-v=project]{background:#fff}
 .st-files li[data-j]{cursor:pointer;padding:0 2px}
 .st-files li.on{background:#000;color:#fff}
 .st-out{margin:8px;padding:8px 12px;min-height:110px;background:#000;color:#fff;white-space:pre-wrap;line-height:1.6}
-.st-mail{position:absolute;left:908px;top:6px;width:54px}
-.st-clock{position:absolute;left:966px;top:2px;width:74px}
-.st-mail svg,.st-clock svg{display:block;width:100%}
-.st-cal{position:absolute;left:908px;top:92px;border-collapse:collapse;font-size:9px}
+.st-cal{position:absolute;left:908px;top:10px;border-collapse:collapse;font-size:9px}
 .st-cal td{width:18px;height:14px;padding:0 2px;border:1px solid #000;background:#fff;text-align:right;line-height:1}
 .st-cal td.e{background:transparent;border:0}.st-cal td.on{background:#000;color:#fff}
 @media(max-width:1079px){
@@ -135,7 +136,7 @@ body[data-v=project]{background:#fff}
   .st-w{position:relative!important;left:auto!important;top:auto!important;width:auto!important}
   .st-menu{position:static}
   .st-menu{align-self:flex-start;margin-bottom:-20px}
-  .st-mail,.st-clock,.st-cal{display:none}
+  .st-cal{display:none}
   .st-panes{grid-template-columns:1fr;height:auto}
   .st-pane{max-height:132px;border-right:0;border-bottom:2px solid #000}.st-pane:last-child{border-bottom:0}
   .st-art .ks,.st-art img{max-width:300px;margin:0 auto}
@@ -169,11 +170,13 @@ body[data-v=project]{background:#fff}
 </section>
 
 <section id="index" class="view" aria-label="Проекты">
+  <div class="ix-win"><h2 class="ix-tab">Projects Browser</h2>
   <header class="i-head cols up">
     <a href="#index">M1. Проекты</a><a href="#map">qwekurasa</a>
   </header>
   <div class="i-tools cols up"><button id="expandAll" aria-expanded="false">Раскрыть все</button></div>
   <div id="list"></div>
+  </div>
 </section>
 
 <section id="project" class="view" aria-label="Проект"></section>
@@ -297,7 +300,7 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   const day=new Date(),mm=day.getMonth(),yy=day.getFullYear(),first=(new Date(yy,mm,1).getDay()+6)%7,dim=new Date(yy,mm+1,0).getDate();
   $('#project').innerHTML=`<svg width="0" height="0" style="position:absolute"><defs><pattern id="dz" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="1" height="1"/><rect x="1" y="1" width="1" height="1"/></pattern></defs></svg>
   <div class="st"><div class="st-desk">
-    <nav class="st-menu"><a href="#map">qwekurasa</a><a href="#index">Проекты</a><a href="#p-${pv.id}">← ${pv.name}</a><a href="#p-${nx.id}">${nx.name} →</a></nav>
+    <nav class="st-menu"><a href="#map">qwekurasa</a><a href="#p-${pv.id}">← ${pv.name}</a><a href="#p-${nx.id}">${nx.name} →</a></nav>
     ${W('st-br','System Browser',`<div class="st-panes">
       <ul class="st-pane">${P.map(q=>`<li${q===p?' class="on"':''}><a href="#p-${q.id}">Projects-${q.name}</a></li>`).join('')}</ul>
       <ul class="st-pane">${[p.code,p.type,p.created||'—'].map((x,j)=>`<li${j===1?' class="on"':''}>${x}</li>`).join('')}<li>------------</li></ul>
@@ -306,8 +309,6 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
       <pre>| ${p.name.toLowerCase().replace(/\s+/g,'')} |\n${meta.map(m=>`${m[0]} ← ${String(m[1]).replace(/<a /,'<a class="st-a" ')}.`).join('\n')}</pre></div>`,'left:20px;top:56px')}
     ${shots.map(shotWin).join('')}
     ${info.length?W('st-fl','File List',`<div class="st-path">[]&lt;${p.name}&gt;Функции&gt;*▴</div><ul class="st-files">${info.map((w,j)=>`<li data-j="${j}"${j===0?' class="on"':''}>[${p.code}]&lt;${p.name}&gt;${w.h}.st</li>`).join('')}<li>------------</li></ul><div class="st-out" id="stOut"></div>`,'left:30px;top:520px'):''}
-    <a class="st-mail" href="https://t.me/qwekurasa" target="_blank" rel="noopener" title="Написать в Telegram"><svg viewBox="0 0 60 64"><path d="M8 16h32a10 10 0 0 1 10 10v14H8z" fill="#fff" stroke="#000" stroke-width="2"/><path d="M8 16a10 10 0 0 1 10 10v14" fill="none" stroke="#000" stroke-width="2"/><path d="M40 4v16M40 4h10v6H40" stroke="#000" stroke-width="2" fill="#000"/><path d="M27 40v22M23 62h8" stroke="#000" stroke-width="3"/><path d="M14 54c4-2 6 2 10 0M30 56c4-3 7 1 10-1" stroke="#000" fill="none"/></svg></a>
-    <div class="st-clock"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#000" stroke-width="3"/><line id="stH" x1="50" y1="50" x2="50" y2="28" stroke="#000" stroke-width="4" stroke-linecap="round"/><line id="stM" x1="50" y1="50" x2="50" y2="14" stroke="#000" stroke-width="2.5" stroke-linecap="round"/></svg></div>
     <table class="st-cal">${Array.from({length:Math.ceil((first+dim)/7)},(_,w)=>'<tr>'+Array.from({length:7},(_,d)=>{const n=w*7+d-first+1;return n>0&&n<=dim?`<td${n===day.getDate()?' class="on"':''}>${n}</td>`:'<td class="e"></td>'}).join('')+'</tr>').join('')}</table>
   </div></div>`;
   const out=$('#stOut'),show=j=>{const w=info[j];if(!out||!w)return;out.innerHTML=`<b>${w.h}</b>\n${w.p?`    ${w.p}\n`:''}${(w.ul||[]).map(x=>`    ${x}.`).join('\n')}${(w.dl||[]).map(r=>`    ${r[0]}: ${r[1]}.`).join('\n')}`};show(0);
@@ -316,7 +317,7 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   $('#project').querySelectorAll('.st-w').forEach(w=>{w.style.zIndex=++stZ;w.addEventListener('pointerdown',()=>w.style.zIndex=++stZ);
     const t=w.querySelector('.st-t');t.addEventListener('pointerdown',e=>{if(innerWidth<1080)return;e.preventDefault();t.setPointerCapture(e.pointerId);const sx=e.clientX-w.offsetLeft,sy=e.clientY-w.offsetTop;
       t.onpointermove=ev=>{w.style.left=ev.clientX-sx+'px';w.style.top=ev.clientY-sy+'px'};t.onpointerup=()=>t.onpointermove=null})});
-  const tick=()=>{if(!$('#stH'))return;const d=new Date(),h=(d.getHours()%12+d.getMinutes()/60)*30,m=d.getMinutes()*6;$('#stH').setAttribute('transform',`rotate(${h} 50 50)`);$('#stM').setAttribute('transform',`rotate(${m} 50 50)`)};tick();clearInterval(renderProject.iv);renderProject.iv=setInterval(tick,20000)}
+}
 
 /* ---------- роутер ---------- */
 function route(){let h=location.hash.slice(1)||'map',v=h;

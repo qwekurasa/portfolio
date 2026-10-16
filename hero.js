@@ -177,7 +177,7 @@ function layout() {
   X0 = Math.round(W / 2);
   if (mob) {                                       // телефон: персонаж сверху, текст под ним на всю ширину
     G = Math.round(H * .44); XT = Math.round(W * .36);
-    Object.assign(txt.style, { left: '20px', top: (G + 12) * S + 'px', maxWidth: vw - 40 + 'px' });
+    Object.assign(txt.style, { left: '20px', top: (G + 12) * S + 30 + 'px', maxWidth: vw - 40 + 'px' });
   } else {
     G = Math.round(H / 2 + 30); XT = Math.round(W / 2 - W * .14);
     Object.assign(txt.style, { left: (XT + 23) * S + 'px', top: (G - 64) * S + 'px', maxWidth: Math.min(440, vw - (XT + 23) * S - 16) + 'px' });
