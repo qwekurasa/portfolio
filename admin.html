@@ -91,7 +91,7 @@ button:disabled{opacity:.35;cursor:default;background:var(--bg);color:var(--fg)}
 </div>
 </main>
 
-<div class="bar" id="bar" hidden><span id="bmsg">Есть неопубликованные изменения</span><button class="dark" id="publish">Опубликовать</button></div>
+<div class="bar" id="bar" hidden><span id="bmsg">Публикация…</span><button class="dark" id="publish" hidden>Повторить</button></div>
 
 <script>
 const $=s=>document.querySelector(s);
@@ -109,7 +109,7 @@ $('#enter').onclick=()=>{PW=$('#pw').value;login()};
 $('#pw').onkeydown=e=>{if(e.key==='Enter')$('#enter').click()};
 if(PW)login();
 
-function mark(){dirty=true;$('#bar').hidden=false;$('#bmsg').textContent='Есть неопубликованные изменения'}
+function mark(){dirty=true;$('#bar').hidden=false;publish()}
 function render(){
   $('#list').innerHTML=list.map((p,i)=>`<div class="pr"><span class="c">P${String(i+2).padStart(3,'0')}</span><span>${esc(p.name)}</span><div>
     <button class="ghost" data-a="up" data-i="${i}" ${i?'':'disabled'}>↑</button><button class="ghost" data-a="down" data-i="${i}" ${i<list.length-1?'':'disabled'}>↓</button><button class="ghost" data-a="edit" data-i="${i}">Изменить</button>${p.id?`<a class="btn ghost" href="/#p-c${esc(p.id)}" target="_blank" rel="noopener">Открыть ↗</a>`:''}</div></div>`).join('')||'<p class="pr note" style="display:block">Пока нет проектов.</p>'}
@@ -155,7 +155,8 @@ $('#del').onclick=()=>{const p=list[edit.i];if(!confirm('Удалить «'+p.na
   (p.shots||[]).forEach(s=>s.src&&removed.push(s.src));list.splice(edit.i,1);edit=null;$('#form').hidden=true;mark();render()};
 
 const b64=b=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result.split(',')[1]);fr.readAsDataURL(b)});
-$('#publish').onclick=async function(){this.disabled=true;const files=pending;
+let busy=false,again=false;
+async function publish(){if(busy){again=true;return}busy=true;$('#publish').hidden=true;const files=pending;
   try{let n=0,total=list.reduce((a,p)=>a+(p.shots||[]).filter(s=>s.blob).length,0);
     for(const p of list)for(const s of p.shots||[])if(s.blob){$('#bmsg').textContent=`Загрузка фото ${++n}/${total}…`;
       const {sha}=await api({op:'blob',data:await b64(s.blob)}),path=`img/${p.id}/${Math.random().toString(36).slice(2,10)}.webp`;
@@ -164,8 +165,9 @@ $('#publish').onclick=async function(){this.disabled=true;const files=pending;
     const clean=list.map(p=>({...p,features:p.features||[],shots:(p.shots||[]).map(s=>({src:s.src,h:s.h||'',p:s.p||''}))}));
     await api({op:'commit',json:JSON.stringify(clean),files,del:removed.filter(x=>!files.some(f=>f.path===x)),msg:'Админка: обновление проектов'});
     removed=[];pending=[];dirty=false;$('#bmsg').textContent='Опубликовано. Сайт обновится примерно через минуту.';setTimeout(()=>{if(!dirty)$('#bar').hidden=true},6000);render()}
-  catch(e){$('#bmsg').textContent='Ошибка: '+e.message}
-  this.disabled=false};
+  catch(e){$('#bmsg').textContent='Ошибка: '+e.message;$('#publish').hidden=false}
+  busy=false;if(again){again=false;publish()}}
+$('#publish').onclick=publish;
 addEventListener('beforeunload',e=>{if(dirty)e.preventDefault()});
 </script>
 </body>
