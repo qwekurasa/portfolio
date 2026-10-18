@@ -210,7 +210,7 @@ const P=[
    const url=/^https?:\/\//.test(c.link||'')?c.link:'';
    return{id:'c'+e(c.id),name:e(c.name),type:e(c.type),created:e(c.created),year:(c.created||'').slice(-4),desc:e(c.desc),cover:sh[0]?.src,
     meta:[c.stack&&['Стек',e(c.stack)],c.platforms&&['Платформы',e(c.platforms)],url&&['Ссылка',`<a href="${e(url)}" target="_blank" rel="noopener">${e(url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''))}</a>`]].filter(Boolean),
-    shots:sh.length?sh.map(x=>e(x.h)||'Фото'):undefined,wins:sh.length?sh.map(x=>({img:e(x.src),h:e(x.h),p:e(x.p)})):undefined}}),
+    shots:sh.length?sh.map(x=>e(x.h)||'Фото'):undefined,wins:sh.length||(c.features||[]).length?[...sh.map(x=>({img:e(x.src),h:e(x.h),p:e(x.p)})),...(c.features||[]).map(f=>({h:e(f.h),p:e(f.p),ul:(f.ul||[]).map(e)}))]:undefined}}),
 ];
 while(P.length<10)P.push({id:'p'+(P.length+1),name:'Проект '+String(P.length+1).padStart(2,'0'),type:'В работе',empty:true});
 P.forEach((p,i)=>{p.code='P'+String(i+1).padStart(3,'0');p.shots=p.shots||GENERIC});

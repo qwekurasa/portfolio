@@ -8,55 +8,68 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap">
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#fff;color:#0b0b0b;font:14px/1.45 "Arimo",Arial,sans-serif}
-main{max-width:760px;margin:0 auto;padding:24px 16px 120px}
-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:36px}
-header b{font-size:15px}
+:root{--bg:#000;--fg:#f4f4f4;--mute:#8c8c8c;--line:#f4f4f4;--bad:#ff6b5b}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 "Arimo",Arial,sans-serif}
+main{max-width:780px;margin:0 auto;padding:20px 16px 120px}
 a{color:inherit}
-h2{font-size:12px;font-weight:400;text-transform:uppercase;letter-spacing:.06em;color:#8a8a8a;margin:36px 0 12px}
-input,textarea{width:100%;font:inherit;padding:9px 10px;border:1px solid #cfcfcf;border-radius:0;background:#fff;color:inherit}
+.menu{display:inline-flex;border:2px solid var(--line);margin-bottom:40px}
+.menu a,.menu b{padding:2px 10px;border-right:2px solid var(--line);text-decoration:none;font-weight:400}
+.menu>:last-child{border-right:0}.menu a:hover{background:var(--fg);color:var(--bg)}
+.win{position:relative;border:2px solid var(--line);background:var(--bg);margin:0 0 52px}
+.tab{position:absolute;bottom:100%;left:-2px;margin:0;padding:2px 8px;border:2px solid var(--line);border-bottom:0;background:var(--bg);font:400 13px "Arimo",Arial,sans-serif;letter-spacing:.03em}
+.tab.on{background:var(--fg);color:var(--bg)}
+.pad{padding:14px 16px}
+.sec{margin:0;padding:3px 16px;border-top:2px solid var(--line);border-bottom:2px solid var(--line);font:400 12px "Arimo",Arial;letter-spacing:.06em;text-transform:uppercase}
+.note{color:var(--mute);margin:0 0 12px;font-size:13px}
+input,textarea{width:100%;font:inherit;padding:7px 9px;border:1px solid var(--mute);border-radius:0;background:var(--bg);color:var(--fg)}
 textarea{min-height:90px;resize:vertical}
-input:focus,textarea:focus{outline:none;border-color:#0b0b0b}
+input:focus,textarea:focus{outline:none;border-color:var(--fg)}
+input::placeholder,textarea::placeholder{color:#5c5c5c}
 label{display:block;margin-bottom:12px}
-label span{display:block;font-size:12px;color:#8a8a8a;margin-bottom:4px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-button,.btn{font:inherit;cursor:pointer;border:1px solid #0b0b0b;background:#fff;color:#0b0b0b;padding:8px 14px}
-button.dark{background:#0b0b0b;color:#fff}
-button:disabled{opacity:.4;cursor:default}
-.ghost{border-color:#cfcfcf;padding:4px 9px}
-.list{border-top:1px solid #0b0b0b}
-.pr{display:grid;grid-template-columns:3.5em 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #e3e3e3}
-.pr .c{color:#8a8a8a}
-.pr div{display:flex;gap:6px}
-.shot{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid #e3e3e3}
-.shot img{width:120px;height:90px;object-fit:cover;background:#eee;display:block}
-.shot .tools{display:flex;gap:6px;margin-top:6px}
-.bar{position:fixed;left:0;right:0;bottom:0;background:#0b0b0b;color:#fff;padding:12px 16px;display:flex;gap:14px;align-items:center;justify-content:center}
-.bar button{border-color:#fff}
-.msg{min-height:1.4em}
-.err{color:#c21}
+label span{display:block;font-size:12px;color:var(--mute);margin-bottom:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+button,.btn{font:inherit;cursor:pointer;border:2px solid var(--line);background:var(--bg);color:var(--fg);padding:5px 12px}
+button:hover,.btn:hover{background:var(--fg);color:var(--bg)}
+button.dark{background:var(--fg);color:var(--bg)}
+button:disabled{opacity:.35;cursor:default;background:var(--bg);color:var(--fg)}
+.ghost{border-width:1px;padding:2px 8px;font-size:13px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pr{display:grid;grid-template-columns:3.5em 1fr auto;gap:10px;align-items:center;padding:7px 16px;border-bottom:1px dotted var(--mute)}
+.pr .c{color:var(--mute)}
+.pr div{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.item{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:12px 16px;border-bottom:1px dotted var(--mute)}
+.item.f{grid-template-columns:1fr}
+.item img{width:120px;height:90px;object-fit:cover;display:block;border:1px solid var(--line);filter:grayscale(1)}
+.item input{margin-bottom:6px}
+.tools{display:flex;gap:6px;margin-top:6px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--fg);color:var(--bg);padding:10px 16px;display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
+.bar button{background:var(--bg);color:var(--fg);border-color:var(--bg)}
+.msg{min-height:1.4em;margin:10px 0 0}
+.err{color:var(--bad)}
+.del{border-color:var(--bad);color:var(--bad)}.del:hover{background:var(--bad);color:var(--bg)}
 [hidden]{display:none!important}
-@media(max-width:560px){.two{grid-template-columns:1fr}.shot{grid-template-columns:1fr}.shot img{width:100%;height:auto}}
+@media(max-width:560px){.two{grid-template-columns:1fr}.item{grid-template-columns:1fr}.item img{width:100%;height:auto}.pr{grid-template-columns:3em 1fr}.pr div{grid-column:1/-1;justify-content:flex-start}}
 </style>
 </head>
 <body>
 <main>
-<header><b>qwekurasa · админка</b><a href="/">← на сайт</a></header>
+<nav class="menu"><b>qwekurasa · админка</b><a href="/">← на сайт</a><a href="/#index">Проекты</a></nav>
 
-<section id="login">
+<section class="win" id="login"><h2 class="tab on">Login</h2><div class="pad">
   <label><span>Пароль</span><input type="password" id="pw" autocomplete="current-password"></label>
   <button class="dark" id="enter">Войти</button>
-  <p class="msg err" id="lmsg"></p>
+  <p class="msg err" id="lmsg"></p></div>
 </section>
 
-<section id="app" hidden>
-  <h2>Проекты</h2>
-  <p style="color:#8a8a8a;margin-top:0">P001 Кэш встроен в сайт и здесь не редактируется. Твои проекты идут после него.</p>
-  <div class="list" id="list"></div>
-  <p><button id="add">+ Новый проект</button></p>
+<div id="app" hidden>
+  <section class="win"><h2 class="tab">Projects Browser</h2>
+    <div class="pad"><p class="note">P001 Кэш встроен в сайт и здесь не редактируется. Твои проекты идут после него и встают на места «Проект 02…10».</p>
+    <button id="add">+ Новый проект</button></div>
+    <div id="list" style="border-top:2px solid var(--line)"></div>
+  </section>
 
-  <section id="form" hidden>
-    <h2 id="ftitle">Проект</h2>
+  <section class="win" id="form" hidden><h2 class="tab on" id="ftitle">Project Editor</h2>
+    <div class="pad">
     <label><span>Название *</span><input id="f-name" maxlength="60"></label>
     <div class="two">
       <label><span>Тип</span><input id="f-type" placeholder="Сайт, приложение, бот…"></label>
@@ -64,15 +77,18 @@ button:disabled{opacity:.4;cursor:default}
       <label><span>Стек</span><input id="f-stack" placeholder="JavaScript, Swift"></label>
       <label><span>Платформы</span><input id="f-platforms" placeholder="iPhone, браузер"></label>
     </div>
-    <label><span>Ссылка</span><input id="f-link" placeholder="https://…"></label>
-    <label><span>Описание</span><textarea id="f-desc"></textarea></label>
-
-    <h2>Фото</h2>
+    <label><span>Ссылка (с https://)</span><input id="f-link" placeholder="https://…"></label>
+    <label style="margin:0"><span>Описание — курсивом в System Browser</span><textarea id="f-desc"></textarea></label>
+    </div>
+    <p class="sec">Экраны — окна Form Editor</p>
     <div id="shots"></div>
-    <p><label class="btn" style="display:inline-block;margin:0">+ Добавить фото<input type="file" id="files" accept="image/*" multiple hidden></label></p>
-    <p style="display:flex;gap:8px;flex-wrap:wrap"><button class="dark" id="done">Готово</button><button id="cancel">Отмена</button><button id="del" style="margin-left:auto;border-color:#c21;color:#c21">Удалить проект</button></p>
+    <div class="pad"><label class="btn" style="display:inline-block;margin:0">+ Добавить фото<input type="file" id="files" accept="image/*" multiple hidden></label></div>
+    <p class="sec">Функции — окно File List</p>
+    <div id="feats"></div>
+    <div class="pad"><button id="addF">+ Добавить функцию</button></div>
+    <div class="pad row" style="border-top:2px solid var(--line)"><button class="dark" id="done">Готово</button><button id="cancel">Отмена</button><button id="del" class="del" style="margin-left:auto">Удалить проект</button></div>
   </section>
-</section>
+</div>
 </main>
 
 <div class="bar" id="bar" hidden><span id="bmsg">Есть неопубликованные изменения</span><button class="dark" id="publish">Опубликовать</button></div>
@@ -96,26 +112,34 @@ if(PW)login();
 function mark(){dirty=true;$('#bar').hidden=false;$('#bmsg').textContent='Есть неопубликованные изменения'}
 function render(){
   $('#list').innerHTML=list.map((p,i)=>`<div class="pr"><span class="c">P${String(i+2).padStart(3,'0')}</span><span>${esc(p.name)}</span><div>
-    <button class="ghost" data-a="up" data-i="${i}" ${i?'':'disabled'}>↑</button><button class="ghost" data-a="down" data-i="${i}" ${i<list.length-1?'':'disabled'}>↓</button><button class="ghost" data-a="edit" data-i="${i}">Изменить</button></div></div>`).join('')||'<p style="color:#8a8a8a">Пока нет проектов.</p>'}
+    <button class="ghost" data-a="up" data-i="${i}" ${i?'':'disabled'}>↑</button><button class="ghost" data-a="down" data-i="${i}" ${i<list.length-1?'':'disabled'}>↓</button><button class="ghost" data-a="edit" data-i="${i}">Изменить</button>${p.id?`<a class="btn ghost" href="/#p-c${esc(p.id)}" target="_blank" rel="noopener">Открыть ↗</a>`:''}</div></div>`).join('')||'<p class="pr note" style="display:block">Пока нет проектов.</p>'}
 $('#list').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=+b.dataset.i;
   if(b.dataset.a==='edit')open(i);
   else{const j=b.dataset.a==='up'?i-1:i+1;[list[i],list[j]]=[list[j],list[i]];mark();render()}};
 
 const F=['name','type','created','stack','platforms','link','desc'];
-function open(i){edit={i,shots:(i==null?[]:list[i].shots||[]).map(s=>({...s}))};
+function open(i){edit={i,shots:(i==null?[]:list[i].shots||[]).map(s=>({...s})),feats:(i==null?[]:list[i].features||[]).map(f=>({h:f.h||'',p:f.p||'',ul:(f.ul||[]).join('\n')}))};
   const p=i==null?{}:list[i];F.forEach(k=>$('#f-'+k).value=p[k]||'');
-  $('#ftitle').textContent=i==null?'Новый проект':'Изменить проект';$('#del').hidden=i==null;
-  $('#form').hidden=false;drawShots();$('#form').scrollIntoView({behavior:'smooth'})}
+  $('#ftitle').textContent=i==null?'Project Editor · новый':'Project Editor · '+p.name;$('#del').hidden=i==null;
+  $('#form').hidden=false;drawShots();drawFeats();$('#form').scrollIntoView({behavior:'smooth'})}
 $('#add').onclick=()=>open(null);
 $('#cancel').onclick=()=>{edit=null;$('#form').hidden=true};
 
-function drawShots(){$('#shots').innerHTML=edit.shots.map((s,k)=>`<div class="shot"><img src="${s.preview||'/'+esc(s.src)}" alt="">
+function drawShots(){$('#shots').innerHTML=edit.shots.map((s,k)=>`<div class="item"><img src="${s.preview||'/'+esc(s.src)}" alt="">
   <div><input data-k="${k}" data-f="h" placeholder="Заголовок фото" value="${esc(s.h)}" style="margin-bottom:6px">
   <textarea data-k="${k}" data-f="p" placeholder="Описание фото" style="min-height:60px">${esc(s.p)}</textarea>
   <div class="tools"><button class="ghost" data-k="${k}" data-a="up" ${k?'':'disabled'}>↑</button><button class="ghost" data-k="${k}" data-a="down" ${k<edit.shots.length-1?'':'disabled'}>↓</button><button class="ghost" data-k="${k}" data-a="rm">Убрать</button></div></div></div>`).join('')}
 $('#shots').oninput=e=>{const t=e.target;if(t.dataset.f)edit.shots[t.dataset.k][t.dataset.f]=t.value};
 $('#shots').onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k,S=edit.shots;
   if(b.dataset.a==='rm')S.splice(k,1);else{const j=b.dataset.a==='up'?k-1:k+1;[S[k],S[j]]=[S[j],S[k]]}drawShots()};
+function drawFeats(){$('#feats').innerHTML=edit.feats.map((f,k)=>`<div class="item f"><div><input data-k="${k}" data-f="h" placeholder="Название, например «Импорт выписки»" value="${esc(f.h)}">
+  <textarea data-k="${k}" data-f="p" placeholder="Короткое описание" style="min-height:52px;margin-bottom:6px">${esc(f.p)}</textarea>
+  <textarea data-k="${k}" data-f="ul" placeholder="Пункты списка — каждый с новой строки (необязательно)" style="min-height:52px">${esc(f.ul)}</textarea>
+  <div class="tools"><button class="ghost" data-k="${k}" data-a="up" ${k?'':'disabled'}>↑</button><button class="ghost" data-k="${k}" data-a="down" ${k<edit.feats.length-1?'':'disabled'}>↓</button><button class="ghost" data-k="${k}" data-a="rm">Убрать</button></div></div></div>`).join('')}
+$('#feats').oninput=e=>{const t=e.target;if(t.dataset.f)edit.feats[t.dataset.k][t.dataset.f]=t.value};
+$('#feats').onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k,S=edit.feats;
+  if(b.dataset.a==='rm')S.splice(k,1);else{const j=b.dataset.a==='up'?k-1:k+1;[S[k],S[j]]=[S[j],S[k]]}drawFeats()};
+$('#addF').onclick=()=>{edit.feats.push({h:'',p:'',ul:''});drawFeats()};
 $('#files').onchange=async e=>{for(const f of e.target.files){const blob=await shrink(f);edit.shots.push({blob,preview:URL.createObjectURL(blob),h:'',p:''})}e.target.value='';drawShots()};
 
 async function shrink(f){const bm=await createImageBitmap(f),m=2000,r=Math.min(1,m/Math.max(bm.width,bm.height)),c=document.createElement('canvas');
@@ -125,7 +149,7 @@ async function shrink(f){const bm=await createImageBitmap(f),m=2000,r=Math.min(1
 $('#done').onclick=()=>{const name=$('#f-name').value.trim();if(!name){$('#f-name').focus();return}
   const old=edit.i==null?null:list[edit.i],p={id:old?.id||Date.now().toString(36)};F.forEach(k=>p[k]=$('#f-'+k).value.trim());
   (old?.shots||[]).forEach(s=>{if(!edit.shots.some(n=>n.src===s.src))removed.push(s.src)});
-  p.shots=edit.shots;if(old)list[edit.i]=p;else list.push(p);
+  p.shots=edit.shots;p.features=edit.feats.filter(f=>f.h.trim()).map(f=>({h:f.h.trim(),p:f.p.trim(),ul:f.ul.split('\n').map(x=>x.trim()).filter(Boolean)}));if(old)list[edit.i]=p;else list.push(p);
   edit=null;$('#form').hidden=true;mark();render()};
 $('#del').onclick=()=>{const p=list[edit.i];if(!confirm('Удалить «'+p.name+'»?'))return;
   (p.shots||[]).forEach(s=>s.src&&removed.push(s.src));list.splice(edit.i,1);edit=null;$('#form').hidden=true;mark();render()};
@@ -137,7 +161,7 @@ $('#publish').onclick=async function(){this.disabled=true;const files=pending;
       const {sha}=await api({op:'blob',data:await b64(s.blob)}),path=`img/${p.id}/${Math.random().toString(36).slice(2,10)}.webp`;
       files.push({path,sha});s.src=path;delete s.blob;delete s.preview}
     $('#bmsg').textContent='Публикация…';
-    const clean=list.map(p=>({...p,shots:(p.shots||[]).map(s=>({src:s.src,h:s.h||'',p:s.p||''}))}));
+    const clean=list.map(p=>({...p,features:p.features||[],shots:(p.shots||[]).map(s=>({src:s.src,h:s.h||'',p:s.p||''}))}));
     await api({op:'commit',json:JSON.stringify(clean),files,del:removed.filter(x=>!files.some(f=>f.path===x)),msg:'Админка: обновление проектов'});
     removed=[];pending=[];dirty=false;$('#bmsg').textContent='Опубликовано. Сайт обновится примерно через минуту.';setTimeout(()=>{if(!dirty)$('#bar').hidden=true},6000);render()}
   catch(e){$('#bmsg').textContent='Ошибка: '+e.message}
