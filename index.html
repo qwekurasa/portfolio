@@ -61,6 +61,10 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .dots a.on{background:var(--ink)}
 .dots{display:none}
 
+/* ---------- тёмная тема: весь сайт инвертирован, персонаж и фото — обратно ---------- */
+html{filter:invert(1);background:#fff}
+#hero{filter:invert(1)}
+
 /* ---------- индекс ---------- */
 body[data-v=index]{background:var(--dot)}
 #index{padding:52px 16px calc(80px + env(safe-area-inset-bottom,0px))}
@@ -119,7 +123,7 @@ body[data-v=project]{background:#fff}
 .st-shot{width:250px}
 .st-art{padding:10px;border-bottom:2px solid #000}
 .ks{display:block;width:100%;height:auto;font-family:var(--sans)}
-.st-art img{display:block;width:100%;filter:grayscale(1) contrast(1.5)}
+.st-art img{display:block;width:100%;filter:invert(1) grayscale(1) contrast(1.5)}
 .st-cap{margin:0;padding:8px 10px;font-size:12px}
 .st-fl{width:520px}
 .st-path{padding:3px 8px;border-bottom:2px solid #000}
