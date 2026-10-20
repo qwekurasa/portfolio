@@ -48,5 +48,18 @@ window.CUSTOM=[
     "ul": []
    }
   ]
+ },
+ {
+  "id": "mvgdcb9q",
+  "name": "uihiutrhgtrh",
+  "type": "trhtr",
+  "created": "4352435",
+  "stack": "253452345",
+  "platforms": "234534",
+  "link": "rtgrtgregh",
+  "pwa": "https://kesh-money.vercel.app/",
+  "desc": "rgrtgtrg",
+  "shots": [],
+  "features": []
  }
 ];
