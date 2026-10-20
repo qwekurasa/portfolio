@@ -56,7 +56,7 @@ window.CUSTOM=[
   "created": "4352435",
   "stack": "253452345",
   "platforms": "234534",
-  "link": "rtgrtgregh",
+  "link": "https://kesh-money.vercel.app/",
   "pwa": "https://kesh-money.vercel.app/",
   "desc": "rgrtgtrg",
   "shots": [],
