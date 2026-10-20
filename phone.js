@@ -118,14 +118,14 @@ async function readIPA(file, progress) {
 function mount(el, opt) {
   const key = 'ph-apps:' + opt.id, load = () => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch (e) { return []; } }, save = a => { try { localStorage.setItem(key, JSON.stringify(a)); } catch (e) { } };
   let apps = load(), jiggle = false, openApp = null, page = 0;
-  const screens = opt.screens || [];
+  const screens = opt.screens || [], builtin = opt.pwa ? { name: opt.name || 'App', icon: opt.icon || '', builtin: true } : null;
   el.innerHTML = `<div class="ph">${BODY}<div class="ph-scr"><div class="ph-in">
     <div class="ph-wall"></div>
     <div class="ph-sb"><b class="ph-time"></b><span class="ph-ind"><svg viewBox="0 0 18 12" width="17"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12" width="15"><path d="M8 11.5l2.6-2.9a3.8 3.8 0 0 0-5.2 0zM3.6 6.8a6.4 6.4 0 0 1 8.8 0l1.4-1.6a8.6 8.6 0 0 0-11.6 0zM.9 3.8a10.3 10.3 0 0 1 14.2 0L16.5 2.2a12.5 12.5 0 0 0-17 0z"/></svg><i class="ph-batt"></i></span></div>
     <div class="ph-grid"></div>
     <div class="ph-search"><svg viewBox="0 0 12 12" width="10"><circle cx="5" cy="5" r="3.8" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 8l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Поиск</div>
     <div class="ph-dock"></div>
-    <div class="ph-app" hidden><div class="ph-splash"><div class="ph-sicon"></div><b></b><span></span></div><div class="ph-pages" hidden></div><div class="ph-pdots"></div></div>
+    <div class="ph-app" hidden><div class="ph-splash"><div class="ph-sicon"></div><b></b><span></span></div><div class="ph-pages" hidden></div><div class="ph-pdots"></div>${opt.pwa ? '<iframe class="ph-web" title="Приложение" allow="clipboard-write; fullscreen"></iframe>' : ''}</div>
     <div class="ph-sheet" hidden></div>
     <button class="ph-hi" aria-label="Домой"></button>
     <input type="file" accept=".ipa,application/octet-stream" hidden>
@@ -139,6 +139,8 @@ function mount(el, opt) {
     const d = new Date();
     $('.ph-time').textContent = `${d.getHours()}:${pad(d.getMinutes())}`;
     const sys = ICONS.map(([n, def]) => cell(n, n === 'Календарь' ? calIcon(d) : n === 'Часы' ? clockIcon(d) : icon(def)));
+    const userIc = a => `<div class="ph-ic ph-user"${a.icon ? ` style="background-image:url(${a.icon})"` : ''}>${a.icon ? '' : `<em>${(a.name[0] || '?').toUpperCase()}</em>`}</div>`;
+    if (builtin) sys.push(cell(builtin.name, userIc(builtin), 'data-app="b"'));
     const inst = apps.map((a, i) => cell(a.name, `<div class="ph-ic ph-user"${a.icon ? ` style="background-image:url(${a.icon})"` : ''}>${a.icon ? '' : `<em>${(a.name[0] || '?').toUpperCase()}</em>`}${a.prog != null ? `<svg class="ph-prog" viewBox="0 0 60 60"><circle cx="30" cy="30" r="13" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="${(a.prog * 81.7).toFixed(1)} 82" transform="rotate(-90 30 30)"/></svg>` : ''}<button class="ph-x" data-del="${i}" aria-label="Удалить">−</button></div>`, `data-app="${i}"`));
     $('.ph-grid').innerHTML = [...sys, ...inst].join('');
     $('.ph-dock').innerHTML = DOCK.map(([n, def, act]) => cell(n, icon(def), act ? `data-act="${act}"` : '')).join('');
@@ -150,28 +152,33 @@ function mount(el, opt) {
   function showPage(n) { page = Math.max(0, Math.min(screens.length - 1, n)); pages.style.transform = `translateX(${-page * 100}%)`; $('.ph-pdots').innerHTML = screens.map((_, k) => `<i${k === page ? ' class="on"' : ''}></i>`).join(''); }
   pages.innerHTML = screens.map(s => `<div class="ph-page">${s}</div>`).join('');
   const bounce = c => { c.classList.remove('tap'); void c.offsetWidth; c.classList.add('tap'); };
-  function launch(i, c) {
-    const a = apps[i]; if (!a || a.prog != null) return; openApp = a;
+  const web = $('.ph-web');
+  function launch(a, c) {
+    if (!a || a.prog != null) return; openApp = a;
     const r = c.querySelector('.ph-ic').getBoundingClientRect(), s = inn.getBoundingClientRect(), k = s.width / 393;
     appEl.style.transformOrigin = `${(r.left + r.width / 2 - s.left) / k}px ${(r.top + r.height / 2 - s.top) / k}px`;
     $('.ph-sicon').style.backgroundImage = a.icon ? `url(${a.icon})` : ''; $('.ph-sicon').textContent = a.icon ? '' : a.name[0];
     $('.ph-splash b').textContent = a.name;
-    $('.ph-splash span').textContent = [a.version && 'Версия ' + a.version, a.bundle].filter(Boolean).join('\n') + (screens.length ? '' : '\nЭкранов проекта пока нет');
+    $('.ph-splash span').textContent = [a.version && 'Версия ' + a.version, a.bundle].filter(Boolean).join('\n') + (opt.pwa || screens.length ? '' : '\nЭкранов проекта пока нет');
     appEl.hidden = false; appEl.classList.remove('open', 'run'); void appEl.offsetWidth; appEl.classList.add('open');
     pages.hidden = true; $('.ph-pdots').innerHTML = '';
-    if (screens.length) setTimeout(() => { if (openApp !== a) return; pages.hidden = false; appEl.classList.add('run'); showPage(0); }, 1100);
+    if (web) {                                   // PWA: живое web-приложение в мобильной ширине 393 px
+      const show = () => { if (openApp !== a) return; web.classList.add('on'); appEl.classList.add('run'); };
+      if (web.dataset.on) setTimeout(show, 250);
+      else { web.dataset.on = 1; web.onload = () => setTimeout(show, 300); web.src = opt.pwa; setTimeout(show, 4000); }
+    } else if (screens.length) setTimeout(() => { if (openApp !== a) return; pages.hidden = false; appEl.classList.add('run'); showPage(0); }, 1100);
   }
   function home() {
     if (!sheet.hidden) { sheet.hidden = true; return; }
     if (jiggle) { jiggle = false; draw(); return; }
     if (!openApp) return; openApp = null; appEl.classList.remove('open'); appEl.classList.add('close');
-    setTimeout(() => { appEl.hidden = true; appEl.classList.remove('close', 'run'); }, 300);
+    setTimeout(() => { appEl.hidden = true; appEl.classList.remove('close', 'run'); if (web) web.classList.remove('on'); }, 300);
   }
   $('.ph-hi').onclick = home;
   let sx = null;
   appEl.addEventListener('pointerdown', e => { sx = e.clientX; });
   appEl.addEventListener('pointerup', e => {
-    if (pages.hidden || sx == null) return; const dx = e.clientX - sx; sx = null;
+    if (pages.hidden || sx == null || (web && web.classList.contains('on'))) return; const dx = e.clientX - sx; sx = null;
     if (Math.abs(dx) > 30) return showPage(page + (dx < 0 ? 1 : -1));
     const r = appEl.getBoundingClientRect(); showPage(page + (e.clientX - r.left > r.width / 2 ? 1 : -1));
   });
@@ -184,7 +191,7 @@ function mount(el, opt) {
     const c = e.target.closest('.ph-cell'); if (!c) return;
     if (jiggle) { if (!x) { jiggle = false; draw(); } return; }
     if (c.dataset.act === 'ipa') { bounce(c); file.click(); return; }
-    if (c.dataset.app != null) { launch(+c.dataset.app, c); return; }
+    if (c.dataset.app != null) { launch(c.dataset.app === 'b' ? builtin : apps[+c.dataset.app], c); return; }
     bounce(c);
   });
   file.onchange = async () => {

@@ -150,6 +150,7 @@ body[data-v=project]{background:#fff}
 .ph-page svg{width:100%;height:100%;display:block;filter:invert(1)}
 .ph-pdots{position:absolute;left:0;right:0;bottom:30px;display:flex;justify-content:center;gap:7px;pointer-events:none}
 .ph-pdots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35)}.ph-pdots i.on{background:#fff}
+.ph-web{position:absolute;left:0;top:50px;width:100%;height:calc(100% - 50px);border:0;background:#000;opacity:0;pointer-events:none;transition:opacity .25s}.ph-web.on{opacity:1;pointer-events:auto}
 .ph-sheet{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:rgba(0,0,0,.4)}
 .ph-alert{width:270px;overflow:hidden;border-radius:14px;background:rgba(242,242,247,.97);color:#000;text-align:center}
 .ph-alert b{display:block;padding:18px 16px 4px;font-size:17px}.ph-alert p{margin:0;padding:0 16px 18px;font-size:13px}
@@ -247,7 +248,7 @@ const $=s=>document.querySelector(s);
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const GENERIC=['Экран 01','Экран 02','Экран 03','Экран 04','Экран 05'];
 const P=[
- {id:'tracker',url:'https://kesh-money.vercel.app/',name:'Кэш',type:'Трекер трат',year:'2026',created:'10.10.2026',shots:['Знакомство','Главная','Ввод','Аналитика','Бюджет'],
+ {id:'tracker',url:'https://kesh-money.vercel.app/',pwa:'https://kesh-money.vercel.app/',icon:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Crect width='60' height='60' fill='%23111'/%3E%3Cpath d='M16 42V18l9 8h10l9-8v24z' fill='%23fff'/%3E%3Ccircle cx='25' cy='33' r='2.2'/%3E%3Ccircle cx='35' cy='33' r='2.2'/%3E%3C/svg%3E",name:'Кэш',type:'Трекер трат',year:'2026',created:'10.10.2026',shots:['Знакомство','Главная','Ввод','Аналитика','Бюджет'],
   desc:'Трекер трат с котом. Без аккаунта, облака и рекламы: все данные хранятся только на устройстве. Расходы и доходы, аналитика за любой период, лимиты, вклады и импорт выписки банка.',
   meta:[['Стек','JavaScript, PWA, Swift, Java'],['Платформы','iPhone, Android, браузер, ПК'],['Приложение','<a href="https://kesh-money.vercel.app/" target="_blank" rel="noopener">kesh-money.vercel.app</a>']],
   wins:[
@@ -262,7 +263,7 @@ const P=[
    {t:'Kesh/Бюджет',k:4,h:'Бюджет',p:'Лимиты по категориям, остаток на месяц и сколько можно тратить в день.',dl:[['Экран','05 / 05']]}]},
  ...(window.CUSTOM||[]).map(c=>{const e=v=>String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[m]),sh=c.shots||[];
    const url=/^https?:\/\//.test(c.link||'')?c.link:'';
-   return{id:'c'+e(c.id),url,name:e(c.name),type:e(c.type),created:e(c.created),year:(c.created||'').slice(-4),desc:e(c.desc),cover:sh[0]?.src,
+   return{id:'c'+e(c.id),url,pwa:/^https:\/\//.test(c.pwa||'')?c.pwa:'',name:e(c.name),type:e(c.type),created:e(c.created),year:(c.created||'').slice(-4),desc:e(c.desc),cover:sh[0]?.src,
     meta:[c.stack&&['Стек',e(c.stack)],c.platforms&&['Платформы',e(c.platforms)],url&&['Ссылка',`<a href="${e(url)}" target="_blank" rel="noopener">${e(url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''))}</a>`]].filter(Boolean),
     shots:sh.length?sh.map(x=>e(x.h)||'Фото'):undefined,wins:sh.length||(c.features||[]).length?[...sh.map(x=>({img:e(x.src),h:e(x.h),p:e(x.p)})),...(c.features||[]).map(f=>({h:e(f.h),p:e(f.p),ul:(f.ul||[]).map(e)}))]:undefined}}),
 ];
@@ -368,7 +369,7 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
     ${info.length?W('st-fl','File List',`<div class="st-path">[]&lt;${p.name}&gt;Функции&gt;*▴</div><ul class="st-files">${info.map((w,j)=>`<li data-j="${j}"${j===0?' class="on"':''}>[${p.code}]&lt;${p.name}&gt;${w.h}.st</li>`).join('')}<li>------------</li></ul><div class="st-out" id="stOut"></div>`,'left:30px;top:520px'):''}
     <table class="st-cal">${Array.from({length:Math.ceil((first+dim)/7)},(_,w)=>'<tr>'+Array.from({length:7},(_,d)=>{const n=w*7+d-first+1;return n>0&&n<=dim?`<td${n===day.getDate()?' class="on"':''}>${n}</td>`:'<td class="e"></td>'}).join('')+'</tr>').join('')}</table>
   </div></div>`;
-  window.Phone?.mount($('#stPhone'),{id:p.id,screens:shots.map(w=>w.k!==undefined&&p===P[0]?KS[w.k]().replace('viewBox="0 0 240 430"','viewBox="8 26 224 394" preserveAspectRatio="xMidYMid meet"').replace(/<rect x="4" y="4"[^>]*\/><rect x="96" y="12"[^>]*\/>/,'<rect width="240" height="430" fill="#fff"/>'):`<img src="${w.img}" alt="">`)});
+  window.Phone?.mount($('#stPhone'),{id:p.id,pwa:p.pwa,name:p.name,icon:p.icon,screens:shots.map(w=>w.k!==undefined&&p===P[0]?KS[w.k]().replace('viewBox="0 0 240 430"','viewBox="8 26 224 394" preserveAspectRatio="xMidYMid meet"').replace(/<rect x="4" y="4"[^>]*\/><rect x="96" y="12"[^>]*\/>/,'<rect width="240" height="430" fill="#fff"/>'):`<img src="${w.img}" alt="">`)});
   const out=$('#stOut'),show=j=>{const w=info[j];if(!out||!w)return;out.innerHTML=`<b>${w.h}</b>\n${w.p?`    ${w.p}\n`:''}${(w.ul||[]).map(x=>`    ${x}.`).join('\n')}${(w.dl||[]).map(r=>`    ${r[0]}: ${r[1]}.`).join('\n')}`};show(0);
   $('#project').querySelectorAll('.st-files li[data-j]').forEach(li=>li.onclick=()=>{$('#project').querySelectorAll('.st-files li').forEach(x=>x.classList.toggle('on',x===li));show(+li.dataset.j)});
   // окна: клик поднимает наверх, тянуть за заголовок

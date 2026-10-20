@@ -78,6 +78,7 @@ button:disabled{opacity:.35;cursor:default;background:var(--bg);color:var(--fg)}
       <label><span>Платформы</span><input id="f-platforms" placeholder="iPhone, браузер"></label>
     </div>
     <label><span>Ссылка (с https://)</span><input id="f-link" placeholder="https://…"></label>
+    <label><span>PWA — адрес web-приложения, запускается в телефоне на странице проекта (с https://)</span><input id="f-pwa" placeholder="https://…"></label>
     <label style="margin:0"><span>Описание — курсивом в System Browser</span><textarea id="f-desc"></textarea></label>
     </div>
     <p class="sec">Экраны — окна Form Editor</p>
@@ -117,7 +118,7 @@ $('#list').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=+
   if(b.dataset.a==='edit')open(i);
   else{const j=b.dataset.a==='up'?i-1:i+1;[list[i],list[j]]=[list[j],list[i]];mark();render()}};
 
-const F=['name','type','created','stack','platforms','link','desc'];
+const F=['name','type','created','stack','platforms','link','pwa','desc'];
 function open(i){edit={i,shots:(i==null?[]:list[i].shots||[]).map(s=>({...s})),feats:(i==null?[]:list[i].features||[]).map(f=>({h:f.h||'',p:f.p||'',ul:(f.ul||[]).join('\n')}))};
   const p=i==null?{}:list[i];F.forEach(k=>$('#f-'+k).value=p[k]||'');
   $('#ftitle').textContent=i==null?'Project Editor · новый':'Project Editor · '+p.name;$('#del').hidden=i==null;
