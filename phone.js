@@ -4,33 +4,21 @@ const NS = 'http://www.w3.org/2000/svg';
 const pad = n => String(n).padStart(2, '0');
 const DAYS = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
 
-/* ---------- корпус ---------- */
-const BODY = `<svg class="ph-body" viewBox="0 0 340 700" aria-hidden="true">
+/* ---------- корпус: современный iPhone, тонкие рамки, Dynamic Island ---------- */
+const BODY = `<svg class="ph-body" viewBox="0 0 430 880" aria-hidden="true">
 <defs>
- <linearGradient id="phMat" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a2a2d"/><stop offset=".45" stop-color="#121214"/><stop offset="1" stop-color="#050506"/></linearGradient>
- <linearGradient id="phEdge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5a5a5e"/><stop offset=".08" stop-color="#1a1a1c"/><stop offset=".92" stop-color="#1a1a1c"/><stop offset="1" stop-color="#4a4a4e"/></linearGradient>
- <linearGradient id="phBtn" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0e0e10"/><stop offset=".5" stop-color="#3c3c40"/><stop offset="1" stop-color="#151517"/></linearGradient>
- <linearGradient id="phGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#151517"/><stop offset="1" stop-color="#020203"/></linearGradient>
- <radialGradient id="phHome" cx=".45" cy=".35" r=".7"><stop offset="0" stop-color="#2c2c30"/><stop offset=".7" stop-color="#0b0b0c"/><stop offset="1" stop-color="#000"/></radialGradient>
- <linearGradient id="phRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8a8a90"/><stop offset=".35" stop-color="#2a2a2e"/><stop offset=".7" stop-color="#55555a"/><stop offset="1" stop-color="#18181a"/></linearGradient>
- <radialGradient id="phLens" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#4a5a8a"/><stop offset=".3" stop-color="#14182a"/><stop offset="1" stop-color="#000"/></radialGradient>
- <linearGradient id="phSheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".38" stop-color="#fff" stop-opacity=".03"/><stop offset=".39" stop-color="#fff" stop-opacity="0"/></linearGradient>
+ <linearGradient id="phTi" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a4a4e"/><stop offset=".5" stop-color="#2a2a2d"/><stop offset="1" stop-color="#3c3c40"/></linearGradient>
+ <linearGradient id="phKey" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2a2a2d"/><stop offset=".5" stop-color="#4a4a4e"/><stop offset="1" stop-color="#2a2a2d"/></linearGradient>
 </defs>
-<rect x="4.5" y="104" width="6" height="26" rx="2" fill="url(#phBtn)"/>
-<rect x="3.5" y="156" width="7" height="50" rx="2.5" fill="url(#phBtn)"/>
-<rect x="3.5" y="218" width="7" height="50" rx="2.5" fill="url(#phBtn)"/>
-<rect x="329.5" y="164" width="7" height="54" rx="2.5" fill="url(#phBtn)"/>
-<rect x="9" y="3" width="322" height="694" rx="54" fill="url(#phEdge)"/>
-<rect x="11" y="5" width="318" height="690" rx="52" fill="url(#phMat)"/>
-<rect x="13.5" y="7.5" width="313" height="685" rx="49.5" fill="url(#phGlass)" stroke="#000" stroke-width="1"/>
-<rect x="139" y="54" width="62" height="7" rx="3.5" fill="#0c0c0d" stroke="#2c2c30" stroke-width="1"/>
-<path d="M143 57.5h54" stroke="#1d1d20" stroke-width="2" stroke-dasharray="1 1.4"/>
-<circle cx="170" cy="36" r="2.3" fill="#151518"/>
-<circle cx="112" cy="57.5" r="6" fill="#0a0a0c" stroke="#26262a"/><circle cx="112" cy="57.5" r="3.6" fill="url(#phLens)"/><circle cx="110.8" cy="56.2" r="1" fill="#9fb0ff" opacity=".55"/>
-<circle cx="170" cy="649" r="29" fill="url(#phRing)"/><circle cx="170" cy="649" r="26.6" fill="url(#phHome)"/>
-<path d="M18 120V60a46 46 0 0 1 46-46h120" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="2"/>
-<rect x="13.5" y="7.5" width="313" height="685" rx="49.5" fill="url(#phSheen)" pointer-events="none"/>
+<rect x="0" y="150" width="4" height="30" rx="1.5" fill="url(#phKey)"/>
+<rect x="0" y="212" width="4" height="58" rx="1.5" fill="url(#phKey)"/>
+<rect x="0" y="284" width="4" height="58" rx="1.5" fill="url(#phKey)"/>
+<rect x="426" y="240" width="4" height="92" rx="1.5" fill="url(#phKey)"/>
+<rect x="3" y="0" width="424" height="880" rx="72" fill="url(#phTi)"/>
+<rect x="5.5" y="2.5" width="419" height="875" rx="69.5" fill="#0b0b0c"/>
+<rect x="5.5" y="2.5" width="419" height="875" rx="69.5" fill="none" stroke="#fff" stroke-opacity=".07"/>
 </svg>`;
+const ISLAND = `<div class="ph-island"><i></i></div>`;
 
 /* ---------- иконки (свои, простые) ---------- */
 const g = (bg, svg) => ({ bg, svg });
@@ -52,7 +40,7 @@ const DOCK = [
   ['Телефон', g('linear-gradient(#6ee36a,#25b83a)', '<path d="M21 14c2 0 4 6 4 8s-3 3-3 4c1 4 6 9 10 10 1 0 2-3 4-3s8 2 8 4c0 3-3 7-6 7-12 0-24-12-24-24 0-3 4-6 7-6z" fill="#fff"/>')],
   ['Браузер', g('linear-gradient(#fff,#e9e9ee)', '<circle cx="30" cy="30" r="20" fill="none" stroke="#2c8df5" stroke-width="3"/><path d="M38 22l-5 11-11 5 5-11z" fill="#ff3b30"/><path d="M38 22l-11 5 6 6z" fill="#e3e3e8"/>')],
   ['Почта', g('linear-gradient(#5ab0ff,#1a74f0)', '<rect x="12" y="18" width="36" height="24" rx="3" fill="#fff"/><path d="M12 20l18 13 18-13" fill="none" stroke="#1a74f0" stroke-width="2"/>')],
-  ['Установка .ipa', g('linear-gradient(#2b2b30,#0c0c0e)', '<rect x="17" y="10" width="26" height="40" rx="5" fill="none" stroke="#fff" stroke-width="2.5"/><path d="M30 20v15M24 29l6 6 6-6" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M25 44h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>'), 'ipa'],
+  ['Установка', g('linear-gradient(#2b2b30,#0c0c0e)', '<rect x="17" y="10" width="26" height="40" rx="5" fill="none" stroke="#fff" stroke-width="2.5"/><path d="M30 20v15M24 29l6 6 6-6" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M25 44h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>'), 'ipa'],
 ];
 function calIcon(d) { return `<div class="ph-ic ph-cal"><b>${DAYS[d.getDay()]}</b><i>${d.getDate()}</i></div>`; }
 function clockIcon(d) {
@@ -129,58 +117,72 @@ async function readIPA(file, progress) {
 /* ---------- телефон ---------- */
 function mount(el, opt) {
   const key = 'ph-apps:' + opt.id, load = () => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch (e) { return []; } }, save = a => { try { localStorage.setItem(key, JSON.stringify(a)); } catch (e) { } };
-  let apps = load(), jiggle = false, openApp = null;
+  let apps = load(), jiggle = false, openApp = null, page = 0;
+  const screens = opt.screens || [];
   el.innerHTML = `<div class="ph">${BODY}<div class="ph-scr"><div class="ph-in">
     <div class="ph-wall"></div>
-    <div class="ph-sb"><span class="ph-car">●●●●○ qwekurasa <svg viewBox="0 0 16 12" width="13"><path d="M8 11L1.5 4.5a9.2 9.2 0 0 1 13 0z" fill="currentColor"/></svg></span><b class="ph-time"></b><span class="ph-bat">100% <i></i></span></div>
+    <div class="ph-sb"><b class="ph-time"></b><span class="ph-ind"><svg viewBox="0 0 18 12" width="17"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12" width="15"><path d="M8 11.5l2.6-2.9a3.8 3.8 0 0 0-5.2 0zM3.6 6.8a6.4 6.4 0 0 1 8.8 0l1.4-1.6a8.6 8.6 0 0 0-11.6 0zM.9 3.8a10.3 10.3 0 0 1 14.2 0L16.5 2.2a12.5 12.5 0 0 0-17 0z"/></svg><i class="ph-batt"></i></span></div>
     <div class="ph-grid"></div>
-    <div class="ph-dots"><i class="on"></i><i></i></div>
+    <div class="ph-search"><svg viewBox="0 0 12 12" width="10"><circle cx="5" cy="5" r="3.8" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 8l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Поиск</div>
     <div class="ph-dock"></div>
-    <div class="ph-app" hidden><div class="ph-splash"><div class="ph-sicon"></div><b></b><span></span></div><iframe title="Приложение" allow="clipboard-write" hidden></iframe></div>
+    <div class="ph-app" hidden><div class="ph-splash"><div class="ph-sicon"></div><b></b><span></span></div><div class="ph-pages" hidden></div><div class="ph-pdots"></div></div>
     <div class="ph-sheet" hidden></div>
+    <button class="ph-hi" aria-label="Домой"></button>
     <input type="file" accept=".ipa,application/octet-stream" hidden>
-  </div></div><div class="ph-glare"></div><button class="ph-home" aria-label="Домой"></button></div>`;
-  const $ = s => el.querySelector(s), inn = $('.ph-in'), file = $('input[type=file]'), appEl = $('.ph-app'), frame = $('iframe'), sheet = $('.ph-sheet');
-  const fit = () => { const w = $('.ph-scr').clientWidth; inn.style.transform = `scale(${w / 375})`; };
+  </div>${ISLAND}</div></div>`;
+  const $ = s => el.querySelector(s), inn = $('.ph-in'), file = $('input[type=file]'), appEl = $('.ph-app'), pages = $('.ph-pages'), sheet = $('.ph-sheet');
+  const fit = () => { const w = $('.ph-scr').clientWidth; inn.style.transform = `scale(${w / 393})`; };
   new ResizeObserver(fit).observe($('.ph-scr')); fit();
 
   function cell(label, ic, attrs = '') { return `<div class="ph-cell" ${attrs}>${ic}<span>${label}</span></div>`; }
   function draw() {
     const d = new Date();
-    $('.ph-time').textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    $('.ph-time').textContent = `${d.getHours()}:${pad(d.getMinutes())}`;
     const sys = ICONS.map(([n, def]) => cell(n, n === 'Календарь' ? calIcon(d) : n === 'Часы' ? clockIcon(d) : icon(def)));
-    const inst = apps.map((a, i) => cell(a.name, `<div class="ph-ic ph-user"${a.icon ? ` style="background-image:url(${a.icon})"` : ''}>${a.icon ? '' : `<em>${(a.name[0] || '?').toUpperCase()}</em>`}${a.prog != null ? `<svg class="ph-prog" viewBox="0 0 60 60"><circle cx="30" cy="30" r="13" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="${(a.prog * 81.7).toFixed(1)} 82" transform="rotate(-90 30 30)"/></svg>` : ''}<button class="ph-x" data-del="${i}" aria-label="Удалить">×</button></div>`, `data-app="${i}"`));
+    const inst = apps.map((a, i) => cell(a.name, `<div class="ph-ic ph-user"${a.icon ? ` style="background-image:url(${a.icon})"` : ''}>${a.icon ? '' : `<em>${(a.name[0] || '?').toUpperCase()}</em>`}${a.prog != null ? `<svg class="ph-prog" viewBox="0 0 60 60"><circle cx="30" cy="30" r="13" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="${(a.prog * 81.7).toFixed(1)} 82" transform="rotate(-90 30 30)"/></svg>` : ''}<button class="ph-x" data-del="${i}" aria-label="Удалить">−</button></div>`, `data-app="${i}"`));
     $('.ph-grid').innerHTML = [...sys, ...inst].join('');
-    $('.ph-dock').innerHTML = DOCK.map(([n, def, act]) => cell(n === 'Установка .ipa' ? 'Установка' : n, icon(def), act ? `data-act="${act}"` : '')).join('');
+    $('.ph-dock').innerHTML = DOCK.map(([n, def, act]) => cell(n, icon(def), act ? `data-act="${act}"` : '')).join('');
     inn.classList.toggle('jiggle', jiggle);
   }
   draw(); const tick = setInterval(() => { if (!el.isConnected) return clearInterval(tick); if (!jiggle) draw(); }, 1000);
 
+  /* приложение: экраны проекта, листаются тапом по краям или свайпом */
+  function showPage(n) { page = Math.max(0, Math.min(screens.length - 1, n)); pages.style.transform = `translateX(${-page * 100}%)`; $('.ph-pdots').innerHTML = screens.map((_, k) => `<i${k === page ? ' class="on"' : ''}></i>`).join(''); }
+  pages.innerHTML = screens.map(s => `<div class="ph-page">${s}</div>`).join('');
   const bounce = c => { c.classList.remove('tap'); void c.offsetWidth; c.classList.add('tap'); };
   function launch(i, c) {
     const a = apps[i]; if (!a || a.prog != null) return; openApp = a;
-    const r = c.querySelector('.ph-ic').getBoundingClientRect(), s = inn.getBoundingClientRect(), k = s.width / 375;
+    const r = c.querySelector('.ph-ic').getBoundingClientRect(), s = inn.getBoundingClientRect(), k = s.width / 393;
     appEl.style.transformOrigin = `${(r.left + r.width / 2 - s.left) / k}px ${(r.top + r.height / 2 - s.top) / k}px`;
     $('.ph-sicon').style.backgroundImage = a.icon ? `url(${a.icon})` : ''; $('.ph-sicon').textContent = a.icon ? '' : a.name[0];
-    $('.ph-splash b').textContent = a.name; $('.ph-splash span').textContent = [a.version && 'v' + a.version, a.bundle].filter(Boolean).join(' · ');
-    appEl.hidden = false; appEl.classList.remove('open'); void appEl.offsetWidth; appEl.classList.add('open'); frame.hidden = true;
-    if (opt.url) setTimeout(() => { if (openApp !== a) return; frame.src = opt.url; frame.hidden = false; }, 900);
-    else $('.ph-splash span').textContent += (a.bundle ? '\n' : '') + 'Web-версии у проекта нет';
+    $('.ph-splash b').textContent = a.name;
+    $('.ph-splash span').textContent = [a.version && 'Версия ' + a.version, a.bundle].filter(Boolean).join('\n') + (screens.length ? '' : '\nЭкранов проекта пока нет');
+    appEl.hidden = false; appEl.classList.remove('open', 'run'); void appEl.offsetWidth; appEl.classList.add('open');
+    pages.hidden = true; $('.ph-pdots').innerHTML = '';
+    if (screens.length) setTimeout(() => { if (openApp !== a) return; pages.hidden = false; appEl.classList.add('run'); showPage(0); }, 1100);
   }
   function home() {
-    if (sheet.hidden === false) { sheet.hidden = true; return; }
+    if (!sheet.hidden) { sheet.hidden = true; return; }
     if (jiggle) { jiggle = false; draw(); return; }
     if (!openApp) return; openApp = null; appEl.classList.remove('open'); appEl.classList.add('close');
-    setTimeout(() => { appEl.hidden = true; appEl.classList.remove('close'); frame.src = 'about:blank'; }, 320);
+    setTimeout(() => { appEl.hidden = true; appEl.classList.remove('close', 'run'); }, 300);
   }
-  $('.ph-home').onclick = home;
+  $('.ph-hi').onclick = home;
+  let sx = null;
+  appEl.addEventListener('pointerdown', e => { sx = e.clientX; });
+  appEl.addEventListener('pointerup', e => {
+    if (pages.hidden || sx == null) return; const dx = e.clientX - sx; sx = null;
+    if (Math.abs(dx) > 30) return showPage(page + (dx < 0 ? 1 : -1));
+    const r = appEl.getBoundingClientRect(); showPage(page + (e.clientX - r.left > r.width / 2 ? 1 : -1));
+  });
 
   let pressT = 0;
   inn.addEventListener('pointerdown', e => { const c = e.target.closest('.ph-cell'); if (!c || openApp) return; pressT = setTimeout(() => { pressT = 0; if (apps.length) { jiggle = true; draw(); } }, 600); });
   inn.addEventListener('pointerup', () => clearTimeout(pressT));
   inn.addEventListener('click', e => {
     const x = e.target.closest('[data-del]'); if (x) { const i = +x.dataset.del; apps.splice(i, 1); save(apps.filter(a => a.prog == null)); if (!apps.length) jiggle = false; draw(); return; }
-    const c = e.target.closest('.ph-cell'); if (!c || jiggle) return;
+    const c = e.target.closest('.ph-cell'); if (!c) return;
+    if (jiggle) { if (!x) { jiggle = false; draw(); } return; }
     if (c.dataset.act === 'ipa') { bounce(c); file.click(); return; }
     if (c.dataset.app != null) { launch(+c.dataset.app, c); return; }
     bounce(c);
