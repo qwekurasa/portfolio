@@ -7,6 +7,7 @@ window.CUSTOM=[
   "stack": "JS,swift,css,html",
   "platforms": "IOS",
   "link": "https://kesh-money.vercel.app/web/#install",
+  "pwa": "https://kesh-money.vercel.app/",
   "desc": "Пиксельный кот-тамагочи, который живёт в Dynamic Island твоего iPhone. Корми, гладь и укладывай его спать, а он будет моргать и оглядываться прямо возле камеры",
   "shots": [
    {
