@@ -104,7 +104,6 @@ body[data-v=project]{background:#fff}
 .st{padding:16px 16px 60px;display:grid;grid-template-columns:1fr minmax(0,1040px) 1fr;align-items:start}
 .st-desk{grid-column:2}
 .st-phone{grid-column:1;justify-self:end;position:sticky;top:16px;width:264px;margin:30px 40px 0 0}
-.st-ph-note{margin:12px 4px 0;font-size:11px;line-height:1.45;color:#6a6a6a}
 .ph{position:relative;width:100%;aspect-ratio:430/880;filter:invert(1)}
 .ph-body{position:absolute;inset:0;width:100%;height:100%}
 .ph-scr{position:absolute;left:4.419%;top:2.159%;width:91.163%;height:95.682%;overflow:hidden;border-radius:13.4%/6.4%;background:#000;isolation:isolate}
@@ -357,7 +356,7 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   const shotWin=(w,k)=>W('st-shot',`Form Editor · ${w.h||'Экран '+(k+1)}`,`<div class="st-art">${w.k!==undefined&&p===P[0]?KS[w.k]():`<img src="${w.img}" alt="${p.name}: ${w.h}" loading="lazy">`}</div>${w.p?`<p class="st-cap">${w.p}</p>`:''}`,`left:${pos[k%5][0]+Math.floor(k/5)*30}px;top:${pos[k%5][1]+Math.floor(k/5)*30}px`);
   const day=new Date(),mm=day.getMonth(),yy=day.getFullYear(),first=(new Date(yy,mm,1).getDay()+6)%7,dim=new Date(yy,mm+1,0).getDate();
   $('#project').innerHTML=`<svg width="0" height="0" style="position:absolute"><defs><pattern id="dz" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="1" height="1"/><rect x="1" y="1" width="1" height="1"/></pattern></defs></svg>
-  <div class="st"><aside class="st-phone"><div id="stPhone"></div><p class="st-ph-note">Нажми «Установка» в доке и выбери .ipa — приложение с его иконкой появится на экране. По тапу открываются экраны проекта — листай тапом по краю или свайпом. Удерживай иконку, чтобы удалить.</p></aside><div class="st-desk">
+  <div class="st"><aside class="st-phone"><div id="stPhone"></div></aside><div class="st-desk">
     <nav class="st-menu"><a href="#map">qwekurasa</a><a href="#p-${pv.id}">← ${pv.name}</a><a href="#p-${nx.id}">${nx.name} →</a></nav>
     ${W('st-br','System Browser',`<div class="st-panes">
       <ul class="st-pane">${P.map(q=>`<li${q===p?' class="on"':''}><a href="#p-${q.id}">Projects-${q.name}</a></li>`).join('')}</ul>
