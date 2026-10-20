@@ -20,34 +20,37 @@ const BODY = `<svg class="ph-body" viewBox="0 0 430 880" aria-hidden="true">
 </svg>`;
 const ISLAND = `<div class="ph-island"><i></i></div>`;
 
-/* ---------- иконки (свои, простые) ---------- */
-const g = (bg, svg) => ({ bg, svg });
+/* ---------- иконки: «жидкое стекло», белые глифы ---------- */
+const GL = '<defs><linearGradient id="phG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity=".72"/></linearGradient></defs>';
+const W = 'fill="url(#phG)"', L = 'fill="none" stroke="url(#phG)" stroke-linecap="round" stroke-linejoin="round"';
 const ICONS = [
-  ['Сообщения', g('linear-gradient(#6ee36a,#25b83a)', '<path d="M30 14c-10 0-18 6.5-18 14.5 0 4.6 2.6 8.7 6.7 11.3L17 46l7.4-3.5c1.8.4 3.6.7 5.6.7 10 0 18-6.5 18-14.5S40 14 30 14z" fill="#fff"/>')],
+  ['Сообщения', `<path d="M30 15c-9.4 0-17 6.2-17 13.8 0 4.4 2.5 8.2 6.4 10.8L18 46l7-3.3c1.6.4 3.3.6 5 .6 9.4 0 17-6.2 17-13.8S39.4 15 30 15z" ${W}/>`],
   ['Календарь', null],
-  ['Фото', g('#fff', [0, 45, 90, 135, 180, 225, 270, 315].map((a, i) => `<ellipse cx="30" cy="20" rx="6" ry="11" fill="${['#f5b400', '#f57b00', '#e8344c', '#b543d6', '#5a5ce6', '#2d9bf0', '#2bc25b', '#a6d61f'][i]}" opacity=".85" transform="rotate(${a} 30 30)" style="mix-blend-mode:multiply"/>`).join(''))],
-  ['Камера', g('linear-gradient(#e6e6ea,#a9a9b0)', '<rect x="12" y="20" width="36" height="25" rx="5" fill="#2d2d30"/><rect x="23" y="16" width="14" height="6" rx="2" fill="#2d2d30"/><circle cx="30" cy="32.5" r="8.5" fill="#56565c" stroke="#e6e6ea" stroke-width="2"/><circle cx="30" cy="32.5" r="4.5" fill="#15151a"/>')],
-  ['Погода', g('linear-gradient(#3a8ff0,#7fc3ff)', '<circle cx="24" cy="24" r="8" fill="#ffd94a"/><path d="M22 42h20a7 7 0 0 0 0-14 9 9 0 0 0-17 2 6 6 0 0 0-3 12z" fill="#fff"/>')],
+  ['Фото', [0, 45, 90, 135, 180, 225, 270, 315].map((a, i) => `<ellipse cx="30" cy="20.5" rx="5.2" ry="9.5" fill="#fff" opacity="${(.35 + i * .08).toFixed(2)}" transform="rotate(${a} 30 30)"/>`).join('')],
+  ['Камера', `<path d="M14 22.5a3 3 0 0 1 3-3h5l2.6-3.5h10.8l2.6 3.5h5a3 3 0 0 1 3 3V41a3 3 0 0 1-3 3H17a3 3 0 0 1-3-3z" ${L} stroke-width="2.6"/><circle cx="30" cy="31.5" r="6.8" ${L} stroke-width="2.6"/>`],
+  ['Погода', `<circle cx="24" cy="24" r="7" ${W} opacity=".9"/><path d="M23 43h19a6.5 6.5 0 0 0 .6-13 8.6 8.6 0 0 0-16.3 2.1A5.5 5.5 0 0 0 23 43z" ${W}/>`],
   ['Часы', null],
-  ['Карты', g('linear-gradient(135deg,#f3efe3 0 48%,#c9e7b4 48%)', '<path d="M8 40L52 18" stroke="#f2c14a" stroke-width="6"/><path d="M24 8v48" stroke="#fff" stroke-width="5"/><path d="M38 22l5 11-5-3-5 3z" fill="#2b7cf5"/>')],
-  ['Заметки', g('linear-gradient(#fff 0 26%,#fff 26%)', '<rect x="0" y="0" width="60" height="16" fill="#f7cf3c"/>' + [24, 32, 40, 48].map(y => `<path d="M10 ${y}h40" stroke="#d9d9de" stroke-width="1.5"/>`).join(''))],
-  ['Музыка', g('linear-gradient(#ff5a7a,#f2364f)', '<path d="M24 40V18l18-4v22" fill="none" stroke="#fff" stroke-width="3.5"/><ellipse cx="21" cy="41" rx="5" ry="4" fill="#fff"/><ellipse cx="39" cy="37" rx="5" ry="4" fill="#fff"/>')],
-  ['Калькулятор', g('#1c1c1e', '<rect x="12" y="11" width="16" height="16" rx="4" fill="#a5a5aa"/><rect x="32" y="11" width="16" height="16" rx="4" fill="#ff9f0a"/><rect x="12" y="31" width="16" height="16" rx="4" fill="#505055"/><rect x="32" y="31" width="16" height="16" rx="4" fill="#ff9f0a"/>')],
-  ['Файлы', g('#fff', '<path d="M10 19h14l4 4h22v22a3 3 0 0 1-3 3H13a3 3 0 0 1-3-3z" fill="#3e9bf6"/><path d="M10 27h40" stroke="#76b8fb" stroke-width="2"/>')],
-  ['Настройки', g('linear-gradient(#a8a8ae,#6c6c72)', '<g fill="#3a3a3e">' + Array.from({ length: 12 }, (_, i) => `<rect x="28" y="9" width="4" height="9" rx="1" transform="rotate(${i * 30} 30 30)"/>`).join('') + '</g><circle cx="30" cy="30" r="14" fill="#3a3a3e"/><circle cx="30" cy="30" r="9" fill="#a8a8ae"/><circle cx="30" cy="30" r="4" fill="#3a3a3e"/>')],
+  ['Карты', `<path d="M13 19l11-4 12 4 11-4v26l-11 4-12-4-11 4z" ${L} stroke-width="2.4"/><path d="M24 15v26M36 19v26" ${L} stroke-width="2" opacity=".6"/><path d="M41 23.5c0 3.6-4.5 8.5-4.5 8.5S32 27.1 32 23.5a4.5 4.5 0 0 1 9 0z" ${W}/>`],
+  ['Заметки', `<rect x="15" y="13" width="30" height="34" rx="5" ${L} stroke-width="2.6"/><path d="M15 20.5h30" ${L} stroke-width="5" opacity=".9"/><path d="M21 29h18M21 35h18M21 41h11" ${L} stroke-width="2" opacity=".75"/>`],
+  ['Музыка', `<path d="M25 40.5V19.5l17-3.6v20.6" ${L} stroke-width="3"/><ellipse cx="21.5" cy="40.5" rx="4.8" ry="3.9" ${W}/><ellipse cx="38.5" cy="37" rx="4.8" ry="3.9" ${W}/>`],
+  ['Калькулятор', `<rect x="14" y="14" width="14" height="14" rx="4.5" ${W} opacity=".55"/><rect x="32" y="14" width="14" height="14" rx="4.5" ${W}/><rect x="14" y="32" width="14" height="14" rx="4.5" ${W} opacity=".55"/><rect x="32" y="32" width="14" height="14" rx="4.5" ${W}/><path d="M36 39h6M39 36v6" stroke="#000" stroke-opacity=".35" stroke-width="1.8" stroke-linecap="round"/>`],
+  ['Файлы', `<path d="M13 20.5a3 3 0 0 1 3-3h9l3.5 4H44a3 3 0 0 1 3 3V41a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3z" ${W}/><path d="M13 27h34" stroke="#000" stroke-opacity=".18" stroke-width="1.5"/>`],
+  ['Настройки', `<g ${W}>${Array.from({ length: 12 }, (_, i) => `<rect x="27.6" y="10" width="4.8" height="8" rx="1.6" transform="rotate(${i * 30} 30 30)"/>`).join('')}</g><circle cx="30" cy="30" r="13.5" ${W}/><circle cx="30" cy="30" r="6.5" fill="#000" fill-opacity=".38"/>`],
 ];
 const DOCK = [
-  ['Телефон', g('linear-gradient(#6ee36a,#25b83a)', '<path d="M21 14c2 0 4 6 4 8s-3 3-3 4c1 4 6 9 10 10 1 0 2-3 4-3s8 2 8 4c0 3-3 7-6 7-12 0-24-12-24-24 0-3 4-6 7-6z" fill="#fff"/>')],
-  ['Браузер', g('linear-gradient(#fff,#e9e9ee)', '<circle cx="30" cy="30" r="20" fill="none" stroke="#2c8df5" stroke-width="3"/><path d="M38 22l-5 11-11 5 5-11z" fill="#ff3b30"/><path d="M38 22l-11 5 6 6z" fill="#e3e3e8"/>')],
-  ['Почта', g('linear-gradient(#5ab0ff,#1a74f0)', '<rect x="12" y="18" width="36" height="24" rx="3" fill="#fff"/><path d="M12 20l18 13 18-13" fill="none" stroke="#1a74f0" stroke-width="2"/>')],
-  ['Установка', g('linear-gradient(#2b2b30,#0c0c0e)', '<rect x="17" y="10" width="26" height="40" rx="5" fill="none" stroke="#fff" stroke-width="2.5"/><path d="M30 20v15M24 29l6 6 6-6" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M25 44h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>'), 'ipa'],
+  ['Телефон', `<path d="M21.5 15c1.6 0 3.6 5.3 3.6 7.1 0 1.6-2.5 2.6-2.5 3.6.9 3.8 5.6 8.5 9.4 9.4 1 0 2-2.5 3.6-2.5 1.8 0 7.1 2 7.1 3.6 0 2.8-3 6.3-6 6.3C25.6 42.5 17.5 34.4 17.5 23.3c0-3 3.3-8.3 4-8.3z" ${W}/>`],
+  ['Браузер', `<circle cx="30" cy="30" r="16" ${L} stroke-width="2.6"/><path d="M37 23l-4.4 9.6L23 37l4.4-9.6z" ${W}/><circle cx="30" cy="30" r="1.6" fill="#000" fill-opacity=".35"/>`],
+  ['Почта', `<rect x="13" y="18" width="34" height="24" rx="4.5" ${L} stroke-width="2.6"/><path d="M14.5 20.5L30 32l15.5-11.5" ${L} stroke-width="2.6"/>`],
+  ['Установка', `<rect x="19" y="12" width="22" height="36" rx="5.5" ${L} stroke-width="2.6"/><path d="M30 20v13M25 28.5l5 5 5-5" ${L} stroke-width="2.6"/><path d="M26.5 42.5h7" ${L} stroke-width="2.2"/>`, 'ipa'],
 ];
-function calIcon(d) { return `<div class="ph-ic ph-cal"><b>${DAYS[d.getDay()]}</b><i>${d.getDate()}</i></div>`; }
+const glass = svg => `<div class="ph-ic gl"><svg viewBox="0 0 60 60">${GL}${svg}</svg></div>`;
+const MON = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
+function calIcon(d) { return glass(`<text x="30" y="21" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing=".5" fill="#ff6b62">${MON[(d.getDay() + 6) % 7]}</text><text x="30" y="45" text-anchor="middle" font-size="25" font-weight="300" ${W}>${d.getDate()}</text>`); }
 function clockIcon(d) {
   const h = (d.getHours() % 12 + d.getMinutes() / 60) * 30, m = d.getMinutes() * 6, s = d.getSeconds() * 6;
-  return `<div class="ph-ic" style="background:#fff"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="27" fill="#fff"/>${Array.from({ length: 12 }, (_, i) => `<rect x="29.3" y="5" width="1.4" height="${i % 3 ? 3 : 5}" fill="#1c1c1e" transform="rotate(${i * 30} 30 30)"/>`).join('')}<path d="M30 30V16" stroke="#1c1c1e" stroke-width="2.6" stroke-linecap="round" transform="rotate(${h} 30 30)"/><path d="M30 30V9" stroke="#1c1c1e" stroke-width="1.8" stroke-linecap="round" transform="rotate(${m} 30 30)"/><path d="M30 34V8" stroke="#ff9500" stroke-width=".9" transform="rotate(${s} 30 30)"/><circle cx="30" cy="30" r="1.6" fill="#ff9500"/></svg></div>`;
+  return glass(`<circle cx="30" cy="30" r="17" ${L} stroke-width="2.2" opacity=".85"/>${Array.from({ length: 12 }, (_, i) => `<rect x="29.4" y="15.5" width="1.2" height="${i % 3 ? 2 : 3.5}" fill="#fff" opacity=".7" transform="rotate(${i * 30} 30 30)"/>`).join('')}<path d="M30 30v-8" ${L} stroke-width="2.6" transform="rotate(${h} 30 30)"/><path d="M30 30V17.5" ${L} stroke-width="1.8" transform="rotate(${m} 30 30)"/><path d="M30 33V16" stroke="#ff9f0a" stroke-width=".9" transform="rotate(${s} 30 30)"/><circle cx="30" cy="30" r="1.5" fill="#ff9f0a"/>`);
 }
-const icon = (def, d) => def ? `<div class="ph-ic" style="background:${def.bg}"><svg viewBox="0 0 60 60">${def.svg}</svg></div>` : null;
+const icon = svg => glass(svg);
 
 /* ---------- чтение .ipa: zip → Info.plist + иконка ---------- */
 async function inflate(buf) { const ds = new DecompressionStream('deflate-raw'); return new Uint8Array(await new Response(new Blob([buf]).stream().pipeThrough(ds)).arrayBuffer()); }
@@ -114,6 +117,13 @@ async function readIPA(file, progress) {
   return { name: info.CFBundleDisplayName || info.CFBundleName || file.name.replace(/\.ipa$/i, ''), bundle: info.CFBundleIdentifier || '', version: info.CFBundleShortVersionString || info.CFBundleVersion || '', minOS: info.MinimumOSVersion || '', size: file.size, icon: src };
 }
 
+/* иконка сайта: apple-touch-icon → favicon, иначе запасная */
+function siteIcon(url, fb) {
+  let o; try { o = new URL(url).origin; } catch (e) { return Promise.resolve(fb); }
+  const c = [o + '/apple-touch-icon.png', o + '/apple-touch-icon-precomposed.png', o + '/icon-192.png', o + '/favicon.ico'];
+  return new Promise(res => { const next = () => { const u = c.shift(); if (!u) return res(fb); const im = new Image(); im.onload = () => im.naturalWidth >= 32 ? res(u) : next(); im.onerror = next; im.src = u; }; next(); });
+}
+
 /* ---------- телефон ---------- */
 function mount(el, opt) {
   const key = 'ph-apps:' + opt.id, load = () => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch (e) { return []; } }, save = a => { try { localStorage.setItem(key, JSON.stringify(a)); } catch (e) { } };
@@ -125,7 +135,7 @@ function mount(el, opt) {
     <div class="ph-grid"></div>
     <div class="ph-search"><svg viewBox="0 0 12 12" width="10"><circle cx="5" cy="5" r="3.8" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 8l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Поиск</div>
     <div class="ph-dock"></div>
-    <div class="ph-app" hidden><div class="ph-splash"><div class="ph-sicon"></div><b></b><span></span></div><div class="ph-pages" hidden></div><div class="ph-pdots"></div>${opt.pwa ? '<iframe class="ph-web" title="Приложение" allow="clipboard-write; fullscreen"></iframe>' : ''}</div>
+    <div class="ph-app" hidden><div class="ph-splash"><div class="ph-sicon"></div><b></b><span></span></div><div class="ph-pages" hidden></div><div class="ph-pdots"></div><iframe class="ph-web" title="Приложение" allow="clipboard-write; fullscreen"></iframe></div>
     <div class="ph-sheet" hidden></div>
     <button class="ph-hi" aria-label="Домой"></button>
     <input type="file" accept=".ipa,application/octet-stream" hidden>
@@ -138,14 +148,15 @@ function mount(el, opt) {
   function draw() {
     const d = new Date();
     $('.ph-time').textContent = `${d.getHours()}:${pad(d.getMinutes())}`;
-    const sys = ICONS.map(([n, def]) => cell(n, n === 'Календарь' ? calIcon(d) : n === 'Часы' ? clockIcon(d) : icon(def)));
-    const userIc = a => `<div class="ph-ic ph-user"${a.icon ? ` style="background-image:url(${a.icon})"` : ''}>${a.icon ? '' : `<em>${(a.name[0] || '?').toUpperCase()}</em>`}</div>`;
+    const sys = ICONS.map(([n, def]) => cell(n, n === 'Календарь' ? calIcon(d) : n === 'Часы' ? clockIcon(d) : icon(def), 'data-dim'));
+    const userIc = a => `<div class="ph-ic ph-user"${a.icon ? ` style="background-image:url(&quot;${a.icon}&quot;)"` : ''}>${a.icon ? '' : `<em>${(a.name[0] || '?').toUpperCase()}</em>`}</div>`;
     if (builtin) sys.push(cell(builtin.name, userIc(builtin), 'data-app="b"'));
-    const inst = apps.map((a, i) => cell(a.name, `<div class="ph-ic ph-user"${a.icon ? ` style="background-image:url(${a.icon})"` : ''}>${a.icon ? '' : `<em>${(a.name[0] || '?').toUpperCase()}</em>`}${a.prog != null ? `<svg class="ph-prog" viewBox="0 0 60 60"><circle cx="30" cy="30" r="13" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="${(a.prog * 81.7).toFixed(1)} 82" transform="rotate(-90 30 30)"/></svg>` : ''}<button class="ph-x" data-del="${i}" aria-label="Удалить">−</button></div>`, `data-app="${i}"`));
+    const inst = apps.map((a, i) => cell(a.name, `<div class="ph-ic ph-user"${a.icon ? ` style="background-image:url(&quot;${a.icon}&quot;)"` : ''}>${a.icon ? '' : `<em>${(a.name[0] || '?').toUpperCase()}</em>`}${a.prog != null ? `<svg class="ph-prog" viewBox="0 0 60 60"><circle cx="30" cy="30" r="13" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="${(a.prog * 81.7).toFixed(1)} 82" transform="rotate(-90 30 30)"/></svg>` : ''}<button class="ph-x" data-del="${i}" aria-label="Удалить">−</button></div>`, `data-app="${i}"`));
     $('.ph-grid').innerHTML = [...sys, ...inst].join('');
-    $('.ph-dock').innerHTML = DOCK.map(([n, def, act]) => cell(n, icon(def), act ? `data-act="${act}"` : '')).join('');
+    $('.ph-dock').innerHTML = DOCK.map(([n, def, act]) => cell(n, icon(def), act ? `data-act="${act}"` : 'data-dim')).join('');
     inn.classList.toggle('jiggle', jiggle);
   }
+  if (builtin) siteIcon(opt.pwa, opt.icon || '').then(u => { builtin.icon = u; draw(); });
   draw(); const tick = setInterval(() => { if (!el.isConnected) return clearInterval(tick); if (!jiggle) draw(); }, 1000);
 
   /* приложение: экраны проекта, листаются тапом по краям или свайпом */
@@ -157,15 +168,16 @@ function mount(el, opt) {
     if (!a || a.prog != null) return; openApp = a;
     const r = c.querySelector('.ph-ic').getBoundingClientRect(), s = inn.getBoundingClientRect(), k = s.width / 393;
     appEl.style.transformOrigin = `${(r.left + r.width / 2 - s.left) / k}px ${(r.top + r.height / 2 - s.top) / k}px`;
-    $('.ph-sicon').style.backgroundImage = a.icon ? `url(${a.icon})` : ''; $('.ph-sicon').textContent = a.icon ? '' : a.name[0];
+    $('.ph-sicon').style.backgroundImage = a.icon ? `url("${a.icon}")` : ''; $('.ph-sicon').textContent = a.icon ? '' : a.name[0];
     $('.ph-splash b').textContent = a.name;
-    $('.ph-splash span').textContent = [a.version && 'Версия ' + a.version, a.bundle].filter(Boolean).join('\n') + (opt.pwa || screens.length ? '' : '\nЭкранов проекта пока нет');
+    $('.ph-splash span').textContent = [a.version && 'Версия ' + a.version, a.bundle].filter(Boolean).join('\n') + (a.url || opt.pwa || screens.length ? '' : '\nЭкранов проекта пока нет');
     appEl.hidden = false; appEl.classList.remove('open', 'run'); void appEl.offsetWidth; appEl.classList.add('open');
     pages.hidden = true; $('.ph-pdots').innerHTML = '';
-    if (web) {                                   // PWA: живое web-приложение в мобильной ширине 393 px
+    const url = a.url || opt.pwa;
+    if (url) {                                   // PWA: живое web-приложение в мобильной ширине 393 px
       const show = () => { if (openApp !== a) return; web.classList.add('on'); appEl.classList.add('run'); };
-      if (web.dataset.on) setTimeout(show, 250);
-      else { web.dataset.on = 1; web.onload = () => setTimeout(show, 300); web.src = opt.pwa; setTimeout(show, 4000); }
+      if (web.dataset.url === url) setTimeout(show, 250);
+      else { web.dataset.url = url; web.onload = () => setTimeout(show, 300); web.src = url; setTimeout(show, 4000); }
     } else if (screens.length) setTimeout(() => { if (openApp !== a) return; pages.hidden = false; appEl.classList.add('run'); showPage(0); }, 1100);
   }
   function home() {
@@ -190,10 +202,27 @@ function mount(el, opt) {
     const x = e.target.closest('[data-del]'); if (x) { const i = +x.dataset.del; apps.splice(i, 1); save(apps.filter(a => a.prog == null)); if (!apps.length) jiggle = false; draw(); return; }
     const c = e.target.closest('.ph-cell'); if (!c) return;
     if (jiggle) { if (!x) { jiggle = false; draw(); } return; }
-    if (c.dataset.act === 'ipa') { bounce(c); file.click(); return; }
+    if (c.dataset.act === 'ipa') { bounce(c); installSheet(); return; }
     if (c.dataset.app != null) { launch(c.dataset.app === 'b' ? builtin : apps[+c.dataset.app], c); return; }
     bounce(c);
   });
+  function alert(t, m) { sheet.onclick = null; sheet.innerHTML = `<div class="ph-alert"><b>${t}</b><p>${m}</p><button>OK</button></div>`; sheet.hidden = false; sheet.querySelector('button').onclick = () => sheet.hidden = true; }
+  function installSheet() {
+    sheet.innerHTML = `<div class="ph-acts"><div class="ph-actg"><p>Установить приложение</p><button data-k="ipa">Файл .ipa</button><button data-k="web">Web-приложение по ссылке</button></div><div class="ph-actg"><button data-k="x"><b>Отменить</b></button></div></div>`;
+    sheet.hidden = false;
+    sheet.onclick = e => { const k = e.target.closest('button')?.dataset.k; if (e.target === sheet || k === 'x') sheet.hidden = true; if (k === 'ipa') { sheet.hidden = true; file.click(); } if (k === 'web') webForm(); };
+  }
+  function webForm() {
+    sheet.innerHTML = `<form class="ph-alert ph-form"><b>Web-приложение</b><p>Ссылка на сайт — он установится как приложение на экран «Домой»</p><input name="u" inputmode="url" autocapitalize="off" autocomplete="off" placeholder="https://…" required><input name="n" placeholder="Название (необязательно)" maxlength="16"><div><button type="button" data-k="x">Отменить</button><button type="submit"><b>Добавить</b></button></div></form>`;
+    sheet.onclick = e => { if (e.target === sheet || e.target.closest('[data-k=x]')) sheet.hidden = true; };
+    const f = sheet.querySelector('form'); setTimeout(() => f.u.focus(), 50);
+    f.onsubmit = async e => {
+      e.preventDefault(); let u = f.u.value.trim(); if (!/^https?:\/\//.test(u)) u = 'https://' + u;
+      let host; try { host = new URL(u).hostname.replace(/^www\./, ''); } catch (er) { return; }
+      const a = { name: (f.n.value.trim() || host.split('.')[0]).slice(0, 16), url: u, icon: '', prog: .3 }; sheet.hidden = true; apps.push(a); draw();
+      a.icon = await siteIcon(u, ''); a.prog = 1; draw(); setTimeout(() => { delete a.prog; save(apps.filter(x => x.prog == null)); draw(); }, 300);
+    };
+  }
   file.onchange = async () => {
     const f = file.files[0]; file.value = ''; if (!f) return;
     const a = { name: f.name.replace(/\.ipa$/i, '').slice(0, 14), icon: '', prog: .05 }; apps.push(a); draw();
@@ -203,7 +232,7 @@ function mount(el, opt) {
       setTimeout(() => { delete a.prog; save(apps.filter(x => x.prog == null)); draw(); }, 350);
     } catch (err) {
       apps.splice(apps.indexOf(a), 1); draw();
-      sheet.innerHTML = `<div class="ph-alert"><b>Не удалось установить</b><p>${String(err.message || err).replace(/</g, '&lt;')}</p><button>OK</button></div>`; sheet.hidden = false; sheet.querySelector('button').onclick = () => sheet.hidden = true;
+      alert('Не удалось установить', String(err.message || err).replace(/</g, '&lt;'));
     }
   };
 }

@@ -110,7 +110,7 @@ body[data-v=project]{background:#fff}
 .ph-island{position:absolute;z-index:9;left:50%;top:1.3%;width:31.5%;height:4.05%;transform:translateX(-50%);border-radius:99px;background:#000;pointer-events:none}
 .ph-island i{position:absolute;right:13%;top:50%;width:11%;aspect-ratio:1;transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle at 35% 35%,#1d2236,#05060a 70%)}
 .ph-in{position:absolute;left:0;top:0;width:393px;height:852px;transform-origin:0 0;overflow:hidden;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arimo,sans-serif;user-select:none;-webkit-user-select:none;touch-action:manipulation}
-.ph-wall{position:absolute;inset:0;background:radial-gradient(120% 70% at 20% 0,#2b2b31 0,rgba(43,43,49,0) 60%),radial-gradient(90% 60% at 100% 100%,#202026 0,rgba(32,32,38,0) 60%),#0c0c0e}
+.ph-wall{position:absolute;inset:0;background:#000}
 .ph-sb{position:absolute;z-index:8;top:0;left:0;right:0;height:54px;display:flex;justify-content:space-between;align-items:center;padding:4px 30px 0 46px;font-size:16px;font-weight:600;letter-spacing:-.2px}
 .ph-ind{display:flex;align-items:center;gap:6px}.ph-ind svg{fill:#fff}
 .ph-batt{position:relative;width:26px;height:12.5px;border:1.3px solid rgba(255,255,255,.4);border-radius:4px;background:linear-gradient(#fff,#fff) 1.5px 1.5px/20px 7px no-repeat}
@@ -120,14 +120,19 @@ body[data-v=project]{background:#fff}
 .ph-cell span{max-width:80px;font-size:11.5px;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ph-ic{position:relative;width:62px;height:62px;border-radius:14.5px;background-size:cover;background-position:center}
 .ph-ic>svg{display:block;width:100%;height:100%;border-radius:inherit}
+.ph-ic.gl{background:linear-gradient(155deg,rgba(255,255,255,.24),rgba(255,255,255,.07) 48%,rgba(255,255,255,.13));box-shadow:inset 0 1.2px .6px rgba(255,255,255,.6),inset 0 -1px 1px rgba(255,255,255,.18),inset 1px 0 1px rgba(255,255,255,.12),inset -1px 0 1px rgba(255,255,255,.08),0 8px 18px rgba(0,0,0,.45);-webkit-backdrop-filter:blur(14px) saturate(1.6);backdrop-filter:blur(14px) saturate(1.6)}
+.ph-ic.gl::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(120% 60% at 30% 0,rgba(255,255,255,.22),rgba(255,255,255,0) 55%);pointer-events:none}
+.ph-ic.gl svg{filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.3))}
+.ph-cell[data-dim]{opacity:.55}
+.ph-user{box-shadow:0 0 0 .5px rgba(255,255,255,.18),0 8px 22px rgba(255,255,255,.08)}
 .ph-cal{display:flex;flex-direction:column;align-items:center;background:#fff;color:#000}
 .ph-cal b{margin-top:6px;font-size:9.5px;font-weight:600;color:#ff3b30}.ph-cal i{font-style:normal;font-size:33px;font-weight:300;line-height:1.05}
 .ph-user{display:grid;place-items:center;background-color:#2c2c30}.ph-user em{font-style:normal;font-size:28px;font-weight:600}
 .ph-prog{position:absolute;inset:0;background:rgba(0,0,0,.5)}
 .ph-cell.tap .ph-ic{animation:phTap .26s}
 @keyframes phTap{50%{transform:scale(.9);filter:brightness(.65)}}
-.ph-search{position:absolute;left:50%;bottom:118px;transform:translateX(-50%);display:flex;align-items:center;gap:5px;padding:6px 13px;border-radius:99px;background:rgba(255,255,255,.14);font-size:12.5px;font-weight:500}
-.ph-dock{position:absolute;left:12px;right:12px;bottom:12px;height:94px;display:grid;grid-template-columns:repeat(4,1fr);align-items:center;padding:0 10px;border-radius:34px;background:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px)}
+.ph-search{position:absolute;left:50%;bottom:118px;transform:translateX(-50%);display:flex;align-items:center;gap:5px;padding:6px 13px;border-radius:99px;background:rgba(255,255,255,.1);box-shadow:inset 0 1px .5px rgba(255,255,255,.3);font-size:12.5px;font-weight:500;opacity:.6}
+.ph-dock{position:absolute;left:12px;right:12px;bottom:12px;height:94px;display:grid;grid-template-columns:repeat(4,1fr);align-items:center;padding:0 10px;border-radius:34px;background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.04));box-shadow:inset 0 1px .5px rgba(255,255,255,.35),inset 0 -1px 1px rgba(255,255,255,.08);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px)}
 .ph-dock .ph-cell span{display:none}
 .ph-hi{position:absolute;z-index:9;left:50%;bottom:8px;width:140px;height:20px;transform:translateX(-50%);border:0;background:none;cursor:pointer;padding:0}
 .ph-hi::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;border-radius:3px;background:#fff}
@@ -154,6 +159,14 @@ body[data-v=project]{background:#fff}
 .ph-sheet{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:rgba(0,0,0,.4)}
 .ph-alert{width:270px;overflow:hidden;border-radius:14px;background:rgba(242,242,247,.97);color:#000;text-align:center}
 .ph-alert b{display:block;padding:18px 16px 4px;font-size:17px}.ph-alert p{margin:0;padding:0 16px 18px;font-size:13px}
+.ph-acts{align-self:end;width:100%;padding:0 8px 30px;display:flex;flex-direction:column;gap:8px;animation:phUp .25s ease-out}
+@keyframes phUp{from{transform:translateY(100%)}}
+.ph-actg{overflow:hidden;border-radius:14px;background:rgba(40,40,44,.92);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.ph-actg p{margin:0;padding:13px;font-size:13px;color:#8e8e93;text-align:center;border-bottom:.5px solid rgba(255,255,255,.12)}
+.ph-actg button{display:block;width:100%;padding:17px;border:0;border-top:.5px solid rgba(255,255,255,.12);background:none;color:#0a84ff;text-align:center;font:400 19px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arimo,sans-serif;cursor:pointer}
+.ph-actg p+button,.ph-actg button:first-child{border-top:0}
+.ph-form input{display:block;width:calc(100% - 32px);margin:0 16px 8px;padding:8px 10px;border:.5px solid #c8c8cc;border-radius:7px;font:15px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arimo,sans-serif;background:#fff;color:#000}
+.ph-form div{display:flex;margin-top:8px}.ph-form div button{flex:1;border-left:1px solid #c8c8cc}.ph-form div button:first-child{border-left:0;font-weight:400}
 .ph-alert button{width:100%;padding:11px;border:0;border-top:1px solid #c8c8cc;background:none;color:#007aff;font-size:17px;font-weight:600}
 @media(max-width:1679px){.st{grid-template-columns:minmax(0,1040px);justify-content:center}.st-desk,.st-phone{grid-column:1}.st-phone{justify-self:center;position:static;margin:0 0 50px}}
 .st-desk{position:relative;width:1040px;height:1500px;margin:0 auto}
