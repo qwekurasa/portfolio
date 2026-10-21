@@ -21,9 +21,9 @@ a{color:inherit}
 .pad{padding:14px 16px}
 .sec{margin:0;padding:3px 16px;border-top:2px solid var(--line);border-bottom:2px solid var(--line);font:400 12px "Arimo",Arial;letter-spacing:.06em;text-transform:uppercase}
 .note{color:var(--mute);margin:0 0 12px;font-size:13px}
-input,textarea{width:100%;font:inherit;padding:7px 9px;border:1px solid var(--mute);border-radius:0;background:var(--bg);color:var(--fg)}
+input,textarea,select{width:100%;font:inherit;padding:7px 9px;border:1px solid var(--mute);border-radius:0;background:var(--bg);color:var(--fg)}
 textarea{min-height:90px;resize:vertical}
-input:focus,textarea:focus{outline:none;border-color:var(--fg)}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--fg)}
 input::placeholder,textarea::placeholder{color:#5c5c5c}
 label{display:block;margin-bottom:12px}
 label span{display:block;font-size:12px;color:var(--mute);margin-bottom:4px}
@@ -66,17 +66,21 @@ button:disabled{opacity:.35;cursor:default;background:var(--bg);color:var(--fg)}
     <div class="pad"><p class="note">P001 Кэш встроен в сайт и здесь не редактируется. Твои проекты идут после него и встают на места «Проект 02…10».</p>
     <button id="add">+ Новый проект</button></div>
     <div id="list" style="border-top:2px solid var(--line)"></div>
+    <p class="sec">Категории</p>
+    <div class="pad"><div class="row" id="cats" style="margin-bottom:10px"></div>
+    <div class="row"><input id="c-new" maxlength="40" placeholder="Своя категория" style="flex:1;width:auto"><button id="c-add">+ Добавить категорию</button></div></div>
   </section>
 
   <section class="win" id="form" hidden><h2 class="tab on" id="ftitle">Project Editor</h2>
     <div class="pad">
     <label><span>Название *</span><input id="f-name" maxlength="60"></label>
     <div class="two">
-      <label><span>Тип</span><input id="f-type" placeholder="Сайт, приложение, бот…"></label>
+      <label><span>Категория</span><select id="f-type"></select></label>
       <label><span>Дата создания</span><input id="f-created" placeholder="10.10.2026"></label>
       <label><span>Стек</span><input id="f-stack" placeholder="JavaScript, Swift"></label>
       <label><span>Платформы</span><input id="f-platforms" placeholder="iPhone, браузер"></label>
     </div>
+    <div class="row" id="newcat" hidden style="margin:-4px 0 12px"><input id="f-cat" maxlength="40" placeholder="Название новой категории" style="flex:1;width:auto"><button id="addCat">Добавить</button></div>
     <label><span>Ссылка (с https://)</span><input id="f-link" placeholder="https://…"></label>
     <label><span>PWA — адрес web-приложения, запускается в телефоне на странице проекта (с https://)</span><input id="f-pwa" placeholder="https://…"></label>
     <label style="margin:0"><span>Описание — курсивом в System Browser</span><textarea id="f-desc"></textarea></label>
@@ -96,15 +100,15 @@ button:disabled{opacity:.35;cursor:default;background:var(--bg);color:var(--fg)}
 
 <script>
 const $=s=>document.querySelector(s);
-let PW=sessionStorage.getItem('pw')||'',list=[],removed=[],pending=[],edit=null,dirty=false;
+let PW=sessionStorage.getItem('pw')||'',cats=[],list=[],removed=[],pending=[],edit=null,dirty=false;
 const esc=v=>String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[m]);
 
 async function api(body){const r=await fetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pw:PW,...body})});
   const j=await r.json().catch(()=>({error:'Ошибка сервера '+r.status}));if(!r.ok)throw new Error(j.error||r.status);return j}
 
-function loadData(){return new Promise(res=>{const s=document.createElement('script');s.src='/projects.js?v='+Date.now();s.onload=s.onerror=()=>{list=JSON.parse(JSON.stringify(window.CUSTOM||[]));res()};document.head.append(s)})}
+function loadData(){return new Promise(res=>{const s=document.createElement('script');s.src='/projects.js?v='+Date.now();s.onload=s.onerror=()=>{list=JSON.parse(JSON.stringify(window.CUSTOM||[]));cats=[...(window.CATS||[])];res()};document.head.append(s)})}
 
-async function login(){$('#lmsg').textContent='';try{await api({op:'check'});sessionStorage.setItem('pw',PW);$('#login').hidden=true;$('#app').hidden=false;await loadData();render()}
+async function login(){$('#lmsg').textContent='';try{await api({op:'check'});sessionStorage.setItem('pw',PW);$('#login').hidden=true;$('#app').hidden=false;await loadData();render();renderCats()}
   catch(e){$('#lmsg').textContent=e.message;sessionStorage.removeItem('pw')}}
 $('#enter').onclick=()=>{PW=$('#pw').value;login()};
 $('#pw').onkeydown=e=>{if(e.key==='Enter')$('#enter').click()};
@@ -118,9 +122,21 @@ $('#list').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=+
   if(b.dataset.a==='edit')open(i);
   else{const j=b.dataset.a==='up'?i-1:i+1;[list[i],list[j]]=[list[j],list[i]];mark();render()}};
 
+const BASE=['Сайт','Приложение','Бот','Дизайн','Инструмент'];
+const used=()=>list.map(p=>p.type).filter(Boolean);
+const allCats=()=>[...new Set([...BASE,...cats,...used()])];
+function fillTypes(v){$('#f-type').innerHTML='<option value="">— без категории —</option>'+allCats().map(c=>`<option>${esc(c)}</option>`).join('')+'<option value="+">+ Своя категория…</option>';$('#f-type').value=v||'';$('#newcat').hidden=true}
+function addCat(v){const c=v.trim().slice(0,40);if(!c)return;if(!allCats().includes(c)){cats.push(c);mark()}renderCats();return c}
+function renderCats(){const u=used();$('#cats').innerHTML=allCats().map(c=>`<span class="btn ghost" style="cursor:default">${esc(c)}${cats.includes(c)&&!u.includes(c)?` <a href="#" data-c="${esc(c)}" title="Удалить" style="text-decoration:none">×</a>`:''}</span>`).join('')}
+$('#cats').onclick=e=>{const a=e.target.closest('[data-c]');if(!a)return;e.preventDefault();cats=cats.filter(c=>c!==a.dataset.c);renderCats();mark()};
+$('#c-add').onclick=()=>{if(addCat($('#c-new').value))$('#c-new').value=''};
+$('#c-new').onkeydown=e=>{if(e.key==='Enter')$('#c-add').click()};
+$('#f-type').onchange=()=>{const n=$('#f-type').value==='+';$('#newcat').hidden=!n;if(n){$('#f-cat').value='';$('#f-cat').focus()}};
+$('#addCat').onclick=()=>{const c=addCat($('#f-cat').value);if(c)fillTypes(c)};
+$('#f-cat').onkeydown=e=>{if(e.key==='Enter')$('#addCat').click()};
 const F=['name','type','created','stack','platforms','link','pwa','desc'];
 function open(i){edit={i,shots:(i==null?[]:list[i].shots||[]).map(s=>({...s})),feats:(i==null?[]:list[i].features||[]).map(f=>({h:f.h||'',p:f.p||'',ul:(f.ul||[]).join('\n')}))};
-  const p=i==null?{}:list[i];F.forEach(k=>$('#f-'+k).value=p[k]||'');
+  const p=i==null?{}:list[i];fillTypes(p.type);F.forEach(k=>k!=='type'&&($('#f-'+k).value=p[k]||''));
   $('#ftitle').textContent=i==null?'Project Editor · новый':'Project Editor · '+p.name;$('#del').hidden=i==null;
   $('#form').hidden=false;drawShots();drawFeats();$('#form').scrollIntoView({behavior:'smooth'})}
 $('#add').onclick=()=>open(null);
@@ -150,12 +166,12 @@ async function shrink(f){if(f.size<=3e6&&/^image\/(jpeg|png|webp)$/.test(f.type)
   return new Promise(res=>c.toBlob(res,'image/webp',.7))}
 
 $('#done').onclick=()=>{const name=$('#f-name').value.trim();if(!name){$('#f-name').focus();return}
-  const old=edit.i==null?null:list[edit.i],p={id:old?.id||Date.now().toString(36)};F.forEach(k=>p[k]=$('#f-'+k).value.trim());
+  const old=edit.i==null?null:list[edit.i],p={id:old?.id||Date.now().toString(36)};F.forEach(k=>p[k]=$('#f-'+k).value.trim());if(p.type==='+')p.type='';
   (old?.shots||[]).forEach(s=>{if(!edit.shots.some(n=>n.src===s.src))removed.push(s.src)});
   p.shots=edit.shots;p.features=edit.feats.filter(f=>f.h.trim()).map(f=>({h:f.h.trim(),p:f.p.trim(),ul:f.ul.split('\n').map(x=>x.trim()).filter(Boolean)}));if(old)list[edit.i]=p;else list.push(p);
-  edit=null;$('#form').hidden=true;mark();render()};
+  edit=null;$('#form').hidden=true;mark();render();renderCats()};
 $('#del').onclick=()=>{const p=list[edit.i];if(!confirm('Удалить «'+p.name+'»?'))return;
-  (p.shots||[]).forEach(s=>s.src&&removed.push(s.src));list.splice(edit.i,1);edit=null;$('#form').hidden=true;mark();render()};
+  (p.shots||[]).forEach(s=>s.src&&removed.push(s.src));list.splice(edit.i,1);edit=null;$('#form').hidden=true;mark();render();renderCats()};
 
 const b64=b=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result.split(',')[1]);fr.readAsDataURL(b)});
 let busy=false,again=false;
@@ -166,7 +182,7 @@ async function publish(){if(busy){again=true;return}busy=true;$('#publish').hidd
       files.push({path,sha});s.src=path;delete s.blob;delete s.preview}
     $('#bmsg').textContent='Публикация…';
     const clean=list.map(p=>({...p,features:p.features||[],shots:(p.shots||[]).map(s=>({src:s.src,h:s.h||'',p:s.p||''}))}));
-    await api({op:'commit',json:JSON.stringify(clean),files,del:removed.filter(x=>!files.some(f=>f.path===x)),msg:'Админка: обновление проектов'});
+    await api({op:'commit',json:JSON.stringify(clean),cats,files,del:removed.filter(x=>!files.some(f=>f.path===x)),msg:'Админка: обновление проектов'});
     removed=[];pending=[];dirty=false;$('#bmsg').textContent='Опубликовано. Сайт обновится примерно через минуту.';setTimeout(()=>{if(!dirty)$('#bar').hidden=true},6000);render()}
   catch(e){$('#bmsg').textContent='Ошибка: '+e.message;$('#publish').hidden=false}
   busy=false;if(again){again=false;publish()}}

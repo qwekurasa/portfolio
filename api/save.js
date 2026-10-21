@@ -19,11 +19,12 @@ module.exports = async (req, res) => {
     if (b.op === 'commit') {
       const list = JSON.parse(b.json);
       if (!Array.isArray(list)) throw new Error('Неверные данные');
+      const cats = Array.isArray(b.cats) ? [...new Set(b.cats.map(c => String(c).trim().slice(0, 40)).filter(Boolean))].slice(0, 50) : null;
       const files = b.files || [], del = b.del || [];
       if (![...files.map(f => f.path), ...del].every(p => PATH.test(p))) throw new Error('Неверный путь файла');
       const ref = await gh('/git/ref/heads/main'), head = ref.object.sha, c = await gh('/git/commits/' + head);
       const tree = [
-        { path: 'projects.js', mode: '100644', type: 'blob', content: 'window.CUSTOM=' + JSON.stringify(list, null, 1) + ';\n' },
+        { path: 'projects.js', mode: '100644', type: 'blob', content: 'window.CUSTOM=' + JSON.stringify(list, null, 1) + ';\n' + (cats ? 'window.CATS=' + JSON.stringify(cats) + ';\n' : '') },
         ...files.map(f => ({ path: f.path, mode: '100644', type: 'blob', sha: f.sha })),
         ...del.map(p => ({ path: p, mode: '100644', type: 'blob', sha: null })),
       ];
