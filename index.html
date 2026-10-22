@@ -104,8 +104,22 @@ body[data-v=project]{background:#fff}
 .st{padding:16px 16px 60px;display:grid;grid-template-columns:1fr minmax(0,1040px) 1fr;align-items:start}
 .st-desk{grid-column:2}
 .st-phone{grid-column:1;justify-self:end;position:sticky;top:max(16px,calc(50vh - 270px));width:264px;margin:max(30px,calc(50vh - 286px)) 40px 0 0}
+.st-phone.pad{width:min(400px,calc(50vw - 560px));top:max(16px,calc(50vh - 285px));margin-top:max(30px,calc(50vh - 300px))}
 .ph{position:relative;width:100%;aspect-ratio:430/880;filter:invert(1)}
 .ph-body{position:absolute;inset:0;width:100%;height:100%}
+.ph.pd{aspect-ratio:640/880}
+.pd-scr{position:absolute;left:3.75%;top:2.727%;width:92.5%;height:94.545%;overflow:hidden;border-radius:5.4%/3.9%;background:#000}
+.pd-in{position:absolute;left:0;top:0;width:820px;height:1180px;transform-origin:0 0;overflow:hidden;background:#1c1c1e;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arimo,sans-serif}
+.pd-sb{position:relative;height:32px;display:flex;align-items:center;gap:10px;padding:0 26px;font-size:15px;font-weight:600}
+.pd-date{font-weight:500}.pd-sb .ph-ind{margin-left:auto;font-weight:500;font-size:14px}
+.pd-bar{height:50px;display:flex;align-items:center;gap:20px;padding:0 20px;color:#0a84ff;border-bottom:.5px solid rgba(255,255,255,.12)}
+.pd-tool{display:flex}.pd-tool.dim{opacity:.35}
+.pd-url{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:36px;margin:0 6px;border-radius:10px;background:rgba(118,118,128,.24);color:#fff;font-size:15px;position:relative}
+.pd-url svg{color:#8e8e93}.pd-re{position:absolute;right:10px;border:0;background:none;color:#8e8e93;cursor:pointer;padding:4px;display:flex}
+.pd-load{height:2px;width:0;background:#0a84ff}.pd-load.run{animation:pdLoad 2.5s ease-out forwards}.pd-load.done{width:100%;opacity:0;transition:opacity .4s .2s;animation:none}
+@keyframes pdLoad{to{width:85%}}
+.pd-web{display:block;width:100%;height:calc(100% - 84px);border:0;background:#fff;margin-top:-2px}
+.pd-hi{position:absolute;left:50%;bottom:8px;width:300px;height:5px;margin-left:-150px;border-radius:3px;background:rgba(255,255,255,.75);pointer-events:none;mix-blend-mode:difference}
 .ph-scr{position:absolute;left:4.419%;top:2.159%;width:91.163%;height:95.682%;overflow:hidden;border-radius:13.4%/6.4%;background:#000;isolation:isolate}
 .ph-island{position:absolute;z-index:9;left:50%;top:1.3%;width:31.5%;height:4.05%;transform:translateX(-50%);border-radius:99px;background:#000;pointer-events:none}
 .ph-island i{position:absolute;right:13%;top:50%;width:11%;aspect-ratio:1;transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle at 35% 35%,#1d2236,#05060a 70%)}
@@ -168,7 +182,7 @@ body[data-v=project]{background:#fff}
 .ph-form input{display:block;width:calc(100% - 32px);margin:0 16px 8px;padding:8px 10px;border:.5px solid #c8c8cc;border-radius:7px;font:15px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arimo,sans-serif;background:#fff;color:#000}
 .ph-form div{display:flex;margin-top:8px}.ph-form div button{flex:1;border-left:1px solid #c8c8cc}.ph-form div button:first-child{border-left:0;font-weight:400}
 .ph-alert button{width:100%;padding:11px;border:0;border-top:1px solid #c8c8cc;background:none;color:#007aff;font-size:17px;font-weight:600}
-@media(max-width:1679px){.st{grid-template-columns:minmax(0,1040px);justify-content:center}.st-desk,.st-phone{grid-column:1}.st-phone{justify-self:center;position:static;margin:0 0 50px}}
+@media(max-width:1679px){.st-phone.pad{width:min(440px,92vw)}.st{grid-template-columns:minmax(0,1040px);justify-content:center}.st-desk,.st-phone{grid-column:1}.st-phone,.st-phone.pad{justify-self:center;position:static;margin:0 0 50px}}
 .st-desk{position:relative;width:1040px;height:1500px;margin:0 auto}
 .st-w{position:absolute;background:#fff;border:2px solid #000}
 .st-t{position:absolute;bottom:100%;left:-2px;margin:0;background:#fff;border:2px solid #000;border-bottom:0;padding:2px 8px;font:400 13px var(--sans);letter-spacing:.03em;white-space:nowrap;cursor:grab;user-select:none;touch-action:none}
@@ -274,7 +288,6 @@ body[data-v=index]{background:#fff}
 .ixc{position:relative;height:var(--ch,240px);margin:0 auto;max-width:1180px;perspective:1100px;perspective-origin:50% 50%;overflow:hidden;touch-action:pan-y;cursor:grab;user-select:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
 .ixc:active{cursor:grabbing}
 .ixc-ring{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;transform:translateZ(calc(var(--cw) * -1.4))}
-.ixc-cat{position:absolute;left:0;top:0;z-index:200;pointer-events:none;transform-origin:50% 50%;opacity:0;filter:drop-shadow(0 10px 12px rgba(0,0,0,.7)) drop-shadow(0 0 1px rgba(255,255,255,.25))}.ixc-cat svg{display:block;width:100%;height:auto}
 .ixc-card{position:absolute;left:calc(var(--cw) / -2);top:calc(var(--cw) * -.31);width:var(--cw);height:calc(var(--cw) * .62);display:flex;flex-direction:column;justify-content:flex-end;gap:2px;padding:10px 12px;border-radius:5px;background:linear-gradient(160deg,#18181a,#050506);color:#0b0b0c;overflow:hidden;backface-visibility:visible;-webkit-user-drag:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),inset 0 1px 0 rgba(255,255,255,.14)}
 .ixc-card b{position:relative;z-index:1;font-size:calc(var(--cw) * .1);line-height:1.05;letter-spacing:-.02em}
 .ixc-card span{position:relative;z-index:1;font-size:10px;color:#6e6e73;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -318,28 +331,14 @@ body[data-v=index]{background:#fff}
 
 <script src="projects.js"></script>
 <script src="phone.js"></script>
-<script src="kesh-cat.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const GENERIC=['Экран 01','Экран 02','Экран 03','Экран 04','Экран 05'];
 const P=[
- {id:'tracker',url:'https://kesh-money.vercel.app/',pwa:'https://kesh-money.vercel.app/',icon:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Crect width='60' height='60' fill='%23111'/%3E%3Cpath d='M16 42V18l9 8h10l9-8v24z' fill='%23fff'/%3E%3Ccircle cx='25' cy='33' r='2.2'/%3E%3Ccircle cx='35' cy='33' r='2.2'/%3E%3C/svg%3E",name:'Кэш',type:'Трекер трат',year:'2026',created:'10.10.2026',shots:['Знакомство','Главная','Ввод','Аналитика','Бюджет'],
-  desc:'Трекер трат с котом. Без аккаунта, облака и рекламы: все данные хранятся только на устройстве. Расходы и доходы, аналитика за любой период, лимиты, вклады и импорт выписки банка.',
-  meta:[['Стек','JavaScript, PWA, Swift, Java'],['Платформы','iPhone, Android, браузер, ПК'],['Приложение','<a href="https://kesh-money.vercel.app/" target="_blank" rel="noopener">kesh-money.vercel.app</a>']],
-  wins:[
-   {t:'Kesh/Знакомство',k:0,h:'Без аккаунта',p:'Никакой регистрации и облака: данные живут только на устройстве. Интерфейс на русском или английском.',dl:[['Экран','01 / 05']]},
-   {t:'about.txt',h:'Что умеет',ul:['Расходы и доходы, категории, комментарии','Аналитика за любой период','Счета и лимиты по категориям','Вклады и накопительные счета','Офлайн, 10 валют']},
-   {t:'Kesh/Главная',k:1,h:'Главная',p:'Расходы за месяц и сравнение с прошлым, траты по дням и лента последних операций.',dl:[['Экран','02 / 05']]},
-   {t:'import.pdf',h:'Импорт выписки',p:'Выписка Т-Банка в PDF или CSV превращается в операции с категориями.',dl:[['Форматы','PDF, CSV'],['Разбор','PDF.js']]},
-   {t:'Kesh/Ввод',k:2,h:'Трата за три касания',p:'Сумма, частая категория, комментарий. На крупную трату кот переспросит.',dl:[['Экран','03 / 05']]},
-   {t:'export.xlsx',h:'Excel и резервная копия',p:'Отчёт в Excel и резервная копия одним файлом. На компьютере — экспорт в CSV и перенос данных с телефона.'},
-   {t:'Kesh/Аналитика',k:3,h:'Аналитика',p:'Неделя, месяц или год: динамика по дням и куда ушли деньги по категориям.',dl:[['Экран','04 / 05']]},
-   {t:'platforms.sys',h:'Где работает',ul:['iPhone — приложение с виджетом','Android — APK','Любой браузер — PWA','Компьютер — сайт с аналитикой и экспортом']},
-   {t:'Kesh/Бюджет',k:4,h:'Бюджет',p:'Лимиты по категориям, остаток на месяц и сколько можно тратить в день.',dl:[['Экран','05 / 05']]}]},
  ...(window.CUSTOM||[]).map(c=>{const e=v=>String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[m]),sh=c.shots||[];
    const url=/^https?:\/\//.test(c.link||'')?c.link:'';
-   return{id:'c'+e(c.id),url,pwa:/^https:\/\//.test(c.pwa||'')?c.pwa:'',name:e(c.name),type:e(c.type),created:e(c.created),year:(c.created||'').slice(-4),desc:e(c.desc),cover:sh[0]?.src,
+   return{id:'c'+e(c.id),url,device:c.device==='ipad'?'ipad':'phone',pwa:/^https:\/\//.test(c.pwa||'')?c.pwa:'',name:e(c.name),type:e(c.type),created:e(c.created),year:(c.created||'').slice(-4),desc:e(c.desc),cover:sh[0]?.src,
     meta:[c.stack&&['Стек',e(c.stack)],c.platforms&&['Платформы',e(c.platforms)],url&&['Ссылка',`<a href="${e(url)}" target="_blank" rel="noopener">${e(url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''))}</a>`]].filter(Boolean),
     shots:sh.length?sh.map(x=>e(x.h)||'Фото'):undefined,wins:sh.length||(c.features||[]).length?[...sh.map(x=>({img:e(x.src),h:e(x.h),p:e(x.p)})),...(c.features||[]).map(f=>({h:e(f.h),p:e(f.p),ul:(f.ul||[]).map(e)}))]:undefined}}),
 ];
@@ -357,63 +356,14 @@ $('#expandAll').onclick=function(){const o=this.getAttribute('aria-expanded')!==
 function openProject(id,direct){if(direct){location.hash='p-'+id;return}pendingOpen=id;location.hash='index'}
 
 /* ---------- проект ---------- */
-/* ---------- экраны Кэша: чёрно-белые векторные перерисовки ---------- */
-const KS=(()=>{
-  const t=(x,y,s,o={})=>`<text x="${x}" y="${y}" font-size="${o.z||9}"${o.b?' font-weight="700"':''}${o.a?` text-anchor="${o.a}"`:''}${o.f?` fill="${o.f}"`:''}${o.l?` letter-spacing="${o.l}"`:''}>${s}</text>`;
-  const r=(x,y,w,h,o={})=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${o.rx??4}" fill="${o.f||'#fff'}" stroke="${o.s||'#000'}" stroke-width="${o.sw??1}"/>`;
-  const cat=(x,y,s=1,f='#000')=>`<g transform="translate(${x} ${y}) scale(${s})" fill="${f}"><path d="M-7 6V-6l4 4h6l4-4V6z"/><circle cx="-2.5" cy="1.5" r="1" fill="${f==='#000'?'#fff':'#000'}"/><circle cx="2.5" cy="1.5" r="1" fill="${f==='#000'?'#fff':'#000'}"/></g>`;
-  const bars=(x,y,w,h,v,o={})=>{const n=v.length,bw=w/n;return v.map((a,i)=>`<rect x="${(x+i*bw+.6).toFixed(1)}" y="${(y+h-a*h).toFixed(1)}" width="${(bw-1.2).toFixed(1)}" height="${(a*h).toFixed(1)}" fill="${o.d&&i%2?'url(#dz)':'#000'}"/>`).join('')+`<line x1="${x}" y1="${y+h+.5}" x2="${x+w}" y2="${y+h+.5}" stroke="#000" stroke-dasharray="2 2"/>`};
-  const nav=y=>`<line x1="14" y1="${y}" x2="226" y2="${y}" stroke="#000"/>`+[36,78,162,204].map((x,i)=>i===0?`<path d="M${x-6} ${y+18}l6-6 6 6v6h-12z" fill="none" stroke="#000"/>`:i===1?`<path d="M${x-5} ${y+24}v-8M${x} ${y+24}v-12M${x+5} ${y+24}v-5" stroke="#000" stroke-width="2"/>`:i===2?`<circle cx="${x}" cy="${y+18}" r="6" fill="none" stroke="#000"/><path d="M${x} ${y+14}v4h3" stroke="#000" fill="none"/>`:`<rect x="${x-6}" y="${y+12}" width="12" height="12" rx="2" fill="none" stroke="#000"/><circle cx="${x}" cy="${y+18}" r="2.5" fill="none" stroke="#000"/>`).join('')+`<circle cx="120" cy="${y+18}" r="11" fill="#000"/><path d="M114 ${y+18}h12M120 ${y+12}v12" stroke="#fff" stroke-width="2"/>`;
-  const frame=b=>`<svg viewBox="0 0 240 430" class="ks" role="img"><rect x="4" y="4" width="232" height="422" rx="26" fill="#fff" stroke="#000" stroke-width="2.5"/><rect x="96" y="12" width="48" height="7" rx="3.5" fill="#000"/>${b}</svg>`;
-  return [
-  /* 0 знакомство */
-  ()=>frame(`<rect x="22" y="40" width="196" height="160" rx="10" fill="url(#dz)"/>${cat(120,118,4.2,'#000')}
-    <rect x="170" y="48" width="40" height="16" rx="8" fill="#fff" stroke="#000"/><rect x="172" y="50" width="18" height="12" rx="6" fill="#000"/>${t(181,59,'RU',{z:7,a:'middle',f:'#fff',b:1})}${t(200,59,'EN',{z:7,a:'middle'})}
-    <line x1="22" y1="232" x2="218" y2="232" stroke="#000"/>${t(22,262,'Привет! Я Кэш.',{z:17,b:1})}
-    ${t(22,284,'Считаю траты, не спрашиваю')}${t(22,297,'лишнего и живу только')}${t(22,310,'на твоём телефоне.')}
-    ${r(22,370,196,30,{rx:8,f:'#000'})}${t(120,389,'Начать',{z:11,a:'middle',f:'#fff',b:1})}${cat(200,385,.8,'#fff')}`),
-  /* 1 главная */
-  ()=>frame(`<circle cx="32" cy="42" r="10" fill="#000"/>${cat(32,42,.7,'#fff')}${t(48,40,'Артём',{z:10,b:1})}${t(48,51,'Октябрь 2026',{z:7})}${t(200,46,'‹  ›',{z:11})}
-    ${t(22,76,'РАСХОДЫ ЗА МЕСЯЦ',{z:7,l:1})}${t(22,104,'36 640 ₽',{z:26,b:1})}${r(150,88,34,14,{rx:3,f:'#000'})}${t(167,98,'↑ 36%',{z:7,a:'middle',f:'#fff'})}${t(22,118,'За 1–13 сентября было 26 974 ₽',{z:7})}
-    ${[['СЕГОДНЯ','97 ₽'],['ДОХОДЫ','+92 000 ₽'],['В ДЕНЬ','2 818 ₽']].map((c,i)=>r(14+i*72,128,68,38)+t(20+i*72,141,c[0],{z:6,l:.5})+t(20+i*72,157,c[1],{z:9,b:1})).join('')}
-    ${r(14,174,212,96)}${t(22,190,'По дням',{z:9,b:1})}${t(214,190,'1М',{z:7,a:'end'})}${bars(22,198,196,58,[.2,.35,.3,.55,.9,.6,.4,.75,.1,.3,.15,0,.02,.02,.02,.02,.02,.02,.02,.02,.02,.02],{d:1})}
-    ${r(14,278,212,92)}${t(22,294,'СЕГОДНЯ · 13 ОКТ',{z:7,l:.5})}${t(216,294,'−97 ₽',{z:7,a:'end'})}
-    ${r(22,302,16,16,{rx:3,f:'url(#dz)'})}${t(46,314,'Транспорт',{z:9})}${t(216,314,'97 ₽',{z:9,a:'end',b:1})}<line x1="22" y1="328" x2="218" y2="328" stroke="#000" stroke-dasharray="1 2"/>
-    ${t(22,344,'ВЧЕРА · 12 ОКТ',{z:7,l:.5})}${r(22,350,16,16,{rx:3})}${t(46,362,'Кофе',{z:9})}${t(216,362,'240 ₽',{z:9,a:'end',b:1})}${nav(384)}`),
-  /* 2 ввод */
-  ()=>frame(`${t(22,46,'‹',{z:16})}${r(80,32,80,20,{rx:10})}${r(81,33,40,18,{rx:9,f:'#000',s:'#000'})}${t(101,46,'РАСХОД',{z:6,a:'middle',f:'#fff',b:1})}${t(140,46,'ДОХОД',{z:6,a:'middle'})}${r(204,34,14,14,{rx:2})}
-    ${t(112,104,'6 800',{z:34,a:'middle',b:1})}${t(168,104,'₽',{z:14})}${cat(196,92,1.3)}${t(120,122,'Хм… уверен?',{z:8,a:'middle'})}
-    ${t(18,146,'ЧАСТЫЕ',{z:6,l:1})}${t(222,146,'ВСЕ КАТЕГОРИИ',{z:6,a:'end',l:1})}
-    ${['Транспорт','Маркетпл.','Кофе','Рестораны'].map((c,i)=>r(16+i*52,152,48,40,{f:i===1?'#000':'#fff'})+`<rect x="${34+i*52}" y="${160}" width="12" height="12" rx="2" fill="${i===1?'#fff':'none'}" stroke="${i===1?'#fff':'#000'}"/>`+t(40+i*52,186,c,{z:6,a:'middle',f:i===1?'#fff':'#000'})).join('')}
-    ${r(16,200,208,22)}${t(24,215,'Комментарий',{z:8,f:'#666'})}
-    ${['1','2','3','4','5','6','7','8','9',',','0','⌫'].map((k,i)=>r(16+(i%3)*70,230+Math.floor(i/3)*30,66,26,{rx:5})+t(49+(i%3)*70,247+Math.floor(i/3)*30,k,{z:11,a:'middle'})).join('')}
-    ${r(16,360,208,32,{rx:8,f:'#000'})}${t(120,380,'Сохранить · −6 800 ₽',{z:10,a:'middle',f:'#fff',b:1})}`),
-  /* 3 аналитика */
-  ()=>frame(`${t(18,46,'Аналитика',{z:13,b:1})}${r(140,34,84,18,{rx:9})}${r(168,35,28,16,{rx:8,f:'#000'})}${t(154,46,'НЕД',{z:6,a:'middle'})}${t(182,46,'МЕС',{z:6,a:'middle',f:'#fff',b:1})}${t(210,46,'ГОД',{z:6,a:'middle'})}
-    ${[['РАСХОДЫ','36 640 ₽','↑36%'],['ДОХОДЫ','+92 000 ₽','↑2%'],['РАЗНИЦА','+55 360 ₽','↑12%']].map((c,i)=>r(14+i*72,60,68,42)+t(20+i*72,73,c[0],{z:6,l:.5})+t(20+i*72,88,c[1],{z:8,b:1})+t(20+i*72,98,c[2],{z:6})).join('')}
-    ${r(14,110,212,110)}${t(22,126,'Динамика',{z:9,b:1})}${t(214,126,'ОКТ / СЕН',{z:6,a:'end'})}${bars(22,134,196,66,[.15,.3,.2,.6,.9,.4,.7,.25,.95,.3,.5,.05,.04,.04,.04,.04,.04,.04,.04,.04],{d:1})}${t(22,212,'■ октябрь  ▒ сентябрь',{z:6})}
-    ${r(14,228,212,150)}${t(22,244,'Куда ушли деньги',{z:9,b:1})}${t(214,244,'100 = 36 640 ₽',{z:6,a:'end'})}
-    ${Array.from({length:80},(_,i)=>{const x=22+(i%10)*8.4,y=252+Math.floor(i/10)*8.4,f=i<34?'#000':i<57?'url(#dz)':i<78?'#fff':'#000';return`<rect x="${x}" y="${y}" width="7" height="7" fill="${f}" stroke="#000" stroke-width=".6"/>`}).join('')}
-    ${[['■','Маркетплейсы','34%'],['▒','Продукты','23%'],['□','Рестораны','21%'],['■','Подписки','11%'],['□','Кофе','6%']].map((c,i)=>t(112,262+i*14,c[0]+' '+c[1],{z:7})+t(218,262+i*14,c[2],{z:7,a:'end'})).join('')}
-    ${nav(386)}`),
-  /* 4 бюджет */
-  ()=>frame(`${t(18,46,'Бюджет · октябрь',{z:13,b:1})}
-    ${r(14,58,212,84)}${t(22,74,'ОСТАЛОСЬ НА МЕСЯЦ',{z:6,l:1})}${t(22,102,'26 309 ₽',{z:26,b:1})}${t(214,98,'из 47 000 ₽',{z:6,a:'end'})}
-    ${Array.from({length:30},(_,i)=>`<rect x="${22+i*6.5}" y="110" width="4.5" height="12" fill="${i<13?'#000':'url(#dz)'}"/>`).join('')}${t(22,134,'Потрачено 44%',{z:7})}${t(218,134,'≈ 1 384 ₽ в день',{z:7,a:'end'})}
-    ${r(14,150,212,214)}${t(22,168,'Лимиты категорий',{z:9,b:1})}${t(214,168,'+',{z:11,a:'end'})}
-    ${[['Продукты','8 585 / 24 000',.36],['Рестораны','7 814 / 12 000',.65],['Транспорт','382 / 6 800',.06],['Подписки','3 990 / 5 000',.8],['Кофе','1 120 / 3 000',.37]].map((c,i)=>{const y=180+i*36;return r(22,y,16,16,{rx:3,f:i%2?'url(#dz)':'#fff'})+t(46,y+11,c[0],{z:8})+t(218,y+11,c[1],{z:7,a:'end'})+`<rect x="46" y="${y+19}" width="172" height="3" fill="url(#dz)"/><rect x="46" y="${y+19}" width="${172*c[2]}" height="3" fill="#000"/>`}).join('')}
-    ${nav(386)}`)
-  ];
-})();
-
 /* ---------- проект: рабочий стол в духе Smalltalk-80 ---------- */
 let stZ=10;
 function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=P[(i+1)%P.length],pv=P[(i+P.length-1)%P.length];
-  const wins=p.wins||[],shots=wins.filter(w=>w.img||w.k!==undefined),info=wins.filter(w=>!w.img&&w.k===undefined);
+  const wins=p.wins||[],shots=wins.filter(w=>w.img),info=wins.filter(w=>!w.img);
   const meta=[['type',p.type],['created',p.created||'—'],...(p.meta||[]).map(m=>[{'Стек':'stack','Платформы':'platforms','Приложение':'app','Ссылка':'link'}[m[0]]||m[0],m[1]])];
   const W=(cls,title,body,style='')=>`<section class="st-w ${cls}" style="${style}"><h2 class="st-t">${title}</h2>${body}</section>`;
   const pos=[[640,28],[742,330],[470,870],[40,960],[760,900]];
-  const shotWin=(w,k)=>W('st-shot',`Form Editor · ${w.h||'Экран '+(k+1)}`,`<div class="st-art">${w.k!==undefined&&p===P[0]?KS[w.k]():`<img src="${w.img}" alt="${p.name}: ${w.h}" loading="lazy">`}</div>${w.p?`<p class="st-cap">${w.p}</p>`:''}`,`left:${pos[k%5][0]+Math.floor(k/5)*30}px;top:${pos[k%5][1]+Math.floor(k/5)*30}px`);
+  const shotWin=(w,k)=>W('st-shot',`Form Editor · ${w.h||'Экран '+(k+1)}`,`<div class="st-art"><img src="${w.img}" alt="${p.name}: ${w.h}" loading="lazy"></div>${w.p?`<p class="st-cap">${w.p}</p>`:''}`,`left:${pos[k%5][0]+Math.floor(k/5)*30}px;top:${pos[k%5][1]+Math.floor(k/5)*30}px`);
   const day=new Date(),mm=day.getMonth(),yy=day.getFullYear(),first=(new Date(yy,mm,1).getDay()+6)%7,dim=new Date(yy,mm+1,0).getDate();
   $('#project').innerHTML=`<svg width="0" height="0" style="position:absolute"><defs><pattern id="dz" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="1" height="1"/><rect x="1" y="1" width="1" height="1"/></pattern></defs></svg>
   <div class="st"><aside class="st-phone"><div id="stPhone"></div></aside><div class="st-desk">
@@ -428,7 +378,9 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
     ${info.length?W('st-fl','File List',`<div class="st-path">[]&lt;${p.name}&gt;Функции&gt;*▴</div><ul class="st-files">${info.map((w,j)=>`<li data-j="${j}"${j===0?' class="on"':''}>[${p.code}]&lt;${p.name}&gt;${w.h}.st</li>`).join('')}<li>------------</li></ul><div class="st-out" id="stOut"></div>`,'left:30px;top:520px'):''}
     <table class="st-cal">${Array.from({length:Math.ceil((first+dim)/7)},(_,w)=>'<tr>'+Array.from({length:7},(_,d)=>{const n=w*7+d-first+1;return n>0&&n<=dim?`<td${n===day.getDate()?' class="on"':''}>${n}</td>`:'<td class="e"></td>'}).join('')+'</tr>').join('')}</table>
   </div></div>`;
-  window.Phone?.mount($('#stPhone'),{id:p.id,pwa:p.pwa,name:p.name,icon:p.icon,screens:shots.map(w=>w.k!==undefined&&p===P[0]?KS[w.k]().replace('viewBox="0 0 240 430"','viewBox="8 26 224 394" preserveAspectRatio="xMidYMid meet"').replace(/<rect x="4" y="4"[^>]*\/><rect x="96" y="12"[^>]*\/>/,'<rect width="240" height="430" fill="#fff"/>'):`<img src="${w.img}" alt="">`)});
+  if(p.device==='ipad'&&p.pwa)window.Phone?.mountPad($('#stPhone'),{url:p.pwa});
+  else window.Phone?.mount($('#stPhone'),{id:p.id,pwa:p.pwa,name:p.name,icon:p.icon,screens:shots.map(w=>`<img src="${w.img}" alt="">`)});
+  $('.st-phone').classList.toggle('pad',p.device==='ipad'&&!!p.pwa);
   const out=$('#stOut'),show=j=>{const w=info[j];if(!out||!w)return;out.innerHTML=`<b>${w.h}</b>\n${w.p?`    ${w.p}\n`:''}${(w.ul||[]).map(x=>`    ${x}.`).join('\n')}${(w.dl||[]).map(r=>`    ${r[0]}: ${r[1]}.`).join('\n')}`};show(0);
   $('#project').querySelectorAll('.st-files li[data-j]').forEach(li=>li.onclick=()=>{$('#project').querySelectorAll('.st-files li').forEach(x=>x.classList.toggle('on',x===li));show(+li.dataset.j)});
   // окна: клик поднимает наверх, тянуть за заголовок
@@ -456,12 +408,10 @@ addEventListener('hashchange',route);
 /* ---------- загрузка ---------- */
 /* ---------- карусель проектов: страницы-веер вокруг вертикальной оси ---------- */
 function carousel(box,p){const ring=box.querySelector('.ixc-ring'),w=p.wins||[];
-  const ks=k=>KS[k]().replace('viewBox="0 0 240 430"','viewBox="8 26 224 250" preserveAspectRatio="xMidYMin slice"').replace(/<rect x="4" y="4"[^>]*\/><rect x="96" y="12"[^>]*\/>/,'<rect width="240" height="430" fill="#fff"/>');
-  let base=w.filter(x=>x.img||x.k!==undefined).map(x=>({art:x.img?`<img src="${x.img}" alt="" loading="lazy" draggable="false">`:ks(x.k),cls:x.img?' pic':' ink',t:x.h||p.name,s:p.name}));
-  if(!base.length)base=[p.name,p.type,p.code,'qwekurasa',p.created||'2026'].map((t,i)=>({art:'',cls:i%2?' blank dk':' blank',t,s:p.code+' · '+p.name}));
+  const base=[0];
   const items=[];while(items.length<12)items.push(...base);items.length=Math.max(12,base.length);
   ring.innerHTML=items.map(()=>`<a class="ixc-card" href="#p-${p.id}" draggable="false"></a>`).join('');
-  const cat=document.createElement('div');cat.className='ixc-cat';box.append(cat);let jump=null,pause=.6;
+
   const cards=[...ring.children],N=cards.length;let phi=0,vel=0,drag=null,hover=false,last=0,R=0;
   const size=()=>{const bw=box.clientWidth,W=Math.round(Math.min(bw*(bw<700?.44:.3),330));R=W*.56;box.style.setProperty('--cw',W+'px');box.style.setProperty('--ch',Math.round(W*.62+48)+'px')};
   size();addEventListener('resize',size);
@@ -474,21 +424,7 @@ function carousel(box,p){const ring=box.querySelector('.ixc-ring'),w=p.wins||[];
     if(!drag){const target=hover?.04:.16;vel+=(target-vel)*Math.min(1,dt*2.5);phi+=vel*dt}
     if(!box.clientWidth)return;cards.forEach((c,i)=>{const a=((i/N)*Math.PI*2+phi)%(Math.PI*2),z=Math.cos(a);
       c.style.transform=`rotateY(${(a*180/Math.PI).toFixed(2)}deg) translateZ(${R.toFixed(1)}px) rotateY(90deg)`;
-      c.style.filter=`brightness(${(.62+.38*Math.abs(Math.sin(a))).toFixed(3)})`;c.style.zIndex=Math.round((z+1)*50)});
-    catStep(dt)})(0);
-  /* Кэш выпрыгивает из одной пластинки и ныряет в другую */
-  function top(c){const r=c.getBoundingClientRect(),b=box.getBoundingClientRect();return{x:r.left-b.left+r.width/2,y:r.top-b.top+r.height/2,w:r.width}}
-  function pick(){const L=[],Rr=[],bw=box.clientWidth;cards.forEach(c=>{const t=top(c);if(t.w<bw*.07)return;(t.x<bw/2?L:Rr).push([t.w,c])});
-    if(!L.length||!Rr.length)return null;L.sort((a,b)=>b[0]-a[0]);Rr.sort((a,b)=>b[0]-a[0]);const ltr=Math.random()<.5;return ltr?[L[0][1],Rr[0][1]]:[Rr[0][1],L[0][1]]}
-  function catStep(dt){const K=window.KESH_CAT;if(!K)return;const sz=parseFloat(getComputedStyle(box).getPropertyValue('--cw'))*.34;cat.style.width=sz+'px';
-    if(!jump){pause-=dt;cat.style.opacity=0;if(pause<=0){const pr=pick();if(pr)jump={a:pr[0],b:pr[1],t:0};else pause=.3}return}
-    jump.t+=dt;const T=jump.t,A=top(jump.a),B=top(jump.b),up=.4,fly=.7,down=.35,dir=B.x>A.x?1:-1;let x,y,s=1,rot=0,ry=0,pose,op=1;
-    if(T<up){const k=T/up,e=1-(1-k)**3;x=A.x;y=A.y;s=.15+.85*e;op=Math.min(1,k*4);ry=-dir*40*(1-e);pose='Ждёт'}
-    else if(T<up+fly){const k=(T-up)/fly,e=k<.5?2*k*k:1-2*(1-k)**2;x=A.x+(B.x-A.x)*e;y=A.y+(B.y-A.y)*e-Math.sin(k*Math.PI)*sz*.55;rot=dir*Math.sin(k*Math.PI*2)*12;ry=dir*Math.sin(k*Math.PI)*28;s=1+.12*Math.sin(k*Math.PI);pose=k<.75?'Ликует':'Удивлён'}
-    else if(T<up+fly+down){const k=(T-up-fly)/down,e=k*k;x=B.x;y=B.y;s=1-.85*e;op=1-e*e;ry=dir*40*e;pose='Удивлён'}
-    else{jump=null;pause=1.2+Math.random()*1.4;return}
-    if(cat._p!==pose){cat.innerHTML=K[pose];cat._p=pose}
-    cat.style.opacity=op;cat.style.transform=`translate(${(x-sz/2).toFixed(1)}px,${(y-sz*.5).toFixed(1)}px) perspective(400px) rotateY(${ry.toFixed(1)}deg) rotate(${rot.toFixed(1)}deg) scale(${s.toFixed(3)})`}
+      c.style.filter=`brightness(${(.62+.38*Math.abs(Math.sin(a))).toFixed(3)})`;c.style.zIndex=Math.round((z+1)*50)});})(0);
   return true}
 
 (async function boot(){

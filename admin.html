@@ -83,7 +83,7 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
 
 <div id="app" hidden>
   <section class="win"><h2 class="tab">Projects Browser</h2>
-    <div class="pad"><p class="note">P001 Кэш встроен в сайт и здесь не редактируется. Твои проекты идут после него и встают на места «Проект 02…10».</p>
+    <div class="pad"><p class="note">Проекты идут на сайте в этом порядке и встают на места «Проект 01…10».</p>
     <button id="add">+ Новый проект</button></div>
     <div id="list" style="border-top:1px solid rgba(255,255,255,.08)"></div>
     <p class="sec">Категории</p>
@@ -102,7 +102,10 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
     </div>
     <div class="row" id="newcat" hidden style="margin:-4px 0 12px"><input id="f-cat" maxlength="40" placeholder="Название новой категории" style="flex:1;width:auto"><button id="addCat">Добавить</button></div>
     <label><span>Ссылка (с https://)</span><input id="f-link" placeholder="https://…"></label>
-    <label><span>PWA — адрес web-приложения, запускается в телефоне на странице проекта (с https://)</span><input id="f-pwa" placeholder="https://…"></label>
+    <div class="two">
+      <label><span>Устройство слева на странице проекта</span><select id="f-device"><option value="phone">iPhone — приложение</option><option value="ipad">iPad — сайт</option></select></label>
+      <label><span id="pwaLbl">Адрес web-приложения (с https://)</span><input id="f-pwa" placeholder="https://…"></label>
+    </div>
     <label style="margin:0"><span>Описание — курсивом в System Browser</span><textarea id="f-desc"></textarea></label>
     </div>
     <p class="sec">Экраны — окна Form Editor</p>
@@ -136,7 +139,7 @@ if(PW)login();
 
 function mark(){dirty=true;$('#bar').hidden=false;publish()}
 function render(){
-  $('#list').innerHTML=list.map((p,i)=>`<div class="pr"><span class="c">P${String(i+2).padStart(3,'0')}</span><span>${esc(p.name)}</span><div>
+  $('#list').innerHTML=list.map((p,i)=>`<div class="pr"><span class="c">P${String(i+1).padStart(3,'0')}</span><span>${esc(p.name)}</span><div>
     <button class="ghost" data-a="up" data-i="${i}" ${i?'':'disabled'}>↑</button><button class="ghost" data-a="down" data-i="${i}" ${i<list.length-1?'':'disabled'}>↓</button><button class="ghost" data-a="edit" data-i="${i}">Изменить</button>${p.id?`<a class="btn ghost" href="/#p-c${esc(p.id)}" target="_blank" rel="noopener">Открыть ↗</a>`:''}</div></div>`).join('')||'<p class="pr note" style="display:block">Пока нет проектов.</p>'}
 $('#list').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=+b.dataset.i;
   if(b.dataset.a==='edit')open(i);
@@ -154,9 +157,10 @@ $('#c-new').onkeydown=e=>{if(e.key==='Enter')$('#c-add').click()};
 $('#f-type').onchange=()=>{const n=$('#f-type').value==='+';$('#newcat').hidden=!n;if(n){$('#f-cat').value='';$('#f-cat').focus()}};
 $('#addCat').onclick=()=>{const c=addCat($('#f-cat').value);if(c)fillTypes(c)};
 $('#f-cat').onkeydown=e=>{if(e.key==='Enter')$('#addCat').click()};
-const F=['name','type','created','stack','platforms','link','pwa','desc'];
+const F=['name','type','created','stack','platforms','link','pwa','device','desc'];
+$('#f-device').onchange=()=>{$('#pwaLbl').textContent=$('#f-device').value==='ipad'?'Адрес сайта — откроется в iPad (с https://)':'Адрес web-приложения — запустится в iPhone (с https://)'};
 function open(i){edit={i,shots:(i==null?[]:list[i].shots||[]).map(s=>({...s})),feats:(i==null?[]:list[i].features||[]).map(f=>({h:f.h||'',p:f.p||'',ul:(f.ul||[]).join('\n')}))};
-  const p=i==null?{}:list[i];fillTypes(p.type);F.forEach(k=>k!=='type'&&($('#f-'+k).value=p[k]||''));
+  const p=i==null?{}:list[i];fillTypes(p.type);F.forEach(k=>k!=='type'&&($('#f-'+k).value=p[k]||(k==='device'?'phone':'')));$('#f-device').onchange();
   $('#ftitle').textContent=i==null?'Project Editor · новый':'Project Editor · '+p.name;$('#del').hidden=i==null;
   $('#form').hidden=false;drawShots();drawFeats();$('#form').scrollIntoView({behavior:'smooth'})}
 $('#add').onclick=()=>open(null);

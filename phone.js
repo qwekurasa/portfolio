@@ -236,5 +236,36 @@ function mount(el, opt) {
     }
   };
 }
-window.Phone = { mount };
+/* ---------- iPad: тонкие ровные рамки, камера в рамке, Safari с сайтом ---------- */
+const PAD = `<svg class="ph-body" viewBox="0 0 640 880" aria-hidden="true">
+<defs><linearGradient id="pdTi" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a4a4e"/><stop offset=".5" stop-color="#2a2a2d"/><stop offset="1" stop-color="#3c3c40"/></linearGradient>
+<linearGradient id="pdKey" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2a2d"/><stop offset=".5" stop-color="#4a4a4e"/><stop offset="1" stop-color="#2a2a2d"/></linearGradient>
+<radialGradient id="pdLens" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#2a3150"/><stop offset="1" stop-color="#000"/></radialGradient></defs>
+<rect x="486" y="0" width="64" height="4" rx="1.5" fill="url(#pdKey)"/>
+<rect x="636" y="96" width="4" height="56" rx="1.5" fill="url(#pdKey)"/><rect x="636" y="160" width="4" height="56" rx="1.5" fill="url(#pdKey)"/>
+<rect x="2" y="2" width="634" height="876" rx="40" fill="url(#pdTi)"/>
+<rect x="4.5" y="4.5" width="629" height="871" rx="37.5" fill="#0b0b0c"/>
+<rect x="4.5" y="4.5" width="629" height="871" rx="37.5" fill="none" stroke="#fff" stroke-opacity=".07"/>
+<circle cx="319" cy="16" r="3.4" fill="url(#pdLens)" stroke="#1f1f22"/>
+</svg>`;
+function mountPad(el, opt) {
+  let host = ''; try { host = new URL(opt.url).hostname.replace(/^www\./, ''); } catch (e) { }
+  el.innerHTML = `<div class="ph pd">${PAD}<div class="pd-scr"><div class="pd-in">
+    <div class="pd-sb"><b class="pd-time"></b><span class="pd-date"></span><span class="ph-ind"><svg viewBox="0 0 16 12" width="15"><path d="M8 11.5l2.6-2.9a3.8 3.8 0 0 0-5.2 0zM3.6 6.8a6.4 6.4 0 0 1 8.8 0l1.4-1.6a8.6 8.6 0 0 0-11.6 0zM.9 3.8a10.3 10.3 0 0 1 14.2 0L16.5 2.2a12.5 12.5 0 0 0-17 0z"/></svg>100%<i class="ph-batt"></i></span></div>
+    <div class="pd-bar"><span class="pd-tool"><svg viewBox="0 0 20 16" width="19"><rect x="1" y="1" width="18" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7 1v14" stroke="currentColor" stroke-width="1.6"/></svg></span><span class="pd-tool"><svg viewBox="0 0 10 16" width="10"><path d="M8 2L2 8l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="pd-tool dim"><svg viewBox="0 0 10 16" width="10"><path d="M2 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <div class="pd-url"><svg viewBox="0 0 10 12" width="9"><rect x="1" y="5" width="8" height="6.5" rx="1.3" fill="currentColor"/><path d="M2.8 5V3.6a2.2 2.2 0 0 1 4.4 0V5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span>${host}</span><button class="pd-re" aria-label="Обновить"><svg viewBox="0 0 16 16" width="13"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      <span class="pd-tool"><svg viewBox="0 0 16 18" width="15"><path d="M8 1v11M4 5l4-4 4 4M2.5 8.5v8h11v-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="pd-tool"><svg viewBox="0 0 16 16" width="15"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><span class="pd-tool"><svg viewBox="0 0 18 16" width="17"><rect x="1" y="4" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5 1h10a2 2 0 0 1 2 2v9" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span></div>
+    <div class="pd-load"></div><iframe class="pd-web" title="Сайт" src="${opt.url}"></iframe>
+    <div class="pd-hi"></div>
+  </div></div></div>`;
+  const $ = s => el.querySelector(s), inn = $('.pd-in'), fr = $('.pd-web'), ld = $('.pd-load');
+  const fit = () => { inn.style.transform = `scale(${$('.pd-scr').clientWidth / 820})`; }; new ResizeObserver(fit).observe($('.pd-scr')); fit();
+  const go = () => { ld.classList.remove('done'); void ld.offsetWidth; ld.classList.add('run'); };
+  fr.onload = () => { ld.classList.add('done'); }; go();
+  $('.pd-re').onclick = () => { go(); fr.src = opt.url; };
+  const MO = ['янв.', 'февр.', 'мар.', 'апр.', 'мая', 'июн.', 'июл.', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.'], WD = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+  const tick = () => { if (!el.isConnected) return clearInterval(iv); const d = new Date(); $('.pd-time').textContent = `${d.getHours()}:${pad(d.getMinutes())}`; $('.pd-date').textContent = `${WD[d.getDay()]} ${d.getDate()} ${MO[d.getMonth()]}`; };
+  const iv = setInterval(tick, 1000); tick();
+}
+window.Phone = { mount, mountPad };
 })();
