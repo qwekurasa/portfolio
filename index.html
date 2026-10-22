@@ -104,12 +104,14 @@ body[data-v=project]{background:#fff}
 .st{padding:16px 16px 60px;display:grid;grid-template-columns:1fr minmax(0,1040px) 1fr;align-items:start}
 .st-desk{grid-column:2}
 .st-phone{grid-column:1;justify-self:end;position:sticky;top:max(16px,calc(50vh - 270px));width:264px;margin:max(30px,calc(50vh - 286px)) 40px 0 0}
-.st-phone.pad{width:min(400px,calc(50vw - 560px));top:max(16px,calc(50vh - 285px));margin-top:max(30px,calc(50vh - 300px))}
+.st.pad{grid-template-columns:minmax(0,1fr) minmax(0,1040px);column-gap:36px}
+.st.pad .st-desk{grid-column:2}
+.st.pad .st-phone{grid-column:1;justify-self:end;width:min(820px,calc(100vw - 1040px - 104px));margin:44px 0 0;top:16px}
 .ph{position:relative;width:100%;aspect-ratio:430/880;filter:invert(1)}
 .ph-body{position:absolute;inset:0;width:100%;height:100%}
-.ph.pd{aspect-ratio:640/880}
-.pd-scr{position:absolute;left:3.75%;top:2.727%;width:92.5%;height:94.545%;overflow:hidden;border-radius:5.4%/3.9%;background:#000}
-.pd-in{position:absolute;left:0;top:0;width:820px;height:1180px;transform-origin:0 0;overflow:hidden;background:#1c1c1e;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arimo,sans-serif}
+.ph.pd{aspect-ratio:880/640}
+.pd-scr{position:absolute;left:2.727%;top:3.75%;width:94.545%;height:92.5%;overflow:hidden;border-radius:3.9%/5.4%;background:#000}
+.pd-in{position:absolute;left:0;top:0;width:1180px;height:820px;transform-origin:0 0;overflow:hidden;background:#1c1c1e;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arimo,sans-serif}
 .pd-sb{position:relative;height:32px;display:flex;align-items:center;gap:10px;padding:0 26px;font-size:15px;font-weight:600}
 .pd-date{font-weight:500}.pd-sb .ph-ind{margin-left:auto;font-weight:500;font-size:14px}
 .pd-bar{height:50px;display:flex;align-items:center;gap:20px;padding:0 20px;color:#0a84ff;border-bottom:.5px solid rgba(255,255,255,.12)}
@@ -182,7 +184,8 @@ body[data-v=project]{background:#fff}
 .ph-form input{display:block;width:calc(100% - 32px);margin:0 16px 8px;padding:8px 10px;border:.5px solid #c8c8cc;border-radius:7px;font:15px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arimo,sans-serif;background:#fff;color:#000}
 .ph-form div{display:flex;margin-top:8px}.ph-form div button{flex:1;border-left:1px solid #c8c8cc}.ph-form div button:first-child{border-left:0;font-weight:400}
 .ph-alert button{width:100%;padding:11px;border:0;border-top:1px solid #c8c8cc;background:none;color:#007aff;font-size:17px;font-weight:600}
-@media(max-width:1679px){.st-phone.pad{width:min(440px,92vw)}.st{grid-template-columns:minmax(0,1040px);justify-content:center}.st-desk,.st-phone{grid-column:1}.st-phone,.st-phone.pad{justify-self:center;position:static;margin:0 0 50px}}
+@media(max-width:1599px){.st.pad{grid-template-columns:minmax(0,1040px);justify-content:center}.st.pad .st-desk{grid-column:1}.st.pad .st-phone{grid-column:1;justify-self:center;position:static;width:min(900px,96vw);margin:0 0 50px}}
+@media(max-width:1679px){.st{grid-template-columns:minmax(0,1040px);justify-content:center}.st-desk,.st-phone{grid-column:1}.st-phone,.st-phone.pad{justify-self:center;position:static;margin:0 0 50px}}
 .st-desk{position:relative;width:1040px;height:1500px;margin:0 auto}
 .st-w{position:absolute;background:#fff;border:2px solid #000}
 .st-t{position:absolute;bottom:100%;left:-2px;margin:0;background:#fff;border:2px solid #000;border-bottom:0;padding:2px 8px;font:400 13px var(--sans);letter-spacing:.03em;white-space:nowrap;cursor:grab;user-select:none;touch-action:none}
@@ -201,7 +204,10 @@ body[data-v=project]{background:#fff}
 .st-com{font:italic 15px/1.45 "Times New Roman",Times,serif;margin:6px 0 10px 22px}
 .st-code pre{margin:0 0 0 22px;font:13px/1.6 var(--sans);white-space:pre-wrap}
 .st-a{color:#000;text-decoration:underline}
-.st-shot{width:250px}
+.st-shot{width:250px;min-width:180px;max-width:960px;resize:horizontal}
+.st-shot .st-t{cursor:grab;padding-right:38px!important}
+.st-shot::after{content:"";position:absolute;right:3px;bottom:3px;width:10px;height:10px;border-right:2px solid rgba(255,255,255,.35);border-bottom:2px solid rgba(255,255,255,.35);pointer-events:none}
+.st-zoom{position:absolute;right:8px;top:6px;z-index:2;border:0;background:rgba(255,255,255,.08);color:#e5e5ea;font:600 13px/1 var(--sans);width:22px;height:20px;border-radius:4px;cursor:pointer}.st-zoom:hover{background:rgba(255,255,255,.18)}
 .st-art{padding:10px;border-bottom:2px solid #000}
 .ks{display:block;width:100%;height:auto;font-family:var(--sans)}
 .st-art img{display:block;width:100%;filter:invert(1)}
@@ -380,10 +386,12 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   </div></div>`;
   if(p.device==='ipad'&&p.pwa)window.Phone?.mountPad($('#stPhone'),{url:p.pwa});
   else window.Phone?.mount($('#stPhone'),{id:p.id,pwa:p.pwa,name:p.name,icon:p.icon,screens:shots.map(w=>`<img src="${w.img}" alt="">`)});
-  $('.st-phone').classList.toggle('pad',p.device==='ipad'&&!!p.pwa);
+  $('.st').classList.toggle('pad',p.device==='ipad'&&!!p.pwa);
   const out=$('#stOut'),show=j=>{const w=info[j];if(!out||!w)return;out.innerHTML=`<b>${w.h}</b>\n${w.p?`    ${w.p}\n`:''}${(w.ul||[]).map(x=>`    ${x}.`).join('\n')}${(w.dl||[]).map(r=>`    ${r[0]}: ${r[1]}.`).join('\n')}`};show(0);
   $('#project').querySelectorAll('.st-files li[data-j]').forEach(li=>li.onclick=()=>{$('#project').querySelectorAll('.st-files li').forEach(x=>x.classList.toggle('on',x===li));show(+li.dataset.j)});
   // окна: клик поднимает наверх, тянуть за заголовок
+  $('#project').querySelectorAll('.st-shot').forEach(w=>{const b=document.createElement('button');b.className='st-zoom';b.title='Увеличить / уменьшить';b.textContent='+';w.append(b);
+    b.onclick=e=>{e.stopPropagation();const cur=w.offsetWidth,steps=[250,480,760],nx=steps.find(x=>x>cur+10);w.style.width=(nx||250)+'px';const ov=w.getBoundingClientRect().right-(innerWidth-12);if(ov>0)w.style.left=Math.max(0,w.offsetLeft-ov)+'px';b.textContent=nx&&nx<760?'+':nx?'−':'+';w.style.zIndex=++stZ}});
   $('#project').querySelectorAll('.st-w').forEach(w=>{w.style.zIndex=++stZ;w.addEventListener('pointerdown',()=>w.style.zIndex=++stZ);
     const t=w.querySelector('.st-t');t.addEventListener('pointerdown',e=>{if(innerWidth<1080)return;e.preventDefault();t.setPointerCapture(e.pointerId);const sx=e.clientX-w.offsetLeft,sy=e.clientY-w.offsetTop;
       t.onpointermove=ev=>{w.style.left=ev.clientX-sx+'px';w.style.top=ev.clientY-sy+'px'};t.onpointerup=()=>t.onpointermove=null})});

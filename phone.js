@@ -237,16 +237,17 @@ function mount(el, opt) {
   };
 }
 /* ---------- iPad: тонкие ровные рамки, камера в рамке, Safari с сайтом ---------- */
-const PAD = `<svg class="ph-body" viewBox="0 0 640 880" aria-hidden="true">
+const PAD = `<svg class="ph-body" viewBox="0 0 880 640" aria-hidden="true">
 <defs><linearGradient id="pdTi" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a4a4e"/><stop offset=".5" stop-color="#2a2a2d"/><stop offset="1" stop-color="#3c3c40"/></linearGradient>
 <linearGradient id="pdKey" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2a2d"/><stop offset=".5" stop-color="#4a4a4e"/><stop offset="1" stop-color="#2a2a2d"/></linearGradient>
+<linearGradient id="pdKeyH" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2a2a2d"/><stop offset=".5" stop-color="#4a4a4e"/><stop offset="1" stop-color="#2a2a2d"/></linearGradient>
 <radialGradient id="pdLens" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#2a3150"/><stop offset="1" stop-color="#000"/></radialGradient></defs>
-<rect x="486" y="0" width="64" height="4" rx="1.5" fill="url(#pdKey)"/>
-<rect x="636" y="96" width="4" height="56" rx="1.5" fill="url(#pdKey)"/><rect x="636" y="160" width="4" height="56" rx="1.5" fill="url(#pdKey)"/>
-<rect x="2" y="2" width="634" height="876" rx="40" fill="url(#pdTi)"/>
-<rect x="4.5" y="4.5" width="629" height="871" rx="37.5" fill="#0b0b0c"/>
-<rect x="4.5" y="4.5" width="629" height="871" rx="37.5" fill="none" stroke="#fff" stroke-opacity=".07"/>
-<circle cx="319" cy="16" r="3.4" fill="url(#pdLens)" stroke="#1f1f22"/>
+<rect x="876" y="88" width="4" height="64" rx="1.5" fill="url(#pdKey)"/>
+<rect x="660" y="0" width="56" height="4" rx="1.5" fill="url(#pdKeyH)"/><rect x="724" y="0" width="56" height="4" rx="1.5" fill="url(#pdKeyH)"/>
+<rect x="2" y="2" width="876" height="636" rx="40" fill="url(#pdTi)"/>
+<rect x="4.5" y="4.5" width="871" height="631" rx="37.5" fill="#0b0b0c"/>
+<rect x="4.5" y="4.5" width="871" height="631" rx="37.5" fill="none" stroke="#fff" stroke-opacity=".07"/>
+<circle cx="440" cy="15" r="3.4" fill="url(#pdLens)" stroke="#1f1f22"/>
 </svg>`;
 function mountPad(el, opt) {
   let host = ''; try { host = new URL(opt.url).hostname.replace(/^www\./, ''); } catch (e) { }
@@ -259,7 +260,7 @@ function mountPad(el, opt) {
     <div class="pd-hi"></div>
   </div></div></div>`;
   const $ = s => el.querySelector(s), inn = $('.pd-in'), fr = $('.pd-web'), ld = $('.pd-load');
-  const fit = () => { inn.style.transform = `scale(${$('.pd-scr').clientWidth / 820})`; }; new ResizeObserver(fit).observe($('.pd-scr')); fit();
+  const fit = () => { inn.style.transform = `scale(${$('.pd-scr').clientWidth / 1180})`; }; new ResizeObserver(fit).observe($('.pd-scr')); fit();
   const go = () => { ld.classList.remove('done'); void ld.offsetWidth; ld.classList.add('run'); };
   fr.onload = () => { ld.classList.add('done'); }; go();
   $('.pd-re').onclick = () => { go(); fr.src = opt.url; };
