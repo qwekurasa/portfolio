@@ -186,7 +186,7 @@ body[data-v=project]{background:#fff}
 .ph-alert button{width:100%;padding:11px;border:0;border-top:1px solid #c8c8cc;background:none;color:#007aff;font-size:17px;font-weight:600}
 @media(max-width:1599px){.st.pad{grid-template-columns:minmax(0,1040px);justify-content:center}.st.pad .st-desk{grid-column:1}.st.pad .st-phone{grid-column:1;justify-self:center;position:static;width:min(900px,96vw);margin:0 0 50px}}
 @media(max-width:1679px){.st{grid-template-columns:minmax(0,1040px);justify-content:center}.st-desk,.st-phone{grid-column:1}.st-phone,.st-phone.pad{justify-self:center;position:static;margin:0 0 50px}}
-.st-desk{position:relative;width:1040px;height:1500px;margin:0 auto}
+.st-desk{position:relative;width:1040px;height:900px;margin:0 auto}
 .st-w{position:absolute;background:#fff;border:2px solid #000}
 .st-t{position:absolute;bottom:100%;left:-2px;margin:0;background:#fff;border:2px solid #000;border-bottom:0;padding:2px 8px;font:400 13px var(--sans);letter-spacing:.03em;white-space:nowrap;cursor:grab;user-select:none;touch-action:none}
 .st-fl .st-t{background:#000;color:#fff}
@@ -369,7 +369,7 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   const meta=[['type',p.type],['created',p.created||'—'],...(p.meta||[]).map(m=>[{'Стек':'stack','Платформы':'platforms','Приложение':'app','Ссылка':'link'}[m[0]]||m[0],m[1]])];
   const W=(cls,title,body,style='')=>`<section class="st-w ${cls}" style="${style}"><h2 class="st-t">${title}</h2>${body}</section>`;
   const pos=[[640,28],[742,330],[470,870],[40,960],[760,900]];
-  const shotWin=(w,k)=>W('st-shot',`Form Editor · ${w.h||'Экран '+(k+1)}`,`<div class="st-art"><img src="${w.img}" alt="${p.name}: ${w.h}" loading="lazy"></div>${w.p?`<p class="st-cap">${w.p}</p>`:''}`,`left:${pos[k%5][0]+Math.floor(k/5)*30}px;top:${pos[k%5][1]+Math.floor(k/5)*30}px`);
+  const shotWin=(w,k)=>W('st-shot',`${w.h||'Экран '+(k+1)}`,`<div class="st-art"><img src="${w.img}" alt="${p.name}: ${w.h}" loading="lazy"></div>${w.p?`<p class="st-cap">${w.p}</p>`:''}`,`left:${pos[k%5][0]+Math.floor(k/5)*30}px;top:${pos[k%5][1]+Math.floor(k/5)*30}px`);
   const day=new Date(),mm=day.getMonth(),yy=day.getFullYear(),first=(new Date(yy,mm,1).getDay()+6)%7,dim=new Date(yy,mm+1,0).getDate();
   $('#project').innerHTML=`<svg width="0" height="0" style="position:absolute"><defs><pattern id="dz" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="1" height="1"/><rect x="1" y="1" width="1" height="1"/></pattern></defs></svg>
   <div class="st"><aside class="st-phone"><div id="stPhone"></div></aside><div class="st-desk">
@@ -388,6 +388,16 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   else window.Phone?.mount($('#stPhone'),{id:p.id,pwa:p.pwa,name:p.name,icon:p.icon,screens:shots.map(w=>`<img src="${w.img}" alt="">`)});
   $('.st').classList.toggle('pad',p.device==='ipad'&&!!p.pwa);
   const out=$('#stOut'),show=j=>{const w=info[j];if(!out||!w)return;out.innerHTML=`<b>${w.h}</b>\n${w.p?`    ${w.p}\n`:''}${(w.ul||[]).map(x=>`    ${x}.`).join('\n')}${(w.dl||[]).map(r=>`    ${r[0]}: ${r[1]}.`).join('\n')}`};show(0);
+  /* окна-экраны: аккуратной сеткой в два столбца справа от System Browser */
+  const desk=$('#project .st-desk'),lay=()=>{if(innerWidth<1080){desk.style.height='';return}
+    const ws=[...desk.querySelectorAll('.st-shot:not([data-moved])')],cw=195,gap=12,x0=640,col=[44,44];
+    ws.forEach(w=>{if(!w.dataset.z)w.style.width=cw+'px';const c=col[0]<=col[1]?0:1;w.style.left=x0+c*(cw+gap)+'px';w.style.top=col[c]+'px';col[c]+=w.offsetHeight+14});
+    const fl=desk.querySelector('.st-fl'),cal=desk.querySelector('.st-cal'),flb=fl?fl.offsetTop+fl.offsetHeight:500;
+    if(cal){cal.style.left='30px';cal.style.top=(flb+40)+'px'}
+    desk.style.height=Math.max(col[0],col[1],flb+(cal?cal.offsetHeight+60:40))+40+'px'};
+  lay();desk.querySelectorAll('.st-shot img').forEach(im=>im.complete||im.addEventListener('load',lay));
+  desk.querySelectorAll('.st-shot .st-t').forEach(t=>t.addEventListener('pointerdown',()=>t.parentElement.dataset.moved=1));
+  desk.querySelectorAll('.st-zoom').forEach(b=>b.addEventListener('click',()=>b.parentElement.dataset.z=1));
   $('#project').querySelectorAll('.st-files li[data-j]').forEach(li=>li.onclick=()=>{$('#project').querySelectorAll('.st-files li').forEach(x=>x.classList.toggle('on',x===li));show(+li.dataset.j)});
   // окна: клик поднимает наверх, тянуть за заголовок
   $('#project').querySelectorAll('.st-shot').forEach(w=>{const b=document.createElement('button');b.className='st-zoom';b.title='Увеличить / уменьшить';const ic=o=>o?'<svg viewBox="0 0 12 12"><path d="M7 1h4v4M5 11H1V7M11 1L7 5M1 11l4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>':'<svg viewBox="0 0 12 12"><path d="M11 5H7V1M1 7h4v4M7 5l4-4M5 7l-4 4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';b.innerHTML=ic(1);w.append(b);
