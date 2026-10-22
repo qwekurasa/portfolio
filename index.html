@@ -280,9 +280,9 @@ body[data-v=index]{background:#fff}
 .ixc-art{position:absolute;inset:0}
 .ixc-art img,.ixc-art svg{display:block;width:100%;height:100%;object-fit:cover}
 .ixc-card.ink{background:#000;color:#fff}.ixc-card.ink .ixc-art svg{filter:invert(1);opacity:.85}.ixc-card.ink span{color:#aeaeb2}
-.ixc-card.pic{color:#fff}.ixc-card.pic::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(0,0,0,.75))}
+.ixc-card.pic{color:#fff}
 .ixc-card.blank{background:#e9e9ec;color:#0b0b0c}.ixc-card.dk{background:#2a2a2d;color:#f2f2f7}.ixc-card.dk span{color:#8e8e93}
-.ixc-card.ink::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,.85))}
+
 </style>
 </head>
 <body>
@@ -458,7 +458,7 @@ function carousel(box,p){const ring=box.querySelector('.ixc-ring'),w=p.wins||[];
   let base=w.filter(x=>x.img||x.k!==undefined).map(x=>({art:x.img?`<img src="${x.img}" alt="" loading="lazy" draggable="false">`:ks(x.k),cls:x.img?' pic':' ink',t:x.h||p.name,s:p.name}));
   if(!base.length)base=[p.name,p.type,p.code,'qwekurasa',p.created||'2026'].map((t,i)=>({art:'',cls:i%2?' blank dk':' blank',t,s:p.code+' · '+p.name}));
   const items=[];while(items.length<12)items.push(...base);items.length=Math.max(12,base.length);
-  ring.innerHTML=items.map(c=>`<a class="ixc-card${c.cls}" href="#p-${p.id}" draggable="false"><div class="ixc-art">${c.art}</div><b>${c.t}</b><span>${c.s}</span></a>`).join('');
+  ring.innerHTML=items.map(c=>`<a class="ixc-card${c.cls}" href="#p-${p.id}" draggable="false"><div class="ixc-art">${c.art}</div></a>`).join('');
   const cards=[...ring.children],N=cards.length;let phi=0,vel=0,drag=null,hover=false,last=0,R=0;
   const size=()=>{const bw=box.clientWidth,W=Math.round(Math.min(bw*(bw<700?.4:.27),290));R=W*.56;box.style.setProperty('--cw',W+'px')};
   size();addEventListener('resize',size);
