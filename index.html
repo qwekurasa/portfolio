@@ -352,23 +352,43 @@ function toggleRow(id,open,solo=1){const b=$(`.row [data-id="${id}"]`),s=$('#sh-
 $('#list').onclick=e=>{const b=e.target.closest('.row button');if(b)toggleRow(b.dataset.id);};
 $('#expandAll').onclick=function(){const o=this.getAttribute('aria-expanded')!=='true';this.setAttribute('aria-expanded',o);this.textContent=o?'Свернуть все':'Раскрыть все';P.forEach(p=>toggleRow(p.id,o,0))};
 const calmPx=matchMedia('(prefers-reduced-motion: reduce)').matches;let pxLast=0;
-document.addEventListener('pointermove',e=>{const c=e.target.closest?.('canvas.px');document.querySelectorAll('canvas.px').forEach(k=>{if(k!==c)k._m=null});if(!c)return;const r=c.getBoundingClientRect(),d=devicePixelRatio||1;c._m={x:(e.clientX-r.left)*d,y:(e.clientY-r.top)*d}});
-const cloud=(x,y,t,k)=>{const a=Math.sin(x*.9+t*.35+k)+Math.sin(y*1.3-t*.25+k*2)+Math.sin((x+y)*.55+t*.2)+.6*Math.sin(x*2.3-y*1.7+t*.5+k)+.4*Math.sin(x*4.1+y*3.3-t*.6);return(a+3.4)/6.8};
+/* превью проектов: пиксельный глаз из точек, зрачок следит за курсором, иногда моргает */
+let eyeM=null;addEventListener('pointermove',e=>{eyeM={x:e.clientX,y:e.clientY}});
+function eyeB(u,v,gx,gy,open,ci){
+  const xn=u/1.3,cy=.06,q=Math.max(0,1-xn*xn);
+  const topF=cy-.64*Math.pow(q,.75),top=cy-.64*Math.pow(q,.75)*open,bot=cy+.44*Math.pow(q,.9)*Math.max(open,.04);
+  let b=.3+.07*Math.sin(u*1.3+ci)+.06*Math.sin(v*3+u)+.08*v;
+  if(Math.abs(xn)<1.15)b-=.2*Math.exp(-(((v-(topF-.24))/.07)**2))*(1-Math.abs(xn)*.6);
+  if(v<topF-.24)b-=.05;
+  if(Math.abs(xn)>=1)return Math.max(0,Math.min(1,b));
+  if(v<top&&v>top-.13){b=.06+(Math.sin(u*38+ci)>.55?.25:0)}
+  else if(v>=top&&v<=bot){
+    const ix=gx*.48,iy=cy+gy*.2,dI=Math.hypot(u-ix,v-iy),ri=.5,rp=.19;
+    if(dI<rp)b=.03;
+    else if(dI<ri){const a=Math.atan2(v-iy,u-ix);b=.4+.12*Math.sin(a*15+ci)+.06*Math.sin(a*37)-.25*((dI-rp)/(ri-rp))**3}
+    else b=.9-.3*xn*xn;
+    if(Math.hypot(u-(ix-.15),v-(iy-.16))<.075)b=1;
+    b*=1-.6*Math.exp(-(v-top)/.13);
+  }else if(v>bot&&v<bot+.06)b=.62;
+  else if(v>=bot+.06&&v<bot+.22)b-=.1*(1-(v-bot-.06)/.16);
+  return Math.max(0,Math.min(1,b))}
 (function pxLoop(t){requestAnimationFrame(pxLoop);if(t-pxLast<33&&pxLast)return;pxLast=t;if(document.body.dataset.v!=='index')return;
-  const tt=calmPx?0:t/1000,d=devicePixelRatio||1;
+  const tt=t/1000,d=devicePixelRatio||1;
   document.querySelectorAll('.shots:not([hidden]) canvas.px').forEach((c,ci)=>{const w=c.clientWidth,h=c.clientHeight;if(!w)return;
     if(c.width!==Math.round(w*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}
-    const x=c.getContext('2d'),W=c.width,H=c.height,cell=6*d,cols=Math.ceil(W/cell),rows=Math.ceil(H/cell),R=70*d,m=c._m;
-    c._s=(c._s||0)+((m?1:0)-(c._s||0))*.15;if(m)c._lm=m;const lm=c._lm,s=c._s;
-    x.clearRect(0,0,W,H);x.fillStyle='#a3a3a3';
-    for(let i=0;i<cols;i++)for(let j=0;j<rows;j++){let px=i*cell+cell/2,py=j*cell+cell/2;
-      let v=cloud(i/cols*4,j/rows*3,tt,ci*1.7)+.18*(j/rows)-.12;
-      if(lm&&s>.01){const dx=px-lm.x,dy=py-lm.y,dd=Math.hypot(dx,dy);if(dd<R){const f=(1-dd/R)*s;px+=dx/(dd||1)*f*R*.55;py+=dy/(dd||1)*f*R*.55;v-=f*.5}}
-      const q=v<.42?0:v<.5?1:v<.6?2:v<.76?3:4;if(!q)continue;
-      if(q===1)x.fillRect(px-.5*d,py-.5*d,d,d);
-      else if(q===2)x.fillRect(px-d,py-d,2*d,2*d);
-      else if(q===3){x.fillRect(px-2*d,py-.5*d,4*d,d);x.fillRect(px-.5*d,py-2*d,d,4*d)}
-      else x.fillRect(px-2.5*d,py-2.5*d,5*d,5*d)}})})(0);
+    const r=c.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+    let tx,ty;if(eyeM){const dx=eyeM.x-cx,dy=eyeM.y-cy,n=Math.hypot(dx,dy,260);tx=dx/n;ty=dy/n}else{tx=.6*Math.sin(tt*.5+ci);ty=.3*Math.sin(tt*.37+ci*2)}
+    c._gx=(c._gx??tx)+(tx-(c._gx??tx))*.22;c._gy=(c._gy??ty)+(ty-(c._gy??ty))*.22;
+    const per=3.6+(ci%5)*.7,ph=(tt+ci*1.31)%per,open=calmPx||ph>.24?1:Math.max(.02,1-Math.sin(ph/.24*Math.PI));
+    const x=c.getContext('2d'),W=c.width,H=c.height,cell=5*d,cols=Math.ceil(W/cell),rows=Math.ceil(H/cell),asp=W/H;
+    x.clearRect(0,0,W,H);x.fillStyle=x.strokeStyle='#2a2a2a';x.lineWidth=d;
+    for(let i=0;i<cols;i++)for(let j=0;j<rows;j++){const px=i*cell+cell/2,py=j*cell+cell/2;
+      const b=eyeB((px/W*2-1)*asp,py/H*2-1,c._gx,c._gy,open,ci),qd=b<.14?0:b<.3?1:b<.46?2:b<.62?3:b<.8?4:5;if(!qd)continue;
+      if(qd===1)x.fillRect(px-.5*d,py-.5*d,d,d);
+      else if(qd===2)x.fillRect(px-d,py-d,2*d,2*d);
+      else if(qd===3){x.fillRect(px-2*d,py-.5*d,4*d,d);x.fillRect(px-.5*d,py-2*d,d,4*d)}
+      else if(qd===4)x.strokeRect(px-1.5*d,py-1.5*d,3*d,3*d);
+      else x.fillRect(px-2*d,py-2*d,4*d,4*d)}})})(0);
 function openProject(id,direct){if(direct){location.hash='p-'+id;return}pendingOpen=id;location.hash='index'}
 
 /* ---------- проект ---------- */
