@@ -1,5 +1,40 @@
 window.CUSTOM=[
  {
+  "id": "mvjxhkra",
+  "name": "tempt",
+  "type": "Сайт",
+  "created": "22.10.2026",
+  "stack": "JS,swift,css,html",
+  "platforms": "desktop, mobile app",
+  "link": "https://temptstr.vercel.app/#/",
+  "pwa": "https://temptstr.vercel.app/#/",
+  "device": "ipad",
+  "desc": "Магазин одежды",
+  "shots": [
+   {
+    "src": "img/mvjxhkra/6o4l2cd1.png",
+    "h": "",
+    "p": ""
+   },
+   {
+    "src": "img/mvjxhkra/csh9qgfs.png",
+    "h": "",
+    "p": ""
+   },
+   {
+    "src": "img/mvjxhkra/mq251j53.png",
+    "h": "",
+    "p": ""
+   },
+   {
+    "src": "img/mvjxhkra/l381wpsl.png",
+    "h": "",
+    "p": ""
+   }
+  ],
+  "features": []
+ },
+ {
   "id": "mvdximll",
   "name": "Purrch",
   "type": "Приложение",
@@ -63,3 +98,4 @@ window.CUSTOM=[
   "features": []
  }
 ];
+window.CATS=[];
