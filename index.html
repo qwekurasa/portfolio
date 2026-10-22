@@ -201,6 +201,38 @@ body[data-v=project]{background:#fff}
 .st-cal{position:absolute;left:908px;top:10px;border-collapse:collapse;font-size:9px}
 .st-cal td{width:18px;height:14px;padding:0 2px;border:1px solid #000;background:#fff;text-align:right;line-height:1}
 .st-cal td.e{background:transparent;border:0}.st-cal td.on{background:#000;color:#fff}
+/* окна в стиле iOS: тёмно-серое стекло (свой контекст цвета — сайт инвертирован целиком) */
+.st-desk{filter:invert(1);color:#f2f2f7}
+.st-w{background:rgba(44,44,48,.62);border:1px solid rgba(255,255,255,.1);border-radius:18px;box-shadow:0 18px 44px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.09);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);overflow:hidden}
+.st-t{position:static;display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.03);border:0;border-bottom:1px solid rgba(255,255,255,.08);padding:9px 14px;font:600 13px var(--sans);letter-spacing:0;color:#f2f2f7}
+.st-t::before{content:"";width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.28);box-shadow:13px 0 0 rgba(255,255,255,.16),26px 0 0 rgba(255,255,255,.1);margin-right:30px}
+.st-fl .st-t{background:rgba(255,255,255,.03);color:#f2f2f7}
+.st-menu{border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(44,44,48,.62);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);overflow:hidden}
+.st-menu a{padding:6px 14px;border-right:1px solid rgba(255,255,255,.08);color:#f2f2f7}
+.st-menu a:hover,.st-pane a:hover{background:rgba(255,255,255,.1);color:#fff}
+.st-panes{border-bottom:1px solid rgba(255,255,255,.08)}
+.st-pane{border-right:1px solid rgba(255,255,255,.08);padding:6px}
+.st-pane li{padding:1px 8px;border-radius:7px;color:#c7c7cc}
+.st-pane li.on{outline:0;background:rgba(255,255,255,.12);color:#fff}
+.st-pane a{color:inherit}
+.st-code b{color:#fff}
+.st-com{color:#e5e5ea}
+.st-code pre{color:#aeaeb2}
+.st-a{color:#f2f2f7}
+.st-art{padding:12px 12px 0;border-bottom:0}
+.st-art .ks,.st-art img{border-radius:14px;overflow:hidden}
+.st-art .ks{filter:invert(1)}
+.st-art img{filter:none}
+.st-cap{padding:10px 14px 14px;color:#aeaeb2;line-height:1.45}
+.st-path{border-bottom:1px solid rgba(255,255,255,.08);padding:7px 14px;color:#8e8e93}
+.st-files{border-bottom:1px solid rgba(255,255,255,.08);padding:6px}
+.st-files li{padding:2px 8px!important;border-radius:7px;color:#c7c7cc}
+.st-files li.on{background:rgba(255,255,255,.12);color:#fff}
+.st-out{margin:10px;border-radius:12px;background:rgba(0,0,0,.35);color:#e5e5ea;padding:12px 14px}
+.st-out b{color:#fff}
+.st-cal{border-collapse:separate;border-spacing:2px;padding:6px;border-radius:14px;background:rgba(44,44,48,.62);border:1px solid rgba(255,255,255,.1);font-size:10px}
+.st-cal td{border:0;background:transparent;color:#aeaeb2;text-align:center;border-radius:6px;width:20px;height:18px}
+.st-cal td.on{background:#f2f2f7;color:#000;font-weight:700}
 @media(max-width:1079px){
   .st-desk{width:auto;height:auto;display:flex;flex-direction:column;gap:46px;max-width:620px}
   .st-w{position:relative!important;left:auto!important;top:auto!important;width:auto!important}
