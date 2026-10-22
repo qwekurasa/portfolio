@@ -274,7 +274,7 @@ body[data-v=index]{background:#fff}
 .ixc{position:relative;height:clamp(220px,26vw,340px);margin:0 auto;max-width:1180px;perspective:1100px;perspective-origin:50% 50%;overflow:hidden;touch-action:pan-y;cursor:grab;user-select:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
 .ixc:active{cursor:grabbing}
 .ixc-ring{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;transform:translateZ(calc(var(--cw) * -1.4))}
-.ixc-card{position:absolute;left:calc(var(--cw) / -2);top:calc(var(--cw) * -.4);width:var(--cw);height:calc(var(--cw) * .8);display:flex;flex-direction:column;justify-content:flex-end;gap:2px;padding:10px 12px;border-radius:5px;background:#e9e9ec;color:#0b0b0c;overflow:hidden;backface-visibility:visible;-webkit-user-drag:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.ixc-card{position:absolute;left:calc(var(--cw) / -2);top:calc(var(--cw) * -.31);width:var(--cw);height:calc(var(--cw) * .62);display:flex;flex-direction:column;justify-content:flex-end;gap:2px;padding:10px 12px;border-radius:5px;background:#e9e9ec;color:#0b0b0c;overflow:hidden;backface-visibility:visible;-webkit-user-drag:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
 .ixc-card b{position:relative;z-index:1;font-size:calc(var(--cw) * .1);line-height:1.05;letter-spacing:-.02em}
 .ixc-card span{position:relative;z-index:1;font-size:10px;color:#6e6e73;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ixc-art{position:absolute;inset:0}
@@ -460,7 +460,7 @@ function carousel(box,p){const ring=box.querySelector('.ixc-ring'),w=p.wins||[];
   const items=[];while(items.length<12)items.push(...base);items.length=Math.max(12,base.length);
   ring.innerHTML=items.map(c=>`<a class="ixc-card${c.cls}" href="#p-${p.id}" draggable="false"><div class="ixc-art">${c.art}</div></a>`).join('');
   const cards=[...ring.children],N=cards.length;let phi=0,vel=0,drag=null,hover=false,last=0,R=0;
-  const size=()=>{const bw=box.clientWidth,W=Math.round(Math.min(bw*(bw<700?.4:.27),290));R=W*.56;box.style.setProperty('--cw',W+'px')};
+  const size=()=>{const bw=box.clientWidth,W=Math.round(Math.min(bw*(bw<700?.44:.3),330));R=W*.56;box.style.setProperty('--cw',W+'px')};
   size();addEventListener('resize',size);
   box.onpointerenter=()=>hover=true;box.onpointerleave=()=>{hover=false};
   box.addEventListener('pointerdown',e=>{drag={x:e.clientX,phi,t:performance.now(),moved:false};box.setPointerCapture(e.pointerId)});
