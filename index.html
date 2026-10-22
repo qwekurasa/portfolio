@@ -270,6 +270,18 @@ body[data-v=index]{background:#fff}
 .ix-win .i-tools button{color:#aeaeb2}
 .ix-win .shot canvas{filter:invert(1);border-radius:5px}
 @media(max-width:700px){.ht-name{padding-left:58px}}
+.ixc{position:relative;height:clamp(240px,34vw,420px);margin:40px auto 0;max-width:1180px;filter:invert(1);perspective:1100px;perspective-origin:50% 50%;overflow:hidden;touch-action:pan-y;cursor:grab;user-select:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.ixc:active{cursor:grabbing}
+.ixc-ring{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;transform:translateZ(calc(var(--cw) * -1.4))}
+.ixc-card{position:absolute;left:calc(var(--cw) / -2);top:calc(var(--cw) * -.4);width:var(--cw);height:calc(var(--cw) * .8);display:flex;flex-direction:column;justify-content:flex-end;gap:2px;padding:10px 12px;border-radius:5px;background:#e9e9ec;color:#0b0b0c;overflow:hidden;backface-visibility:visible;-webkit-user-drag:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.ixc-card b{position:relative;z-index:1;font-size:calc(var(--cw) * .1);line-height:1.05;letter-spacing:-.02em}
+.ixc-card span{position:relative;z-index:1;font-size:10px;color:#6e6e73;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ixc-art{position:absolute;inset:0}
+.ixc-art img,.ixc-art svg{display:block;width:100%;height:100%;object-fit:cover}
+.ixc-card.ink{background:#000;color:#fff}.ixc-card.ink .ixc-art svg{filter:invert(1);opacity:.85}.ixc-card.ink span{color:#aeaeb2}
+.ixc-card.pic{color:#fff}.ixc-card.pic::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(0,0,0,.75))}
+.ixc-card.blank{background:#e9e9ec;color:#0b0b0c}
+.ixc-card.ink::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,.85))}
 </style>
 </head>
 <body>
@@ -295,6 +307,7 @@ body[data-v=index]{background:#fff}
   <div class="i-tools cols up"><button id="expandAll" aria-expanded="false">Раскрыть все</button></div>
   <div id="list"></div>
   </div>
+  <div class="ixc" id="ixc" aria-label="Карусель проектов"><div class="ixc-ring"></div></div>
 </section>
 
 <section id="project" class="view" aria-label="Проект"></section>
@@ -456,8 +469,32 @@ addEventListener('hashchange',route);
 /* ---------- часы ---------- */
 
 /* ---------- загрузка ---------- */
+/* ---------- карусель проектов: страницы-веер вокруг вертикальной оси ---------- */
+function carousel(){const box=$('#ixc'),ring=box.querySelector('.ixc-ring');
+  const art=p=>{const w=p.wins||[],s=w.find(x=>x.img||x.k!==undefined);
+    if(p===P[0])return KS[1]().replace('viewBox="0 0 240 430"','viewBox="8 26 224 210" preserveAspectRatio="xMidYMin slice"').replace(/<rect x="4" y="4"[^>]*\/><rect x="96" y="12"[^>]*\/>/,'<rect width="240" height="430" fill="#fff"/>');
+    if(s&&s.img)return `<img src="${s.img}" alt="" loading="lazy" draggable="false">`;
+    return '';};
+  const items=[];while(items.length<18)items.push(...P);items.length=18;
+  ring.innerHTML=items.map((p,i)=>{const a=art(p),cls=p===P[0]?' ink':a?' pic':p.empty?' blank':'';
+    return `<a class="ixc-card${cls}" href="#p-${p.id}" draggable="false"><div class="ixc-art">${a}</div><b>${p.name}</b><span>${p.code} · ${p.type}</span></a>`}).join('');
+  const cards=[...ring.children],N=cards.length;let phi=0,vel=0,drag=null,hover=false,last=0,R=0,W=0;
+  const size=()=>{const w=box.clientWidth,m=w<700;R=m?w*.42:Math.min(w*.3,440);W=Math.round(Math.min(R*(m?.78:.62),230));box.style.setProperty('--cw',W+'px')};
+  size();addEventListener('resize',size);
+  box.onpointerenter=()=>hover=true;box.onpointerleave=()=>{hover=false};
+  box.addEventListener('pointerdown',e=>{drag={x:e.clientX,phi,t:performance.now(),moved:false};box.setPointerCapture(e.pointerId)});
+  box.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>4)drag.moved=true;const np=drag.phi+dx/R*1.1;vel=(np-phi)/Math.max(.016,(performance.now()-drag.t)/1000);drag.t=performance.now();phi=np});
+  box.addEventListener('pointerup',e=>{const d=drag;drag=null;if(d&&!d.moved){const c=document.elementsFromPoint(e.clientX,e.clientY).find(x=>x.classList?.contains('ixc-card'));if(c)location.hash=c.getAttribute('href').slice(1)}});
+  box.addEventListener('click',e=>e.preventDefault());
+  (function loop(t){requestAnimationFrame(loop);const dt=Math.min(.05,(t-last)/1000||0);last=t;if(document.body.dataset.v!=='index')return;
+    if(!drag){const target=hover?.04:.16;vel+=(target-vel)*Math.min(1,dt*2.5);phi+=vel*dt}
+    cards.forEach((c,i)=>{const a=((i/N)*Math.PI*2+phi)%(Math.PI*2),deg=a*180/Math.PI,z=Math.cos(a);
+      c.style.transform=`rotateY(${deg.toFixed(2)}deg) translateZ(${R.toFixed(1)}px) rotateY(90deg)`;
+      c.style.filter=`brightness(${(.62+.38*Math.abs(Math.sin(a))).toFixed(3)})`;c.style.zIndex=Math.round((z+1)*50)})})(0);
+}
+
 (async function boot(){
-  route();
+  route();carousel();
 })();
 </script>
 <script src="hero.js"></script>
