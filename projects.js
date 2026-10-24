@@ -152,6 +152,20 @@ window.CUSTOM=[
   "desc": "",
   "shots": [],
   "features": []
+ },
+ {
+  "id": "mvm2o3v6",
+  "name": "qwefref434",
+  "type": "",
+  "created": "",
+  "stack": "",
+  "platforms": "",
+  "link": "",
+  "pwa": "",
+  "device": "phone",
+  "desc": "",
+  "shots": [],
+  "features": []
  }
 ];
 window.CATS=[];
