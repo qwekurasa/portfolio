@@ -110,6 +110,20 @@ window.CUSTOM=[
   "desc": "",
   "shots": [],
   "features": []
+ },
+ {
+  "id": "mvm2nxqt",
+  "name": "wefewf",
+  "type": "",
+  "created": "",
+  "stack": "",
+  "platforms": "",
+  "link": "",
+  "pwa": "",
+  "device": "phone",
+  "desc": "",
+  "shots": [],
+  "features": []
  }
 ];
 window.CATS=[];
