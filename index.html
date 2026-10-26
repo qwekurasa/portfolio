@@ -104,9 +104,7 @@ body[data-v=project]{background:#fff}
 .st{padding:16px 16px 60px;display:grid;grid-template-columns:auto minmax(0,1280px);column-gap:40px;justify-content:center;align-items:start}
 .st-desk{grid-column:2}
 .st-phone{grid-column:1;justify-self:end;position:sticky;top:max(16px,calc(50vh - 270px));width:264px;margin-top:max(30px,calc(50vh - 286px))}
-.st.pad{grid-template-columns:minmax(0,1fr) minmax(0,1040px);column-gap:36px}
-.st.pad .st-desk{grid-column:2}
-.st.pad .st-phone{grid-column:1;justify-self:end;width:min(820px,calc(100vw - 1040px - 104px));margin:44px 0 0;top:16px}
+.st.pad{grid-template-columns:minmax(0,1040px);justify-content:center}.st.pad .st-desk{grid-column:1}.st.pad .st-phone{grid-column:1;justify-self:center;position:static;width:min(900px,96vw);margin:0 0 20px}
 .st-phone:empty{display:none}
 .ph{position:relative;width:100%;aspect-ratio:430/880;filter:invert(1)}
 .ph-body{position:absolute;inset:0;width:100%;height:100%}
@@ -186,7 +184,6 @@ body[data-v=project]{background:#fff}
 .ph-form input{display:block;width:calc(100% - 32px);margin:0 16px 8px;padding:8px 10px;border:.5px solid #c8c8cc;border-radius:7px;font:15px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arimo,sans-serif;background:#fff;color:#000}
 .ph-form div{display:flex;margin-top:8px}.ph-form div button{flex:1;border-left:1px solid #c8c8cc}.ph-form div button:first-child{border-left:0;font-weight:400}
 .ph-alert button{width:100%;padding:11px;border:0;border-top:1px solid #c8c8cc;background:none;color:#007aff;font-size:17px;font-weight:600}
-@media(max-width:1599px){.st.pad{grid-template-columns:minmax(0,1040px);justify-content:center}.st.pad .st-desk{grid-column:1}.st.pad .st-phone{grid-column:1;justify-self:center;position:static;width:min(900px,96vw);margin:0 0 50px}}
 @media(max-width:1299px){.st{grid-template-columns:minmax(0,1280px);justify-content:center}.st-desk,.st-phone{grid-column:1}.st-phone,.st-phone.pad{justify-self:center;position:static;margin:0 0 50px}}
 .st-desk{position:relative;width:100%;height:900px;margin:0 auto}
 .st-w{position:absolute;background:#fff;border:2px solid #000}
@@ -253,7 +250,7 @@ body:not([data-v=project]) .st-top{display:none}
 @media(max-width:1079px){
   .st-desk{width:auto;height:auto;display:flex;flex-direction:column;gap:16px;max-width:620px}
   .st-w{position:relative!important;left:auto!important;top:auto!important;width:auto!important;height:auto!important}
-  .st-w>.rz{display:none}.st-view .sv{grid-template-columns:1fr}.sv-img{height:62vh}.st-shot .st-art{height:46vw;max-height:300px}.sv-side{padding:0 16px 14px}
+  .st-w>.rz{display:none}
     .st-panes{grid-template-columns:1fr;height:auto}
   .st-pane{max-height:132px;border-right:0;border-bottom:2px solid #000}.st-pane:last-child{border-bottom:0}
   .st-art .ks,.st-art img{max-width:300px;margin:0 auto}
@@ -304,23 +301,24 @@ body[data-v=index]{background:#fff}
 .rz.n,.rz.s{left:8px;right:8px;height:8px;cursor:ns-resize}.rz.n{top:-4px}.rz.s{bottom:-4px}
 .rz.e,.rz.w{top:8px;bottom:8px;width:8px;cursor:ew-resize}.rz.e{right:-4px}.rz.w{left:-4px}
 .rz.ne,.rz.nw,.rz.se,.rz.sw{width:14px;height:14px}.rz.ne{top:-5px;right:-5px;cursor:nesw-resize}.rz.sw{bottom:-5px;left:-5px;cursor:nesw-resize}.rz.nw{top:-5px;left:-5px;cursor:nwse-resize}.rz.se{bottom:-5px;right:-5px;cursor:nwse-resize}
-.st-view .sv{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 230px}
-.st-view.narrow .sv{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
-.sv-img{position:relative;min-height:0;display:grid;place-items:center;margin:12px;border-radius:5px;background:#000;overflow:hidden}
-.sv-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
-.sv-side{display:flex;flex-direction:column;gap:10px;padding:14px 16px 14px 4px;min-width:0}
-.st-view.narrow .sv-side{padding:0 16px 14px}
-.sv-side h3{margin:0;font-size:17px;color:#fff;font-weight:600}
-.sv-side p{margin:0;font-size:13px;line-height:1.5;color:#aeaeb2;white-space:pre-line;overflow:auto}
-.sv-nav{margin-top:auto;display:flex;align-items:center;gap:8px;color:#8e8e93;font-size:12px}
-.sv-nav button{display:grid;place-items:center;padding:0;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#f2f2f7;border-radius:5px;width:30px;height:26px;cursor:pointer}
-.sv-nav button:hover{background:rgba(255,255,255,.14)}
-.st-shot{cursor:pointer}
-.st-shot .st-art{flex:1;min-height:0;display:grid;place-items:center}
-.st-shot .st-art{position:relative}.st-shot .st-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-.st-shot.on{border-color:rgba(255,255,255,.45)}
-.st-cap{flex:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.45!important;padding:8px 14px 0!important;margin:0 0 12px!important}
-@media(max-width:1079px){.st-view .sv{grid-template-columns:1fr;grid-template-rows:auto auto}.sv-img{height:62vh}.st-shot .st-art{height:46vw;max-height:300px;flex:none}.sv-side{padding:0 16px 14px}}
+.fd{position:absolute;aspect-ratio:600/520;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}
+.fd svg{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}
+.fd-b{filter:drop-shadow(0 10px 30px rgba(0,0,0,.5))}
+.fd-fr{transform-origin:50% 100%;transition:transform .55s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 -6px 18px rgba(0,0,0,.35)) drop-shadow(0 16px 30px rgba(0,0,0,.45))}
+.fd-f{all:unset;position:absolute;left:14%;top:13%;width:72%;aspect-ratio:2/1.15;border-radius:7px;overflow:hidden;background:#111;box-shadow:0 0 0 3px #f2f2f2,0 12px 28px rgba(0,0,0,.5);cursor:pointer;transform:translateY(calc(var(--i)*1.5%)) rotate(calc(var(--i)*1.5deg));transition:transform .6s cubic-bezier(.2,.9,.25,1.15) var(--d)}
+.fd-f img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.fd:is(:hover,:focus-visible,.open) .fd-fr{transform:perspective(900px) rotateX(-16deg)}
+.fd:is(:hover,:focus-visible,.open) .fd-f{transform:translate(calc(var(--i)*var(--sx,30%)),calc(-62% - (2 - var(--i)*var(--i)/2)*6%)) rotate(calc(var(--i)*9deg)) scale(.82)}
+.fd:is(:hover,.open) .fd-f:hover{transform:translate(calc(var(--i)*var(--sx,30%)),-78%) rotate(calc(var(--i)*4deg)) scale(.95);z-index:2;transition-delay:0s;transition-duration:.3s}
+.fd-l{position:absolute;left:0;right:0;top:calc(100% + 16px);text-align:center;font-size:13px;color:#8e8e93}
+.lb{position:fixed;inset:0;z-index:300;filter:invert(1);background:rgba(0,0,0,.86);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);display:grid;grid-template-columns:56px minmax(0,1fr) 56px;align-items:center;opacity:0;pointer-events:none;transition:opacity .3s;color:#f2f2f7;font:14px/1.5 var(--sans)}
+.lb.on{opacity:1;pointer-events:auto}
+.lb figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:14px;max-height:92vh;transform:scale(.94);transition:transform .35s cubic-bezier(.2,.8,.2,1)}.lb.on figure{transform:none}
+.lb img{max-width:100%;max-height:74vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6);display:block}
+.lb figcaption{max-width:760px;text-align:center}.lb b{display:block;font-size:17px;font-weight:600}.lb span{color:#8e8e93;font-size:12px}.lb p{margin:6px 0 0;color:#aeaeb2;white-space:pre-line}
+.lb button{all:unset;cursor:pointer;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.08);font-size:24px;justify-self:center}.lb button:hover{background:rgba(255,255,255,.18)}
+.lb .lb-x{position:absolute;top:16px;right:16px;font-size:22px}
+@media(max-width:1079px){.fd{--sx:17%;position:relative;width:min(100%,440px);margin:150px auto 60px}.lb{grid-template-columns:40px minmax(0,1fr) 40px}.lb button{width:36px;height:36px}}
 </style>
 </head>
 <body>
@@ -355,7 +353,6 @@ body[data-v=index]{background:#fff}
 
 <script>document.write('<script src="projects.js?v='+Date.now()+'"><\/script>')</script>
 <script src="phone.js"></script>
-<script src="brand.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
@@ -383,13 +380,21 @@ function openProject(id,direct){if(direct){location.hash='p-'+id;return}pendingO
 /* ---------- проект ---------- */
 /* ---------- проект: рабочий стол в духе Smalltalk-80 ---------- */
 let stZ=10;
+function lbOpen(list,k,name){let d=$('#project .lb');
+  if(!d){d=document.createElement('div');d.className='lb';d.innerHTML='<button class="lb-x" aria-label="Закрыть">✕</button><button data-d="-1" aria-label="Назад">‹</button><figure><img alt=""><figcaption><b></b><span></span><p></p></figcaption></figure><button data-d="1" aria-label="Вперёд">›</button>';$('#project').append(d);
+    d.onclick=e=>{const b=e.target.closest('[data-d]');if(b)return d.go(+b.dataset.d);if(e.target===d||e.target.closest('.lb-x'))d.classList.remove('on')}}
+  d.go=s=>{k=(k+s+list.length)%list.length;const w=list[k];d.querySelector('img').src=w.img;d.querySelector('img').alt=name+': '+(w.h||'');d.querySelector('b').textContent=w.h||'Экран '+(k+1);d.querySelector('span').textContent=`${k+1} / ${list.length}`;d.querySelector('p').textContent=w.p||''};
+  d.go(0);requestAnimationFrame(()=>d.classList.add('on'))}
+addEventListener('keydown',e=>{const d=$('#project .lb.on');if(!d)return;if(e.key==='Escape')d.classList.remove('on');if(e.key==='ArrowLeft')d.go(-1);if(e.key==='ArrowRight')d.go(1)});
 function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=P[(i+1)%P.length],pv=P[(i+P.length-1)%P.length];
   const wins=p.wins||[],shots=wins.filter(w=>w.img),info=wins.filter(w=>!w.img);
   const meta=[['type',p.type],['created',p.created||'—'],...(p.meta||[]).map(m=>[{'Стек':'stack','Платформы':'platforms','Приложение':'app','Ссылка':'link'}[m[0]]||m[0],m[1]])];
   const W=(cls,title,body,style='')=>`<section class="st-w ${cls}" style="${style}"><h2 class="st-t">${title}</h2>${body}</section>`;
-  const shotWin=(w,k)=>W('st-shot'+(k?'':' on'),`${w.h||'Экран '+(k+1)}`,`<div class="st-art"><img src="${w.img}" alt="${p.name}: ${w.h}" loading="lazy"></div>${w.p?`<p class="st-cap">${w.p}</p>`:''}`).replace('<section','<section data-k="'+k+'"');
-  const raw=p.id.slice(1),bk=!!window.Brand?.has(raw);
-  const view=shots.length&&!bk?W('st-view',`Экраны · ${p.name}`,`<div class="sv"><div class="sv-img"><img alt=""></div><div class="sv-side"><h3></h3><p></p><div class="sv-nav"><button data-d="-1" aria-label="Назад"><svg viewBox="0 0 8 12" width="7"><path d="M6 1L1 6l5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button data-d="1" aria-label="Вперёд"><svg viewBox="0 0 8 12" width="7"><path d="M2 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span></span></div></div></div>`):'';
+  const fk=Math.min(5,shots.length),fold=shots.length?`<div class="fd" tabindex="0" role="button" aria-label="Экраны ${p.name}: ${shots.length}" style="--n:${fk}">
+    <svg class="fd-b" viewBox="0 0 600 520" aria-hidden="true"><defs><clipPath id="fdB"><path d="M20 26Q20 0 46 0H222Q246 0 252 22L256 36Q262 52 282 52H554Q580 52 580 78V500H20Z"/></clipPath></defs><g clip-path="url(#fdB)"><image href="${shots[0].img}" width="600" height="520" preserveAspectRatio="xMidYMid slice"/><rect width="600" height="520" fill="#000" opacity=".45"/></g></svg>
+    ${shots.slice(0,fk).map((w,k)=>`<button class="fd-f" data-k="${k}" style="--i:${k-(fk-1)/2};--d:${k*45}ms" aria-label="${w.h||'Экран '+(k+1)}"><img src="${w.img}" alt="" loading="lazy"></button>`).join('')}
+    <svg class="fd-fr" viewBox="0 0 600 520" aria-hidden="true"><defs><clipPath id="fdF"><rect y="108" width="600" height="412" rx="30"/></clipPath><linearGradient id="fdG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".25" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></linearGradient></defs><g clip-path="url(#fdF)"><image href="${shots[0].img}" width="600" height="520" preserveAspectRatio="xMidYMid slice"/><rect width="600" height="520" fill="url(#fdG)"/><path d="M24 478H576M24 486H576" stroke="#000" stroke-opacity=".35" stroke-width="1.5"/></g><rect x=".75" y="108.75" width="598.5" height="410.5" rx="29.5" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="1.5"/></svg>
+    <span class="fd-l">Экраны · ${shots.length}</span></div>`:'';
   $('#project').innerHTML=`<svg width="0" height="0" style="position:absolute"><defs><pattern id="dz" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="1" height="1"/><rect x="1" y="1" width="1" height="1"/></pattern></defs></svg>
   <nav class="st-menu st-top"><a href="#map">qwekurasa</a><a href="#p-${pv.id}">← ${pv.name}</a><a href="#p-${nx.id}">${nx.name} →</a></nav>
   <div class="st"><aside class="st-phone"><div id="stPhone"></div></aside><div class="st-desk">
@@ -399,11 +404,9 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
       <ul class="st-pane">${(shots.length?shots:[{h:'нет экранов'}]).map((w,j)=>`<li${j===0?' class="on"':''}>${w.h||'экран '+(j+1)}</li>`).join('')}<li>------------</li></ul></div>
       <div class="st-code"><b>${p.name}: aProject</b><p class="st-com">"${p.desc||'Проект в работе. Скоро здесь появятся описание и экраны.'}"</p>
       <pre>| ${p.name.toLowerCase().replace(/\s+/g,'')} |\n${meta.map(m=>`${m[0]} ← ${String(m[1]).replace(/<a /,'<a class="st-a" ')}.`).join('\n')}</pre></div>`,'left:20px;top:56px')}
-    ${view}
-    ${bk?'':shots.map(shotWin).join('')}
+    ${fold}
     ${info.length?W('st-fl','File List',`<div class="st-path">[]&lt;${p.name}&gt;Функции&gt;*▴</div><ul class="st-files">${info.map((w,j)=>`<li data-j="${j}"${j===0?' class="on"':''}>[${p.code}]&lt;${p.name}&gt;${w.h}.st</li>`).join('')}<li>------------</li></ul><div class="st-out" id="stOut"></div>`,'left:30px;top:520px'):''}
-  </div></div>${bk?Brand.render(p,raw):''}`;
-  if(bk)Brand.init($('#project'));
+  </div></div>`;
   if(p.device==='ipad'&&p.pwa)window.Phone?.mountPad($('#stPhone'),{url:p.pwa});
   else window.Phone?.mount($('#stPhone'),{id:p.id,pwa:p.pwa,name:p.name,icon:p.icon,screens:shots.map(w=>`<img src="${w.img}" alt="">`)});
   $('.st').classList.toggle('pad',p.device==='ipad'&&!!p.pwa);
@@ -414,24 +417,18 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
     const up=()=>{d=null;dev.classList.remove('drag')};dev.addEventListener('pointerup',up);dev.addEventListener('pointercancel',up);
     dev.addEventListener('dblclick',e=>{if(e.target.closest('.ph-scr,.pd-scr'))return;tx=ty=0;dev.style.transition='translate .35s cubic-bezier(.2,.8,.2,1)';dev.style.translate='0 0';setTimeout(()=>dev.style.transition='',400)})}}
   const out=$('#stOut'),show=j=>{const w=info[j];if(!out||!w)return;out.innerHTML=`<b>${w.h}</b>\n${w.p?`    ${w.p}\n`:''}${(w.ul||[]).map(x=>`    ${x}.`).join('\n')}${(w.dl||[]).map(r=>`    ${r[0]}: ${r[1]}.`).join('\n')}`};show(0);
-  /* просмотр: большой экран + описание; миниатюры ниже */
-  const desk=$('#project .st-desk'),vw=desk.querySelector('.st-view');let cur=0;
-  const pick=k=>{if(!vw)return;cur=(k+shots.length)%shots.length;const w=shots[cur];vw.querySelector('.sv-img img').src=w.img;vw.querySelector('.sv-img img').alt=p.name+': '+(w.h||'');
-    vw.querySelector('h3').textContent=w.h||'Экран '+(cur+1);vw.querySelector('.sv-side p').textContent=w.p||'';vw.querySelector('.sv-nav span').textContent=`${cur+1} / ${shots.length}`;
-    desk.querySelectorAll('.st-shot').forEach(x=>x.classList.toggle('on',+x.dataset.k===cur))};
-  if(vw){pick(0);vw.querySelectorAll('.sv-nav button').forEach(b=>b.onclick=()=>pick(cur+ +b.dataset.d));
-    desk.querySelectorAll('.st-shot').forEach(x=>x.addEventListener('click',e=>{if(!e.target.closest('.rz,.st-t'))pick(+x.dataset.k)}))}
+  /* папка с экранами: наведение — файлы вылетают, клик — просмотр */
+  const desk=$('#project .st-desk'),fd=desk.querySelector('.fd');
+  if(fd){const touch=matchMedia('(hover:none)').matches;
+    fd.addEventListener('click',e=>{const f=e.target.closest('.fd-f');if(touch&&!fd.classList.contains('open')){fd.classList.add('open');return}lbOpen(shots,f?+f.dataset.k:0,p.name)});
+    fd.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();lbOpen(shots,0,p.name)}})}
   const lay=()=>{const mob=innerWidth<1080,Wd=desk.clientWidth;if(mob){desk.style.height='';return}if(!Wd)return;
-    const L=vw?Math.round(Math.min(540,Wd*.4)):Math.min(620,Wd),X=vw?0:Math.round((Wd-L)/2),put=(e,x,y,w,h)=>{if(!e||e.dataset.moved)return;e.style.left=x+'px';e.style.top=y+'px';e.style.width=w+'px';if(h)e.style.height=h+'px'};
-    const br=desk.querySelector('.st-br'),fl=desk.querySelector('.st-fl');
+    const L=Math.round(Math.min(540,(Wd-40)*.52)),put=(e,x,y,w,h)=>{if(!e||e.dataset.moved)return;e.style.left=x+'px';e.style.top=y+'px';e.style.width=w+'px';if(h)e.style.height=h+'px'};
+    const br=desk.querySelector('.st-br'),fl=desk.querySelector('.st-fl'),X=fd?0:Math.round((Wd-L)/2);
     put(br,X,44,L);put(fl,X,44+(br?br.offsetHeight:0)+20,L);
-    let leftB=fl?fl.offsetTop+fl.offsetHeight:(br?br.offsetTop+br.offsetHeight:44);
-    if(!vw){desk.style.height=leftB+40+'px';return}
-    const R=Wd-L-20,vh=Math.max(360,Math.min(620,Math.round(R*.62)));vw.classList.toggle('narrow',R<620);put(vw,L+20,44,R,vh);
-    const ths=[...desk.querySelectorAll('.st-shot')],n=Math.min(4,Math.max(2,ths.length)),tw=Math.floor((Wd-(n-1)*16)/n),th=Math.round(tw*.9);
-    let y=Math.max(leftB,(vw.dataset.moved?44+vh:vw.offsetTop+vw.offsetHeight))+20;
-    ths.forEach((w,k)=>{put(w,(k%n)*(tw+16),y+Math.floor(k/n)*(th+16),tw,th)});
-    const bottom=Math.max(leftB,...[...desk.querySelectorAll('.st-w')].map(e=>e.offsetTop+e.offsetHeight));desk.style.height=bottom+40+'px'};
+    let bottom=fl?fl.offsetTop+fl.offsetHeight:(br?br.offsetTop+br.offsetHeight:44);
+    if(fd){const R=Math.min(480,Wd-L-60),fh=Math.round(R*520/600),y=44+Math.round(fh*.42);fd.style.left=L+40+Math.round((Wd-L-40-R)/2)+'px';fd.style.top=y+'px';fd.style.width=R+'px';bottom=Math.max(bottom,y+fh+50)}
+    desk.style.height=bottom+40+'px'};
   lay();new ResizeObserver(()=>{if(desk.isConnected)lay()}).observe(desk);
   /* изменение размера за любую сторону и угол */
   desk.querySelectorAll('.st-w').forEach(w=>{['n','s','e','w','ne','nw','se','sw'].forEach(d=>{const h=document.createElement('i');h.className='rz '+d;w.append(h);
