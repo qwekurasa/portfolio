@@ -104,7 +104,12 @@ body[data-v=project]{background:#fff}
 .st{padding:16px 16px 60px;display:grid;grid-template-columns:auto minmax(0,1280px);column-gap:40px;justify-content:center;align-items:start}
 .st-desk{grid-column:2}
 .st-phone{grid-column:1;justify-self:end;position:sticky;top:max(16px,calc(50vh - 270px));width:264px;margin-top:max(30px,calc(50vh - 286px))}
-.st.pad{grid-template-columns:minmax(0,1040px);justify-content:center}.st.pad .st-desk{grid-column:1}.st.pad .st-phone{grid-column:1;justify-self:center;position:static;width:min(900px,96vw);margin:0 0 20px}
+.st.pad{grid-template-columns:minmax(0,1fr) min(860px,calc(100vw - 1160px)) minmax(0,1fr);justify-content:stretch;align-items:center;column-gap:28px}
+.st.pad>.st-fdw{grid-area:1/1;justify-self:end;width:min(380px,100%);padding:150px 0 40px}.st-fdw{filter:invert(1)}.st-fdw .fd{position:relative;width:100%;--sx:20%}
+.st.pad .st-phone{grid-area:1/2;justify-self:center;position:static;width:100%;margin:0}
+.st.pad .st-desk{grid-area:1/3;max-width:540px;justify-self:start}
+@media(max-width:1799px){.st.pad{grid-template-columns:minmax(0,520px) minmax(0,520px);justify-content:center;align-items:start;column-gap:40px}.st.pad .st-phone{grid-area:1/1/2/3;width:min(900px,96vw);margin:0 0 20px}.st.pad>.st-fdw{grid-area:2/1;justify-self:center}.st.pad .st-desk{grid-area:2/2;max-width:none}}
+@media(max-width:1079px){.st.pad{grid-template-columns:minmax(0,620px)}.st.pad>.st-fdw{grid-area:3/1;padding:0}.st.pad .st-desk{grid-area:2/1}.st.pad .st-phone{grid-area:1/1}}
 .st-phone:empty{display:none}
 .ph{position:relative;width:100%;aspect-ratio:430/880;filter:invert(1)}
 .ph-body{position:absolute;inset:0;width:100%;height:100%}
@@ -390,26 +395,26 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   const wins=p.wins||[],shots=wins.filter(w=>w.img),info=wins.filter(w=>!w.img);
   const meta=[['type',p.type],['created',p.created||'—'],...(p.meta||[]).map(m=>[{'Стек':'stack','Платформы':'platforms','Приложение':'app','Ссылка':'link'}[m[0]]||m[0],m[1]])];
   const W=(cls,title,body,style='')=>`<section class="st-w ${cls}" style="${style}"><h2 class="st-t">${title}</h2>${body}</section>`;
-  const fk=Math.min(5,shots.length),fold=shots.length?`<div class="fd" tabindex="0" role="button" aria-label="Экраны ${p.name}: ${shots.length}" style="--n:${fk}">
-    <svg class="fd-b" viewBox="0 0 600 520" aria-hidden="true"><defs><clipPath id="fdB"><path d="M20 26Q20 0 46 0H222Q246 0 252 22L256 36Q262 52 282 52H554Q580 52 580 78V500H20Z"/></clipPath></defs><g clip-path="url(#fdB)"><image href="${shots[0].img}" width="600" height="520" preserveAspectRatio="xMidYMid slice"/><rect width="600" height="520" fill="#000" opacity=".45"/></g></svg>
+  const pad=p.device==='ipad'&&!!p.pwa,fk=Math.min(5,shots.length),fold=shots.length?`<div class="fd" tabindex="0" role="button" aria-label="Экраны ${p.name}: ${shots.length}" style="--n:${fk}">
+    <svg class="fd-b" viewBox="0 0 600 520" aria-hidden="true"><defs><filter id="fdN" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><filter id="fdM" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".012 .02" numOctaves="4" seed="7"/><feColorMatrix type="saturate" values="0"/></filter><clipPath id="fdB"><path d="M20 26Q20 0 46 0H222Q246 0 252 22L256 36Q262 52 282 52H554Q580 52 580 78V500H20Z"/></clipPath></defs><g clip-path="url(#fdB)"><rect width="600" height="520" fill="#030303"/><rect width="600" height="520" filter="url(#fdM)" opacity=".09" style="mix-blend-mode:screen"/><rect width="600" height="520" filter="url(#fdN)" opacity=".07" style="mix-blend-mode:screen"/></g></svg>
     ${shots.slice(0,fk).map((w,k)=>`<button class="fd-f" data-k="${k}" style="--i:${k-(fk-1)/2};--d:${k*45}ms" aria-label="${w.h||'Экран '+(k+1)}"><img src="${w.img}" alt="" loading="lazy"></button>`).join('')}
-    <svg class="fd-fr" viewBox="0 0 600 520" aria-hidden="true"><defs><clipPath id="fdF"><rect y="108" width="600" height="412" rx="30"/></clipPath><linearGradient id="fdG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".25" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></linearGradient></defs><g clip-path="url(#fdF)"><image href="${shots[0].img}" width="600" height="520" preserveAspectRatio="xMidYMid slice"/><rect width="600" height="520" fill="url(#fdG)"/><path d="M24 478H576M24 486H576" stroke="#000" stroke-opacity=".35" stroke-width="1.5"/></g><rect x=".75" y="108.75" width="598.5" height="410.5" rx="29.5" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="1.5"/></svg>
+    <svg class="fd-fr" viewBox="0 0 600 520" aria-hidden="true"><defs><clipPath id="fdF"><rect y="108" width="600" height="412" rx="30"/></clipPath><linearGradient id="fdG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".1"/><stop offset=".25" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></linearGradient></defs><g clip-path="url(#fdF)"><rect width="600" height="520" fill="#090909"/><rect width="600" height="520" filter="url(#fdM)" opacity=".13" style="mix-blend-mode:screen"/><rect width="600" height="520" filter="url(#fdN)" opacity=".07" style="mix-blend-mode:screen"/><rect width="600" height="520" fill="url(#fdG)"/><path d="M24 478H576M24 486H576" stroke="#fff" stroke-opacity=".07" stroke-width="1.5"/></g><rect x=".75" y="108.75" width="598.5" height="410.5" rx="29.5" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="1.5"/></svg>
     <span class="fd-l">Экраны · ${shots.length}</span></div>`:'';
   $('#project').innerHTML=`<svg width="0" height="0" style="position:absolute"><defs><pattern id="dz" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="1" height="1"/><rect x="1" y="1" width="1" height="1"/></pattern></defs></svg>
   <nav class="st-menu st-top"><a href="#map">qwekurasa</a><a href="#p-${pv.id}">← ${pv.name}</a><a href="#p-${nx.id}">${nx.name} →</a></nav>
-  <div class="st"><aside class="st-phone"><div id="stPhone"></div></aside><div class="st-desk">
+  <div class="st">${pad&&fold?`<div class="st-fdw">${fold}</div>`:''}<aside class="st-phone"><div id="stPhone"></div></aside><div class="st-desk">
     ${W('st-br','System Browser',`<div class="st-panes">
       <ul class="st-pane">${P.map(q=>`<li${q===p?' class="on"':''}><a href="#p-${q.id}">Projects-${q.name}</a></li>`).join('')}</ul>
       <ul class="st-pane">${[p.code,p.type,p.created||'—'].map((x,j)=>`<li${j===1?' class="on"':''}>${x}</li>`).join('')}<li>------------</li></ul>
       <ul class="st-pane">${(shots.length?shots:[{h:'нет экранов'}]).map((w,j)=>`<li${j===0?' class="on"':''}>${w.h||'экран '+(j+1)}</li>`).join('')}<li>------------</li></ul></div>
       <div class="st-code"><b>${p.name}: aProject</b><p class="st-com">"${p.desc||'Проект в работе. Скоро здесь появятся описание и экраны.'}"</p>
       <pre>| ${p.name.toLowerCase().replace(/\s+/g,'')} |\n${meta.map(m=>`${m[0]} ← ${String(m[1]).replace(/<a /,'<a class="st-a" ')}.`).join('\n')}</pre></div>`,'left:20px;top:56px')}
-    ${fold}
+    ${pad?'':fold}
     ${info.length?W('st-fl','File List',`<div class="st-path">[]&lt;${p.name}&gt;Функции&gt;*▴</div><ul class="st-files">${info.map((w,j)=>`<li data-j="${j}"${j===0?' class="on"':''}>[${p.code}]&lt;${p.name}&gt;${w.h}.st</li>`).join('')}<li>------------</li></ul><div class="st-out" id="stOut"></div>`,'left:30px;top:520px'):''}
   </div></div>`;
   if(p.device==='ipad'&&p.pwa)window.Phone?.mountPad($('#stPhone'),{url:p.pwa});
   else window.Phone?.mount($('#stPhone'),{id:p.id,pwa:p.pwa,name:p.name,icon:p.icon,screens:shots.map(w=>`<img src="${w.img}" alt="">`)});
-  $('.st').classList.toggle('pad',p.device==='ipad'&&!!p.pwa);
+  $('.st').classList.toggle('pad',pad);
   /* устройство можно двигать за корпус, двойной клик по корпусу — вернуть на место */
   {const dev=$('#stPhone .ph');if(dev){let d=null,tx=0,ty=0;
     dev.addEventListener('pointerdown',e=>{if(e.target.closest('.ph-scr,.pd-scr'))return;e.preventDefault();dev.setPointerCapture(e.pointerId);d={x:e.clientX-tx,y:e.clientY-ty};dev.classList.add('drag')});
@@ -418,16 +423,16 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
     dev.addEventListener('dblclick',e=>{if(e.target.closest('.ph-scr,.pd-scr'))return;tx=ty=0;dev.style.transition='translate .35s cubic-bezier(.2,.8,.2,1)';dev.style.translate='0 0';setTimeout(()=>dev.style.transition='',400)})}}
   const out=$('#stOut'),show=j=>{const w=info[j];if(!out||!w)return;out.innerHTML=`<b>${w.h}</b>\n${w.p?`    ${w.p}\n`:''}${(w.ul||[]).map(x=>`    ${x}.`).join('\n')}${(w.dl||[]).map(r=>`    ${r[0]}: ${r[1]}.`).join('\n')}`};show(0);
   /* папка с экранами: наведение — файлы вылетают, клик — просмотр */
-  const desk=$('#project .st-desk'),fd=desk.querySelector('.fd');
+  const desk=$('#project .st-desk'),fd=$('#project .fd'),fdIn=!!fd&&desk.contains(fd);
   if(fd){const touch=matchMedia('(hover:none)').matches;
     fd.addEventListener('click',e=>{const f=e.target.closest('.fd-f');if(touch&&!fd.classList.contains('open')){fd.classList.add('open');return}lbOpen(shots,f?+f.dataset.k:0,p.name)});
     fd.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();lbOpen(shots,0,p.name)}})}
   const lay=()=>{const mob=innerWidth<1080,Wd=desk.clientWidth;if(mob){desk.style.height='';return}if(!Wd)return;
     const L=Math.round(Math.min(540,(Wd-40)*.52)),put=(e,x,y,w,h)=>{if(!e||e.dataset.moved)return;e.style.left=x+'px';e.style.top=y+'px';e.style.width=w+'px';if(h)e.style.height=h+'px'};
-    const br=desk.querySelector('.st-br'),fl=desk.querySelector('.st-fl'),X=fd?0:Math.round((Wd-L)/2);
+    const br=desk.querySelector('.st-br'),fl=desk.querySelector('.st-fl'),X=fdIn?0:Math.round((Wd-L)/2);
     put(br,X,44,L);put(fl,X,44+(br?br.offsetHeight:0)+20,L);
     let bottom=fl?fl.offsetTop+fl.offsetHeight:(br?br.offsetTop+br.offsetHeight:44);
-    if(fd){const R=Math.min(480,Wd-L-60),fh=Math.round(R*520/600),y=44+Math.round(fh*.42);fd.style.left=L+40+Math.round((Wd-L-40-R)/2)+'px';fd.style.top=y+'px';fd.style.width=R+'px';bottom=Math.max(bottom,y+fh+50)}
+    if(fdIn){const R=Math.min(480,Wd-L-60),fh=Math.round(R*520/600),y=44+Math.round(fh*.42);fd.style.left=L+40+Math.round((Wd-L-40-R)/2)+'px';fd.style.top=y+'px';fd.style.width=R+'px';bottom=Math.max(bottom,y+fh+50)}
     desk.style.height=bottom+40+'px'};
   lay();new ResizeObserver(()=>{if(desk.isConnected)lay()}).observe(desk);
   /* изменение размера за любую сторону и угол */
