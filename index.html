@@ -228,6 +228,10 @@ body[data-v=project]{background:#fff}
 .st-menu{border:1px solid rgba(255,255,255,.1);border-radius:6px;background:rgba(30,30,33,.62);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);overflow:hidden}
 .st-menu a{padding:6px 14px;border-right:1px solid rgba(255,255,255,.08);color:#f2f2f7}
 .st-menu a:hover,.st-pane a:hover{background:rgba(255,255,255,.1);color:#fff}
+.st-top{position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:100;filter:invert(1);flex-wrap:nowrap;max-width:calc(100vw - 24px);white-space:nowrap;color:#f2f2f7;background:rgba(28,28,28,.85)}
+.st-top a{overflow:hidden;text-overflow:ellipsis;max-width:40vw}
+body:not([data-v=project]) .st-top{display:none}
+#project .st{padding-top:56px}
 .st-panes{border-bottom:1px solid rgba(255,255,255,.08);height:auto;min-height:168px}
 .st-pane{border-right:1px solid rgba(255,255,255,.08);padding:6px}
 .st-pane li{padding:1px 8px;border-radius:4px;color:#c7c7cc}
@@ -251,8 +255,6 @@ body[data-v=project]{background:#fff}
 @media(max-width:1079px){
   .st-desk{width:auto;height:auto;display:flex;flex-direction:column;gap:46px;max-width:620px}
   .st-w{position:relative!important;left:auto!important;top:auto!important;width:auto!important}
-  .st-menu{position:static}
-  .st-menu{align-self:flex-start;margin-bottom:-20px}
     .st-panes{grid-template-columns:1fr;height:auto}
   .st-pane{max-height:132px;border-right:0;border-bottom:2px solid #000}.st-pane:last-child{border-bottom:0}
   .st-art .ks,.st-art img{max-width:300px;margin:0 auto}
@@ -365,8 +367,8 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   const pos=[[640,28],[742,330],[470,870],[40,960],[760,900]];
   const shotWin=(w,k)=>W('st-shot',`${w.h||'Экран '+(k+1)}`,`<div class="st-art"><img src="${w.img}" alt="${p.name}: ${w.h}" loading="lazy"></div>${w.p?`<p class="st-cap">${w.p}</p>`:''}`,`left:${pos[k%5][0]+Math.floor(k/5)*30}px;top:${pos[k%5][1]+Math.floor(k/5)*30}px`);
   $('#project').innerHTML=`<svg width="0" height="0" style="position:absolute"><defs><pattern id="dz" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="1" height="1"/><rect x="1" y="1" width="1" height="1"/></pattern></defs></svg>
+  <nav class="st-menu st-top"><a href="#map">qwekurasa</a><a href="#p-${pv.id}">← ${pv.name}</a><a href="#p-${nx.id}">${nx.name} →</a></nav>
   <div class="st"><aside class="st-phone"><div id="stPhone"></div></aside><div class="st-desk">
-    <nav class="st-menu"><a href="#map">qwekurasa</a><a href="#p-${pv.id}">← ${pv.name}</a><a href="#p-${nx.id}">${nx.name} →</a></nav>
     ${W('st-br','System Browser',`<div class="st-panes">
       <ul class="st-pane">${P.map(q=>`<li${q===p?' class="on"':''}><a href="#p-${q.id}">Projects-${q.name}</a></li>`).join('')}</ul>
       <ul class="st-pane">${[p.code,p.type,p.created||'—'].map((x,j)=>`<li${j===1?' class="on"':''}>${x}</li>`).join('')}<li>------------</li></ul>
@@ -389,7 +391,7 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   /* окна-экраны: аккуратной сеткой в два столбца справа от System Browser */
   const desk=$('#project .st-desk'),lay=()=>{if(innerWidth<1080){desk.style.height='';return}
     const ox=Math.max(0,Math.round((desk.clientWidth-1022)/2)),cw=195,gap=12,x0=ox+620,col=[44,44];
-    [['.st-menu',0],['.st-br',0],['.st-fl',10]].forEach(([q,d])=>{const e=desk.querySelector(q);if(e&&!e.dataset.moved)e.style.left=ox+d+'px'});
+    [['.st-br',0],['.st-fl',10]].forEach(([q,d])=>{const e=desk.querySelector(q);if(e&&!e.dataset.moved)e.style.left=ox+d+'px'});
     const ws=[...desk.querySelectorAll('.st-shot:not([data-moved])')];
     ws.forEach(w=>{if(!w.dataset.z)w.style.width=cw+'px';const c=col[0]<=col[1]?0:1;w.style.left=x0+c*(cw+gap)+'px';w.style.top=col[c]+'px';col[c]+=w.offsetHeight+14});
     const fl=desk.querySelector('.st-fl'),flb=fl?fl.offsetTop+fl.offsetHeight:500;
