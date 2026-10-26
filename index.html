@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap">
 <style>
 
-:root{
+:root{--acr-noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='128' height='128' filter='url(%23n)'/%3E%3C/svg%3E");
   --paper:#ffffff;--dot:#fff;--ink:#0b0b0b;--mute:#9b9b9b;--line:#e3e3e3;
   --blue:#2234e6;--night:#000000;--snow:#efefef;
   --sans:"Arimo","Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -109,6 +109,7 @@ body[data-v=project]{background:#fff}
 .st.pad .st-phone{grid-column:1;justify-self:end;width:min(820px,calc(100vw - 1040px - 104px));margin:44px 0 0;top:16px}
 .ph{position:relative;width:100%;aspect-ratio:430/880;filter:invert(1)}
 .ph-body{position:absolute;inset:0;width:100%;height:100%}
+.st-phone{z-index:60}.st-phone .ph{cursor:grab;touch-action:none}.st-phone .ph.drag{cursor:grabbing}.st-phone .ph-scr,.st-phone .pd-scr{cursor:auto;touch-action:auto}
 .ph.pd{aspect-ratio:880/640}
 .pd-scr{position:absolute;left:2.727%;top:3.75%;width:94.545%;height:92.5%;overflow:hidden;border-radius:3.9%/5.4%;background:#000}
 .pd-in{position:absolute;left:0;top:0;width:1180px;height:840px;transform-origin:0 0;overflow:hidden;background:#1c1c1e;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arimo,sans-serif}
@@ -136,7 +137,7 @@ body[data-v=project]{background:#fff}
 .ph-cell span{max-width:80px;font-size:11.5px;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ph-ic{position:relative;width:62px;height:62px;border-radius:14.5px;background-size:cover;background-position:center}
 .ph-ic>svg{display:block;width:100%;height:100%;border-radius:inherit}
-.ph-ic.gl{background:linear-gradient(155deg,rgba(255,255,255,.24),rgba(255,255,255,.07) 48%,rgba(255,255,255,.13));box-shadow:inset 0 1.2px .6px rgba(255,255,255,.6),inset 0 -1px 1px rgba(255,255,255,.18),inset 1px 0 1px rgba(255,255,255,.12),inset -1px 0 1px rgba(255,255,255,.08),0 8px 18px rgba(0,0,0,.45);-webkit-backdrop-filter:blur(14px) saturate(1.6);backdrop-filter:blur(14px) saturate(1.6)}
+.ph-ic.gl{background:var(--acr-noise),linear-gradient(155deg,rgba(255,255,255,.24),rgba(255,255,255,.07) 48%,rgba(255,255,255,.13)),rgba(44,44,44,.55);background-blend-mode:soft-light,normal,normal;box-shadow:inset 0 1.2px .6px rgba(255,255,255,.6),inset 0 -1px 1px rgba(255,255,255,.18),inset 1px 0 1px rgba(255,255,255,.12),inset -1px 0 1px rgba(255,255,255,.08),0 8px 18px rgba(0,0,0,.45);-webkit-backdrop-filter:blur(30px) saturate(1.25);backdrop-filter:blur(30px) saturate(1.25)}
 .ph-ic.gl::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(120% 60% at 30% 0,rgba(255,255,255,.22),rgba(255,255,255,0) 55%);pointer-events:none}
 .ph-ic.gl svg{filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.3))}
 .ph-cell[data-dim]{opacity:.55}
@@ -148,7 +149,7 @@ body[data-v=project]{background:#fff}
 .ph-cell.tap .ph-ic{animation:phTap .26s}
 @keyframes phTap{50%{transform:scale(.9);filter:brightness(.65)}}
 .ph-search{position:absolute;left:50%;bottom:118px;transform:translateX(-50%);display:flex;align-items:center;gap:5px;padding:6px 13px;border-radius:99px;background:rgba(255,255,255,.1);box-shadow:inset 0 1px .5px rgba(255,255,255,.3);font-size:12.5px;font-weight:500;opacity:.6}
-.ph-dock{position:absolute;left:12px;right:12px;bottom:12px;height:94px;display:grid;grid-template-columns:repeat(4,1fr);align-items:center;padding:0 10px;border-radius:34px;background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.04));box-shadow:inset 0 1px .5px rgba(255,255,255,.35),inset 0 -1px 1px rgba(255,255,255,.08);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px)}
+.ph-dock{position:absolute;left:12px;right:12px;bottom:12px;height:94px;display:grid;grid-template-columns:repeat(4,1fr);align-items:center;padding:0 10px;border-radius:34px;background:var(--acr-noise),linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.04)),rgba(44,44,44,.45);background-blend-mode:soft-light,normal,normal;box-shadow:inset 0 1px .5px rgba(255,255,255,.35),inset 0 -1px 1px rgba(255,255,255,.08);-webkit-backdrop-filter:blur(30px) saturate(1.25);backdrop-filter:blur(30px) saturate(1.25)}
 .ph-dock .ph-cell span{display:none}
 .ph-hi{position:absolute;z-index:9;left:50%;bottom:8px;width:140px;height:20px;transform:translateX(-50%);border:0;background:none;cursor:pointer;padding:0}
 .ph-hi::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;border-radius:3px;background:#fff}
@@ -223,14 +224,14 @@ body[data-v=project]{background:#fff}
 .st-cal td.e{background:transparent;border:0}.st-cal td.on{background:#000;color:#fff}
 /* окна в стиле iOS: тёмно-серое стекло (свой контекст цвета — сайт инвертирован целиком) */
 .st-desk{filter:invert(1);color:#f2f2f7}
-.st-w{background:rgba(30,30,33,.62);border:1px solid rgba(255,255,255,.1);border-radius:7px;box-shadow:0 18px 44px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.09);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);overflow:hidden}
+.st-w{background:var(--acr-noise),linear-gradient(rgba(44,44,44,.15),rgba(44,44,44,.15)),rgba(28,28,28,.78);background-blend-mode:soft-light,normal,normal;border:1px solid rgba(255,255,255,.09);border-radius:7px;box-shadow:0 18px 44px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);-webkit-backdrop-filter:blur(30px) saturate(1.25);backdrop-filter:blur(30px) saturate(1.25);overflow:hidden}
 .st-t{position:relative;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:64px!important;background:rgba(255,255,255,.03);border:0;border-bottom:1px solid rgba(255,255,255,.08);padding:9px 14px;font:600 13px var(--sans);letter-spacing:0;color:#f2f2f7}
 .st-t::before{content:"";position:absolute;left:14px;top:50%;margin-top:-4px;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.28);box-shadow:13px 0 0 rgba(255,255,255,.16),26px 0 0 rgba(255,255,255,.1)}
 .st-fl .st-t{background:rgba(255,255,255,.03);color:#f2f2f7}
 .st-menu{border:1px solid rgba(255,255,255,.1);border-radius:6px;background:rgba(30,30,33,.62);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);overflow:hidden}
 .st-menu a{padding:6px 14px;border-right:1px solid rgba(255,255,255,.08);color:#f2f2f7}
 .st-menu a:hover,.st-pane a:hover{background:rgba(255,255,255,.1);color:#fff}
-.st-panes{border-bottom:1px solid rgba(255,255,255,.08)}
+.st-panes{border-bottom:1px solid rgba(255,255,255,.08);height:auto;min-height:168px}
 .st-pane{border-right:1px solid rgba(255,255,255,.08);padding:6px}
 .st-pane li{padding:1px 8px;border-radius:4px;color:#c7c7cc}
 .st-pane li.on{outline:0;background:rgba(255,255,255,.12);color:#fff}
@@ -335,7 +336,7 @@ body[data-v=index]{background:#fff}
 
 <nav class="dots" aria-label="Вид"><a href="#map" data-v="map" title="Карта"></a><a href="#index" data-v="index" title="Проекты"></a></nav>
 
-<script src="projects.js"></script>
+<script>document.write('<script src="projects.js?v='+Date.now()+'"><\/script>')</script>
 <script src="phone.js"></script>
 <script>
 const $=s=>document.querySelector(s);
@@ -387,6 +388,12 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   if(p.device==='ipad'&&p.pwa)window.Phone?.mountPad($('#stPhone'),{url:p.pwa});
   else window.Phone?.mount($('#stPhone'),{id:p.id,pwa:p.pwa,name:p.name,icon:p.icon,screens:shots.map(w=>`<img src="${w.img}" alt="">`)});
   $('.st').classList.toggle('pad',p.device==='ipad'&&!!p.pwa);
+  /* устройство можно двигать за корпус, двойной клик по корпусу — вернуть на место */
+  {const dev=$('#stPhone .ph');if(dev){let d=null,tx=0,ty=0;
+    dev.addEventListener('pointerdown',e=>{if(e.target.closest('.ph-scr,.pd-scr'))return;e.preventDefault();dev.setPointerCapture(e.pointerId);d={x:e.clientX-tx,y:e.clientY-ty};dev.classList.add('drag')});
+    dev.addEventListener('pointermove',e=>{if(!d)return;tx=e.clientX-d.x;ty=e.clientY-d.y;dev.style.translate=`${tx}px ${ty}px`});
+    const up=()=>{d=null;dev.classList.remove('drag')};dev.addEventListener('pointerup',up);dev.addEventListener('pointercancel',up);
+    dev.addEventListener('dblclick',e=>{if(e.target.closest('.ph-scr,.pd-scr'))return;tx=ty=0;dev.style.transition='translate .35s cubic-bezier(.2,.8,.2,1)';dev.style.translate='0 0';setTimeout(()=>dev.style.transition='',400)})}}
   const out=$('#stOut'),show=j=>{const w=info[j];if(!out||!w)return;out.innerHTML=`<b>${w.h}</b>\n${w.p?`    ${w.p}\n`:''}${(w.ul||[]).map(x=>`    ${x}.`).join('\n')}${(w.dl||[]).map(r=>`    ${r[0]}: ${r[1]}.`).join('\n')}`};show(0);
   /* окна-экраны: аккуратной сеткой в два столбца справа от System Browser */
   const desk=$('#project .st-desk'),lay=()=>{if(innerWidth<1080){desk.style.height='';return}
