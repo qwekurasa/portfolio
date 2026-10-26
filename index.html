@@ -187,7 +187,7 @@ body[data-v=project]{background:#fff}
 .ph-alert button{width:100%;padding:11px;border:0;border-top:1px solid #c8c8cc;background:none;color:#007aff;font-size:17px;font-weight:600}
 @media(max-width:1599px){.st.pad{grid-template-columns:minmax(0,1040px);justify-content:center}.st.pad .st-desk{grid-column:1}.st.pad .st-phone{grid-column:1;justify-self:center;position:static;width:min(900px,96vw);margin:0 0 50px}}
 @media(max-width:1679px){.st{grid-template-columns:minmax(0,1040px);justify-content:center}.st-desk,.st-phone{grid-column:1}.st-phone,.st-phone.pad{justify-self:center;position:static;margin:0 0 50px}}
-.st-desk{position:relative;width:1040px;height:900px;margin:0 auto}
+.st-desk{position:relative;width:min(1040px,100%);height:900px;margin:0 auto}
 .st-w{position:absolute;background:#fff;border:2px solid #000}
 .st-t{position:absolute;bottom:100%;left:-2px;margin:0;background:#fff;border:2px solid #000;border-bottom:0;padding:2px 8px;font:400 13px var(--sans);letter-spacing:.03em;white-space:nowrap;cursor:grab;user-select:none;touch-action:none}
 .st-fl .st-t{background:#000;color:#fff}
@@ -219,9 +219,6 @@ body[data-v=project]{background:#fff}
 .st-files li[data-j]{cursor:pointer;padding:0 2px}
 .st-files li.on{background:#000;color:#fff}
 .st-out{margin:8px;padding:8px 12px;min-height:110px;background:#000;color:#fff;white-space:pre-wrap;line-height:1.6}
-.st-cal{position:absolute;left:908px;top:44px;border-collapse:collapse;font-size:9px}
-.st-cal td{width:18px;height:14px;padding:0 2px;border:1px solid #000;background:#fff;text-align:right;line-height:1}
-.st-cal td.e{background:transparent;border:0}.st-cal td.on{background:#000;color:#fff}
 /* окна в стиле iOS: тёмно-серое стекло (свой контекст цвета — сайт инвертирован целиком) */
 .st-desk{filter:invert(1);color:#f2f2f7}
 .st-w{background:var(--acr-noise),linear-gradient(rgba(44,44,44,.15),rgba(44,44,44,.15)),rgba(28,28,28,.78);background-blend-mode:soft-light,normal,normal;border:1px solid rgba(255,255,255,.09);border-radius:7px;box-shadow:0 18px 44px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);-webkit-backdrop-filter:blur(30px) saturate(1.25);backdrop-filter:blur(30px) saturate(1.25);overflow:hidden}
@@ -251,16 +248,12 @@ body[data-v=project]{background:#fff}
 .st-files li.on{background:rgba(255,255,255,.12);color:#fff}
 .st-out{margin:10px;border-radius:6px;background:rgba(0,0,0,.35);color:#e5e5ea;padding:12px 14px}
 .st-out b{color:#fff}
-.st-cal{border-collapse:separate;border-spacing:2px;padding:6px;border-radius:5px;background:rgba(30,30,33,.62);border:1px solid rgba(255,255,255,.1);font-size:10px}
-.st-cal td{border:0;background:transparent;color:#aeaeb2;text-align:center;border-radius:3px;width:20px;height:18px}
-.st-cal td.on{background:#f2f2f7;color:#000;font-weight:700}
 @media(max-width:1079px){
   .st-desk{width:auto;height:auto;display:flex;flex-direction:column;gap:46px;max-width:620px}
   .st-w{position:relative!important;left:auto!important;top:auto!important;width:auto!important}
   .st-menu{position:static}
   .st-menu{align-self:flex-start;margin-bottom:-20px}
-  .st-cal{display:none}
-  .st-panes{grid-template-columns:1fr;height:auto}
+    .st-panes{grid-template-columns:1fr;height:auto}
   .st-pane{max-height:132px;border-right:0;border-bottom:2px solid #000}.st-pane:last-child{border-bottom:0}
   .st-art .ks,.st-art img{max-width:300px;margin:0 auto}
 }
@@ -371,7 +364,6 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   const W=(cls,title,body,style='')=>`<section class="st-w ${cls}" style="${style}"><h2 class="st-t">${title}</h2>${body}</section>`;
   const pos=[[640,28],[742,330],[470,870],[40,960],[760,900]];
   const shotWin=(w,k)=>W('st-shot',`${w.h||'Экран '+(k+1)}`,`<div class="st-art"><img src="${w.img}" alt="${p.name}: ${w.h}" loading="lazy"></div>${w.p?`<p class="st-cap">${w.p}</p>`:''}`,`left:${pos[k%5][0]+Math.floor(k/5)*30}px;top:${pos[k%5][1]+Math.floor(k/5)*30}px`);
-  const day=new Date(),mm=day.getMonth(),yy=day.getFullYear(),first=(new Date(yy,mm,1).getDay()+6)%7,dim=new Date(yy,mm+1,0).getDate();
   $('#project').innerHTML=`<svg width="0" height="0" style="position:absolute"><defs><pattern id="dz" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="1" height="1"/><rect x="1" y="1" width="1" height="1"/></pattern></defs></svg>
   <div class="st"><aside class="st-phone"><div id="stPhone"></div></aside><div class="st-desk">
     <nav class="st-menu"><a href="#map">qwekurasa</a><a href="#p-${pv.id}">← ${pv.name}</a><a href="#p-${nx.id}">${nx.name} →</a></nav>
@@ -383,7 +375,6 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
       <pre>| ${p.name.toLowerCase().replace(/\s+/g,'')} |\n${meta.map(m=>`${m[0]} ← ${String(m[1]).replace(/<a /,'<a class="st-a" ')}.`).join('\n')}</pre></div>`,'left:20px;top:56px')}
     ${shots.map(shotWin).join('')}
     ${info.length?W('st-fl','File List',`<div class="st-path">[]&lt;${p.name}&gt;Функции&gt;*▴</div><ul class="st-files">${info.map((w,j)=>`<li data-j="${j}"${j===0?' class="on"':''}>[${p.code}]&lt;${p.name}&gt;${w.h}.st</li>`).join('')}<li>------------</li></ul><div class="st-out" id="stOut"></div>`,'left:30px;top:520px'):''}
-    <table class="st-cal">${Array.from({length:Math.ceil((first+dim)/7)},(_,w)=>'<tr>'+Array.from({length:7},(_,d)=>{const n=w*7+d-first+1;return n>0&&n<=dim?`<td${n===day.getDate()?' class="on"':''}>${n}</td>`:'<td class="e"></td>'}).join('')+'</tr>').join('')}</table>
   </div></div>`;
   if(p.device==='ipad'&&p.pwa)window.Phone?.mountPad($('#stPhone'),{url:p.pwa});
   else window.Phone?.mount($('#stPhone'),{id:p.id,pwa:p.pwa,name:p.name,icon:p.icon,screens:shots.map(w=>`<img src="${w.img}" alt="">`)});
@@ -397,13 +388,14 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   const out=$('#stOut'),show=j=>{const w=info[j];if(!out||!w)return;out.innerHTML=`<b>${w.h}</b>\n${w.p?`    ${w.p}\n`:''}${(w.ul||[]).map(x=>`    ${x}.`).join('\n')}${(w.dl||[]).map(r=>`    ${r[0]}: ${r[1]}.`).join('\n')}`};show(0);
   /* окна-экраны: аккуратной сеткой в два столбца справа от System Browser */
   const desk=$('#project .st-desk'),lay=()=>{if(innerWidth<1080){desk.style.height='';return}
-    const ws=[...desk.querySelectorAll('.st-shot:not([data-moved])')],cw=195,gap=12,x0=640,col=[44,44];
+    const ox=Math.max(0,Math.round((desk.clientWidth-1022)/2)),cw=195,gap=12,x0=ox+620,col=[44,44];
+    [['.st-menu',0],['.st-br',0],['.st-fl',10]].forEach(([q,d])=>{const e=desk.querySelector(q);if(e&&!e.dataset.moved)e.style.left=ox+d+'px'});
+    const ws=[...desk.querySelectorAll('.st-shot:not([data-moved])')];
     ws.forEach(w=>{if(!w.dataset.z)w.style.width=cw+'px';const c=col[0]<=col[1]?0:1;w.style.left=x0+c*(cw+gap)+'px';w.style.top=col[c]+'px';col[c]+=w.offsetHeight+14});
-    const fl=desk.querySelector('.st-fl'),cal=desk.querySelector('.st-cal'),flb=fl?fl.offsetTop+fl.offsetHeight:500;
-    if(cal){cal.style.left='30px';cal.style.top=(flb+40)+'px'}
-    desk.style.height=Math.max(col[0],col[1],flb+(cal?cal.offsetHeight+60:40))+40+'px'};
-  lay();desk.querySelectorAll('.st-shot img').forEach(im=>im.complete||im.addEventListener('load',lay));
-  desk.querySelectorAll('.st-shot .st-t').forEach(t=>t.addEventListener('pointerdown',()=>t.parentElement.dataset.moved=1));
+    const fl=desk.querySelector('.st-fl'),flb=fl?fl.offsetTop+fl.offsetHeight:500;
+    desk.style.height=Math.max(col[0],col[1],flb)+40+'px'};
+  lay();addEventListener('resize',()=>{if(desk.isConnected)lay()});desk.querySelectorAll('.st-shot img').forEach(im=>im.complete||im.addEventListener('load',lay));
+  desk.querySelectorAll('.st-w .st-t').forEach(t=>t.addEventListener('pointerdown',()=>t.parentElement.dataset.moved=1));
   desk.querySelectorAll('.st-zoom').forEach(b=>b.addEventListener('click',()=>b.parentElement.dataset.z=1));
   $('#project').querySelectorAll('.st-files li[data-j]').forEach(li=>li.onclick=()=>{$('#project').querySelectorAll('.st-files li').forEach(x=>x.classList.toggle('on',x===li));show(+li.dataset.j)});
   // окна: клик поднимает наверх, тянуть за заголовок
