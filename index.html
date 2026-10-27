@@ -432,13 +432,14 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
     fd.addEventListener('dblclick',()=>{tx=ty=0;fd.style.transition='translate .35s cubic-bezier(.2,.8,.2,1)';fd.style.translate='0 0';setTimeout(()=>fd.style.transition='',400)});
     fd.addEventListener('click',e=>{if(moved){moved=0;return}const f=e.target.closest('.fd-f');if(touch&&!fd.classList.contains('open')){fd.classList.add('open');return}lbOpen(shots,f?+f.dataset.k:0,p.name)});
     fd.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();lbOpen(shots,0,p.name)}})}
-  const lay=()=>{const mob=innerWidth<1080,Wd=desk.clientWidth;if(mob){desk.style.height='';return}if(!Wd)return;
-    const L=fdIn?Math.round(Math.min(540,(Wd-40)*.52)):Math.min(620,Wd),put=(e,x,y,w,h)=>{if(!e||e.dataset.moved)return;e.style.left=x+'px';e.style.top=y+'px';e.style.width=w+'px';if(h)e.style.height=h+'px'};
+  const lay=()=>{const mob=innerWidth<1080,Wd=desk.clientWidth;if(mob){desk.style.height=desk.style.marginTop='';return}if(!Wd)return;
+    const L=fdIn?Math.round(Math.min(540,(Wd-60)/2)):Math.min(620,Wd),put=(e,x,y,w,h)=>{if(!e||e.dataset.moved)return;e.style.left=x+'px';e.style.top=y+'px';e.style.width=w+'px';if(h)e.style.height=h+'px'};
     const br=desk.querySelector('.st-br'),fl=desk.querySelector('.st-fl'),X=fdIn?0:Math.round((Wd-L)/2);
-    put(br,X,44,L);put(fl,X,44+(br?br.offsetHeight:0)+20,L);
-    let bottom=fl?fl.offsetTop+fl.offsetHeight:(br?br.offsetTop+br.offsetHeight:44);
-    if(fdIn){const R=Math.min(240,Wd-L-60),fh=Math.round(R*520/600),y=44+Math.round(fh*.42);fd.style.left=L+40+Math.round((Wd-L-40-R)/2)+'px';fd.style.top=y+'px';fd.style.width=R+'px';bottom=Math.max(bottom,y+fh+50)}
-    desk.style.height=bottom+40+'px'};
+    put(br,X,44,L);
+    if(fdIn){const x2=L+60,R2=Math.min(540,Wd-x2),R=Math.min(240,R2),fh=Math.round(R*520/600);fd.style.left=x2+'px';fd.style.top='64px';fd.style.width=R+'px';put(fl,x2,64+fh+56,R2)}
+    else put(fl,X,44+(br?br.offsetHeight:0)+20,L);
+    const bottom=Math.max(...[br,fl,fdIn?fd:null].filter(Boolean).map(e=>e.offsetTop+e.offsetHeight+(e===fd?40:0)));
+    desk.style.height=bottom+40+'px';if(!pad&&innerWidth>=1300)desk.style.marginTop=Math.max(0,Math.round((innerHeight-56-bottom-40)/2-30))+'px'};
   lay();new ResizeObserver(()=>{if(desk.isConnected)lay()}).observe(desk);
   /* изменение размера за любую сторону и угол */
   desk.querySelectorAll('.st-w').forEach(w=>{['n','s','e','w','ne','nw','se','sw'].forEach(d=>{const h=document.createElement('i');h.className='rz '+d;w.append(h);
