@@ -306,7 +306,7 @@ body[data-v=index]{background:#fff}
 .rz.n,.rz.s{left:8px;right:8px;height:8px;cursor:ns-resize}.rz.n{top:-4px}.rz.s{bottom:-4px}
 .rz.e,.rz.w{top:8px;bottom:8px;width:8px;cursor:ew-resize}.rz.e{right:-4px}.rz.w{left:-4px}
 .rz.ne,.rz.nw,.rz.se,.rz.sw{width:14px;height:14px}.rz.ne{top:-5px;right:-5px;cursor:nesw-resize}.rz.sw{bottom:-5px;left:-5px;cursor:nesw-resize}.rz.nw{top:-5px;left:-5px;cursor:nwse-resize}.rz.se{bottom:-5px;right:-5px;cursor:nwse-resize}
-.fd{position:absolute;aspect-ratio:600/520;cursor:pointer;touch-action:none;z-index:5;outline:none;-webkit-tap-highlight-color:transparent}
+.fd{position:absolute;aspect-ratio:600/520;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;touch-action:none;z-index:5;outline:none;-webkit-tap-highlight-color:transparent}
 .fd.drag{cursor:grabbing}.fd.drag *{pointer-events:none}.fd svg{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}
 .fd-b{filter:drop-shadow(0 10px 30px rgba(0,0,0,.5))}
 .fd-fr{transform-origin:50% 100%;transition:transform .55s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 -6px 18px rgba(0,0,0,.35)) drop-shadow(0 16px 30px rgba(0,0,0,.45))}
@@ -397,7 +397,7 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   const W=(cls,title,body,style='')=>`<section class="st-w ${cls}" style="${style}"><h2 class="st-t">${title}</h2>${body}</section>`;
   const pad=p.device==='ipad'&&!!p.pwa,fk=Math.min(5,shots.length),fold=shots.length&&p.folder!==false?`<div class="fd" tabindex="0" role="button" aria-label="Экраны ${p.name}: ${shots.length}" style="--n:${fk}">
     <svg class="fd-b" viewBox="0 0 600 520" aria-hidden="true"><defs><filter id="fdN" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><filter id="fdM" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".012 .02" numOctaves="4" seed="7"/><feColorMatrix type="saturate" values="0"/></filter><clipPath id="fdB"><path d="M20 26Q20 0 46 0H222Q246 0 252 22L256 36Q262 52 282 52H554Q580 52 580 78V500H20Z"/></clipPath></defs><g clip-path="url(#fdB)"><rect width="600" height="520" fill="#030303"/><rect width="600" height="520" filter="url(#fdM)" opacity=".09" style="mix-blend-mode:screen"/><rect width="600" height="520" filter="url(#fdN)" opacity=".07" style="mix-blend-mode:screen"/></g></svg>
-    ${shots.slice(0,fk).map((w,k)=>`<button class="fd-f" data-k="${k}" style="--i:${k-(fk-1)/2};--d:${k*45}ms" aria-label="${w.h||'Экран '+(k+1)}"><img src="${w.img}" alt="" loading="lazy"></button>`).join('')}
+    ${shots.slice(0,fk).map((w,k)=>`<button class="fd-f" data-k="${k}" style="--i:${k-(fk-1)/2};--d:${k*45}ms" aria-label="${w.h||'Экран '+(k+1)}"><img src="${w.img}" alt="" loading="lazy" draggable="false"></button>`).join('')}
     <svg class="fd-fr" viewBox="0 0 600 520" aria-hidden="true"><defs><clipPath id="fdF"><rect y="108" width="600" height="412" rx="30"/></clipPath><linearGradient id="fdG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".1"/><stop offset=".25" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></linearGradient></defs><g clip-path="url(#fdF)"><rect width="600" height="520" fill="#090909"/><rect width="600" height="520" filter="url(#fdM)" opacity=".13" style="mix-blend-mode:screen"/><rect width="600" height="520" filter="url(#fdN)" opacity=".07" style="mix-blend-mode:screen"/><rect width="600" height="520" fill="url(#fdG)"/><path d="M24 478H576M24 486H576" stroke="#fff" stroke-opacity=".07" stroke-width="1.5"/></g><rect x=".75" y="108.75" width="598.5" height="410.5" rx="29.5" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="1.5"/></svg>
     <span class="fd-l">Экраны · ${shots.length}</span></div>`:'';
   $('#project').innerHTML=`<svg width="0" height="0" style="position:absolute"><defs><pattern id="dz" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="1" height="1"/><rect x="1" y="1" width="1" height="1"/></pattern></defs></svg>
@@ -424,13 +424,14 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   const out=$('#stOut'),show=j=>{const w=info[j];if(!out||!w)return;out.innerHTML=`<b>${w.h}</b>\n${w.p?`    ${w.p}\n`:''}${(w.ul||[]).map(x=>`    ${x}.`).join('\n')}${(w.dl||[]).map(r=>`    ${r[0]}: ${r[1]}.`).join('\n')}`};show(0);
   /* папка с экранами: наведение — файлы вылетают, клик — просмотр */
   const desk=$('#project .st-desk'),fd=$('#project .fd'),fdIn=!!fd&&desk.contains(fd);
-  if(fd){const touch=matchMedia('(hover:none)').matches;
+  if(fd){const touch=matchMedia('(hover:none)').matches;fd.style.zIndex=++stZ;
     let dr=null,tx=0,ty=0,moved=0;
-    fd.addEventListener('pointerdown',e=>{if(e.button)return;dr={x:e.clientX-tx,y:e.clientY-ty,sx:e.clientX,sy:e.clientY};moved=0});
+    fd.addEventListener('dragstart',e=>e.preventDefault());
+    fd.addEventListener('pointerdown',e=>{if(e.button)return;e.preventDefault();fd.style.zIndex=++stZ;dr={x:e.clientX-tx,y:e.clientY-ty,sx:e.clientX,sy:e.clientY};moved=0});
     fd.addEventListener('pointermove',e=>{if(!dr)return;if(!moved&&Math.hypot(e.clientX-dr.sx,e.clientY-dr.sy)<6)return;if(!moved){moved=1;fd.setPointerCapture(e.pointerId);fd.classList.add('drag')}tx=e.clientX-dr.x;ty=e.clientY-dr.y;fd.style.translate=`${tx}px ${ty}px`});
-    const fup=()=>{dr=null;fd.classList.remove('drag')};fd.addEventListener('pointerup',fup);fd.addEventListener('pointercancel',fup);
+    let noClick=0;const fup=()=>{if(moved)noClick=Date.now();moved=0;dr=null;fd.classList.remove('drag')};fd.addEventListener('pointerup',fup);fd.addEventListener('pointercancel',fup);
     fd.addEventListener('dblclick',()=>{tx=ty=0;fd.style.transition='translate .35s cubic-bezier(.2,.8,.2,1)';fd.style.translate='0 0';setTimeout(()=>fd.style.transition='',400)});
-    fd.addEventListener('click',e=>{if(moved){moved=0;return}const f=e.target.closest('.fd-f');if(touch&&!fd.classList.contains('open')){fd.classList.add('open');return}lbOpen(shots,f?+f.dataset.k:0,p.name)});
+    fd.addEventListener('click',e=>{if(Date.now()-noClick<300)return;const f=e.target.closest('.fd-f');if(touch&&!fd.classList.contains('open')){fd.classList.add('open');return}lbOpen(shots,f?+f.dataset.k:0,p.name)});
     fd.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();lbOpen(shots,0,p.name)}})}
   const lay=()=>{const mob=innerWidth<1080,Wd=desk.clientWidth;if(mob){desk.style.height=desk.style.marginTop='';return}if(!Wd)return;
     const L=fdIn?Math.round(Math.min(540,(Wd-60)/2)):Math.min(620,Wd),put=(e,x,y,w,h)=>{if(!e||e.dataset.moved)return;e.style.left=x+'px';e.style.top=y+'px';e.style.width=w+'px';if(h)e.style.height=h+'px'};
