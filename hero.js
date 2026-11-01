@@ -189,10 +189,10 @@ const vel = { x: 0, y: 0 }, cl = (v, a, b) => v < a ? a : v > b ? b : v;
 function heldPose(ts) {
   const sp = Math.hypot(vel.x, vel.y), w = cl(sp / 260, 0, 1), tr = cl(-vel.x / 170, -1.35, 1.35), up = cl(vel.y / 200, 0, 1.2), dn = cl(-vel.y / 260, 0, .6);
   const f1 = w * .6 * Math.sin(ts * 26), f2 = w * .6 * Math.sin(ts * 26 + 1.9), f3 = w * .5 * Math.sin(ts * 22 + .7);
-  const z1 = .06 * Math.sin(ts * 3.1), z2 = .06 * Math.sin(ts * 2.4 + 1), j = () => (Math.random() - .5) * .08;
+  const c = 1 - w, z = (a, f, ph) => a * c * Math.sin(ts * f + ph);   // плавное парение, гаснет при быстром движении
   return { noCig: 1, blink: ts % 3.4 < .12,
-    aL: [-.35 + tr - up * 1.7 + dn * .4 + f1 + z1 + j(), .35 + f2 * .5 + j()], aR: [.35 + tr + up * 1.7 - dn * .4 + f2 + z2 + j(), -.35 - f1 * .5 + j()],
-    lL: [-.12 + tr * .85 - up * .5 + f3 + z2 + j(), .25 + Math.abs(f1) * .7], lR: [.12 + tr * .85 + up * .5 - f3 + z1 + j(), .1 + Math.abs(f2) * .7],
+    aL: [-.9 + z(.35, 1.3, 0) + tr - up * 1.4 + dn * .4 + f1, .55 + z(.3, 1.1, 1) + f2 * .5], aR: [.9 + z(.35, 1.2, 2) + tr + up * 1.4 - dn * .4 + f2, -.55 + z(.3, 1.4, 3) - f1 * .5],
+    lL: [-.25 + z(.22, .9, 1.5) + tr * .85 - up * .5 + f3, .55 + z(.3, 1, 0) + Math.abs(f1) * .7], lR: [.3 + z(.22, .8, 4) + tr * .85 + up * .5 - f3, .35 + z(.3, 1.2, 2) + Math.abs(f2) * .7],
     ln: cl(-vel.x / 90, -2.5, 2.5) * w, hdx: cl(-vel.x / 140, -2, 2) * w, hdy: -up * 1.5 };
 }
 function show(p, x, y) {
@@ -202,8 +202,9 @@ function freeFrame(now) {
   const ts = now / 1000, dt = Math.min(.05, (now - (lastF || now)) / 1000); lastF = now;
   if (drag) {
     if (now - lastMv > 60) { const k = Math.pow(.004, dt); vel.x *= k; vel.y *= k; }
-    const sh = Math.floor(ts * 24), jx = ((sh * 7919) % 3) - 1, jy = ((sh * 104729) % 3) - 1;   // мелкая дрожь
-    show(heldPose(ts), drag.mx + drag.ox + jx, drag.my + drag.oy + jy); return;
+    const k = 1 - Math.exp(-dt * 7);                                   // тянется за курсором с запаздыванием
+    drag.x += (drag.mx + drag.ox - drag.x) * k; drag.y += (drag.my + drag.oy - drag.y) * k;
+    show(heldPose(ts), drag.x + 1.5 * Math.sin(ts * 1.1), drag.y + 3 * Math.sin(ts * 1.6)); return;
   }
   const gy = G - footY(STAND);
   if (free.mode === 'fall') {
@@ -225,7 +226,7 @@ Object.assign(sv.style, { pointerEvents: 'none', zIndex: 5 }); sv.parentElement.
 const onMap = () => document.body.dataset.v === 'map', cur = c => { document.documentElement.style.cursor = c; };
 addEventListener('pointerdown', e => {
   if (!onMap() || e.button) return; const g = gridPt(e); if (!hit(g)) return; e.preventDefault(); e.stopPropagation();
-  drag = { ox: last.x - g[0], oy: last.y - g[1], mx: g[0], my: g[1] }; vel.x = vel.y = 0; lastPt = { g, t: performance.now() };
+  drag = { ox: last.x - g[0], oy: last.y - g[1], mx: g[0], my: g[1], x: last.x, y: last.y }; vel.x = vel.y = 0; lastPt = { g, t: performance.now() };
   puffs.length = 0; smokeG.setAttribute('d', ''); cigG.setAttribute('d', ''); cigT.setAttribute('d', ''); txt.classList.add('on'); cur('grabbing');
   if (!free) { free = { mode: 'fall' }; cancelAnimationFrame(raf); raf = requestAnimationFrame(frame); }
 });
