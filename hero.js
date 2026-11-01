@@ -1,45 +1,47 @@
 /* Пиксельный qwekurasa: поза собирается из суставов, растеризуется в сетку пикселей и выводится в SVG */
 (() => {
 const sv = document.getElementById('hero'), txt = document.getElementById('heroText'), NS = 'http://www.w3.org/2000/svg';
-const PAL = ['', '#140e0c', '#5e3420', '#84502e', '#f1cfbb', '#d6a58f', '#1d1d22', '#383840', '#17171b', '#2a2a31', '#151515', '#d9ae3a', '#2a1610', '#f3bfe2', '#ff5a1f', '#b9746a', '#6e4327', '#8f5b37', '#4f2e1a', '#4a4a53', '#f2c12e'];
-// 20 жёлтый принт на футболке; 1 контур, 2-3 волосы, 4-5 кожа, 6-7 чёрная футболка, 8-9 чёрные широкие штаны, 10 ботинки, 11 жёлтая прострочка рантa, 12 глаза, 13 сигарета, 14 огонёк, 15 рот
-const MAP = { K: 1, H: 2, h: 3, S: 4, s: 5, E: 12, m: 15 };
+const PAL = ['', '#120d0b', '#9c7c56', '#c3a175', '#efc8b1', '#d09c85', '#1d1d22', '#34343d', '#1b1b20', '#2e2e36', '#141416', '#060607', '#2a1d16', '#f3bfe2', '#ff5a1f', '#b9746a', '#6b5238', '#111114', '#0e0e11', '#f8dccb', '#f2c12e', '#38383e', '#5a4430'];
+// 1 контур; 2,3,16 русые волосы (база, блик, тень); 4,5,19 кожа (база, тень, блик); 6,7,17 чёрная футболка; 8,9,18 чёрные штаны;
+// 10,21 чёрные ботинки, 11 подошва; 12 глаза; 13 сигарета; 14 огонёк; 15 рот; 20 жёлтый принт; 22 брови
+const MAP = { K: 1, H: 2, h: 3, D: 16, S: 4, s: 5, L: 19, E: 12, m: 15, B: 22 };
 const HEAD_F = [
-  '...K.KK..KK.K.....',
-  '..KhKHhKKhHKhKK...',
-  '.KHHhHHHHHHHHhHK..',
-  'KhHHHHHhHHHHHHHhK.',
-  'KHHhHHHHHHhHHHHHK.',
-  'KHHHHHHHHHHHHhHHHK',
-  'KhHHhHHHHHHHHHHhHK',
-  'KHHHSHHhHHHSHHHHK.',
-  'KHhSSSSHSSSSSSHhK.',
-  'KHHSSSSSSSSSSSHHK.',
-  '.KHSKESSSSSKESHK..',
-  '.KHSSESSSSSSESHhK.',
-  '.KhSSSSSssSSSSHHK.',
-  '.KHHSSSSSSSSSSHK..',
-  '..KHSSSSmmSSSHK...',
-  '..KHKSSSSSSSKHK...',
-  '...K.KKSSSKK.K....'];
+  '....KKKKKKKKK.....',
+  '..KKhhhHHHHHHKK...',
+  '.KhhHHHHhHHHHHDK..',
+  '.KhHHHHHHHHHHHHDK.',
+  'KhHHHHHHHHHHHHHHDK',
+  'KHHHHhHHHHHhHHHHDK',
+  'KHHHHDHHHHHHHDHHDK',
+  'KHHDHHHSHHDHSHHHDK',
+  'KHHDLSSSSSSSSSSDDK',
+  'KHHSBBSSSSSSBBSHDK',
+  'KHHSKESSSSSSKESHDK',
+  'KHHSSSSSSsSSSSSHDK',
+  'KHHLSSSSSsSSSSsHDK',
+  'KHHsSSSSSSSSSSsHDK',
+  'KHHHsSSSmmmSSsHHDK',
+  'KHHHKsSSSSSSSsKHDK',
+  '.KDHHKKsSSSsKKHDK.',
+  '..KKDDKKKSSKKKDKK.'];
 const HEAD_S = [
-  '......K.KK.K......',
-  '....KKhKHhKKK.....',
-  '...KHHHHHHHHhK....',
-  '..KHHhHHHHHHHHK...',
-  '.KhHHHHHHHhHHHHK..',
-  '.KHSHHHHHHHHHhHK..',
-  'KhSSHHHHHHHHHHHHK.',
-  'KSSSSSHHHHHhHHHK..',
-  'KSSSSSSHHHHHHHHK..',
-  'KKESSSSHHHHHHhK...',
-  'KSESSSSShHHHHHK...',
-  '.KSSSSSSHHHHHK....',
-  'KsSSSSSSHHHhK.....',
-  'KmSSSSSSSHHK......',
-  '.KSSSSSSSHK.......',
-  '..KKSSSSKK........',
-  '....KKSSK.........'];
+  '......KKKKKKK.....',
+  '....KKhhHHHHHKK...',
+  '...KhhHHHHHHHHDK..',
+  '..KhHHHHHHHHHHHDK.',
+  '..KHHHHHHHHHHHHHDK',
+  '.KHHHHHhHHHHHHHHDK',
+  '.KSHHHHHHHHHHHHHDK',
+  '.KSSSHHHHHHHHHHHDK',
+  '.KBBSSSHHHHHHHHHDK',
+  '.KESSSSShHHHHHHHDK',
+  '.KSSSSSSSHHHHHHHDK',
+  'KSSSSSSSSHHHHHHHDK',
+  '.KsSSSSSSHHHHHHHDK',
+  '.KmSSSSSSDHHHHHHDK',
+  '..KSSSSSSKDHHHHDK.',
+  '...KsSSSK.KDDDDK..',
+  '....KKSSK..KKKK...'];
 const PRINT = ['..#.#..', '.#####.', '##.#.##', '.#####.', '..#.#..', '...#...'];
 const parseHead = a => a.map(r => [...r].map(c => MAP[c] || 0));
 const HF = parseHead(HEAD_F), HS = parseHead(HEAD_S);
@@ -61,6 +63,23 @@ function poly(P, c) {
     for (let i = 0; i < P.length; i++) { const a = P[i], b = P[(i + 1) % P.length]; if ((a[1] <= py) !== (b[1] <= py)) xs.push(a[0] + (py - a[1]) / (b[1] - a[1]) * (b[0] - a[0])); }
     xs.sort((m, n) => m - n); for (let k = 0; k + 1 < xs.length; k += 2) for (let x = Math.round(xs[k]); x < Math.round(xs[k + 1]); x++) put(x + OX, y + OY, c); }
 }
+function segS(a, b, r0, r1, C) {                    // сужающийся сегмент со светотенью (свет сверху-слева)
+  const r = Math.max(r0, r1), x0 = Math.floor(Math.min(a[0], b[0]) - r - 1) + OX, x1 = Math.ceil(Math.max(a[0], b[0]) + r + 1) + OX, y0 = Math.floor(Math.min(a[1], b[1]) - r - 1) + OY, y1 = Math.ceil(Math.max(a[1], b[1]) + r + 1) + OY;
+  const dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy || 1;
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+    if (x < 0 || y < 0 || x >= GW || y >= GH) continue;
+    const px = x + .5 - OX, py = y + .5 - OY; let t = ((px - a[0]) * dx + (py - a[1]) * dy) / L; t = t < 0 ? 0 : t > 1 ? 1 : t;
+    const rr = r0 + (r1 - r0) * t, ex = px - a[0] - dx * t, ey = py - a[1] - dy * t; if (ex * ex + ey * ey > rr * rr) continue;
+    const k = -(ex + ey) * .7071 / rr; buf[y * GW + x] = k > .38 ? C[0] : k < -.42 ? C[2] : C[1];
+  }
+}
+function polyS(P, C, cx, hw) {                      // заливка с тенью по горизонтали
+  const ys = P.map(p => p[1]), y0 = Math.floor(Math.min(...ys)), y1 = Math.ceil(Math.max(...ys));
+  for (let y = y0; y <= y1; y++) { const py = y + .5, xs = [];
+    for (let i = 0; i < P.length; i++) { const a = P[i], b = P[(i + 1) % P.length]; if ((a[1] <= py) !== (b[1] <= py)) xs.push(a[0] + (py - a[1]) / (b[1] - a[1]) * (b[0] - a[0])); }
+    xs.sort((m, n) => m - n); for (let k = 0; k + 1 < xs.length; k += 2) for (let x = Math.round(xs[k]); x < Math.round(xs[k + 1]); x++) { const u = (x + .5 - cx) / hw; put(x + OX, y + OY, u < -.62 ? C[0] : u > .5 ? C[2] : C[1]); } }
+}
+const SK = [19, 4, 5], SH = [7, 6, 17], PA = [9, 8, 18], BO = [21, 10, 10], KK = [1, 1, 1], lp = (a, b, k) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
 const sprite = (S, x, y, flip) => S.forEach((r, j) => r.forEach((c, i) => { if (c) put(OX + x + (flip ? r.length - 1 - i : i), OY + y + j, c); }));
 
 const R = { TOR: 19, SHW: 6, HIP: 2.6, UA: 8.5, FA: 7.5, HAND: 2, TH: 12.5, SH: 12 };
@@ -73,38 +92,48 @@ function fk(p) {
   return { sy, aL: arm(-shw, p.aL), aR: arm(shw, p.aR), lL: leg(-hx, p.lL, p.ftL || 0), lR: leg(hx, p.lR, p.ftR || 0) };
 }
 function drawArm(a, cig) {
-  const m = [a.s[0] + (a.e[0] - a.s[0]) * .55, a.s[1] + (a.e[1] - a.s[1]) * .55];
-  seg(a.w, a.h, 1.75, 4); seg(m, a.e, 1.5, 4); seg(a.e, a.w, 1.45, 4); seg(a.e, a.w, .4, 5);
-  seg(a.s, m, 2.2, 6); seg(m, m, 1.2, 7);
+  const m = lp(a.s, a.e, .5), sl = lp(a.s, a.e, .62);
+  segS(m, a.e, 2.8, 2.65, KK); segS(a.e, a.w, 2.65, 2.3, KK); segS(a.w, a.h, 2.3, 2.6, KK);   // контур поверх тела
+  segS(m, a.e, 1.95, 1.75, SK); segS(a.e, a.w, 1.8, 1.35, SK);                                       // плечо и предплечье сужаются
+  segS(a.w, lp(a.w, a.h, 1.15), 1.4, 1.65, SK); seg(lp(a.w, a.h, .9), lp(a.w, a.h, .9), .5, 5);     // кисть
+  segS(a.s, sl, 2.5, 2.35, SH); segS(lp(a.s, a.e, .56), sl, 2.15, 2.15, [17, 17, 17]);             // рукав и подгиб
   if (cig) { seg(a.h, [a.h[0] - 2.5, a.h[1] - .8], .55, 13); put(Math.round(a.h[0] - 3 + OX), Math.round(a.h[1] - 1 + OY), 14); }
 }
-function drawLeg(g, c1, c2, side) {
-  const f = side ? [g.an[0] - 3.2, g.an[1] + 1.4] : [g.an[0] + (g.hp[0] < 0 ? -.8 : .8), g.an[1] + 1.6];
-  seg([g.an[0], g.an[1] - 1.5], [g.an[0] + (side ? .6 : 0), g.an[1] + 1], 1.9, 10); seg([g.an[0] + (side ? .8 : 0), g.an[1] + 1.2], f, 1.75, 10);
-  seg([f[0] - (side ? 1.3 : 1.6), f[1] + 1.6], [side ? g.an[0] + 1.8 : f[0] + 1.6, f[1] + 1.6], .45, 11);
-  seg(g.hp, g.kn, 2.7, c1); seg(g.kn, [g.an[0], g.an[1] - .6], 2.55, c1);
-  seg([g.kn[0] + (side ? 1.2 : -1.1), g.kn[1] - 3], [g.an[0] + (side ? 1.3 : -1.2), g.an[1] - 1.5], .45, c2);
+function drawLeg(g, side, ring) {
+  const f = side ? [g.an[0] - 3.4, g.an[1] + 1.5] : [g.an[0] + (g.hp[0] < 0 ? -.9 : .9), g.an[1] + 1.8], an = [g.an[0], g.an[1] - .4];
+  if (ring) { segS(g.hp, g.kn, 3.9, 3.7, KK); segS(g.kn, an, 3.7, 3.8, KK); }
+  segS([g.an[0], g.an[1] - 1.5], [g.an[0] + (side ? .6 : 0), g.an[1] + 1], 2.05, 2.05, BO);              // голенище
+  segS([g.an[0] + (side ? .8 : 0), g.an[1] + 1.3], f, 1.95, 1.75, BO);                                // носок
+  seg([f[0] - (side ? 1.5 : 1.8), f[1] + 1.7], [side ? g.an[0] + 2 : f[0] + 1.8, f[1] + 1.7], .5, 11);   // подошва
+  put(Math.round(g.an[0] + OX), Math.round(g.an[1] + OY), 21);
+  segS(g.hp, g.kn, 3.05, 2.75, PA); segS(g.kn, an, 2.75, 2.85, PA);                                  // широкие штаны
+  seg(lp(g.kn, an, .15), lp(g.kn, an, .9), .4, 18);                                                    // стрелка
+  seg([g.kn[0] - 1.6, g.kn[1] - .3], [g.kn[0] + .3, g.kn[1] + .6], .35, 18);                           // складка у колена
+  seg([an[0] - 2.4, an[1] + 1.6], [an[0] + 2.4, an[1] + 1.6], .4, 18);                                 // низ штанины
 }
 function draw(p) {
   buf.fill(0); const f = fk(p), sy = f.sy, ln = p.ln || 0, hx = ln + (p.hdx || 0), hy = p.hdy || 0;
   const sh = P => P.map(([x, y]) => [x + ln * Math.max(0, Math.min(1, (3 - y) / (3 - sy))), y]);
+  const neck = () => { segS([ln, sy - 3], [ln, sy], 1.5, 1.6, SK); seg([ln - 1.2, sy - 1.4], [ln + 1.2, sy - 1.4], .45, 5); };
   if (p.side) {                                   // профиль (смотрит влево)
-    drawArm(f.aR); drawLeg(f.lR, 9, 8, 1); drawLeg(f.lL, 8, 9, 1);
-    poly([[-4, 3.5], [4, 3.5], [4, -2], [-3.5, -2]], 8);
-    poly([[-3.5, sy + 1], [-1, sy - .5], [2, sy - .5], [4.2, sy + 2], [4, 3], [-4, 3]], 6);
-    seg([0, sy - 2], [0, sy], 1.1, 5); sprite(HS, -10, sy - 18, 0);
+    drawArm(f.aR); drawLeg(f.lR, 1); drawLeg(f.lL, 1);
+    polyS([[-4.3, 3.6], [4.3, 3.6], [4.3, -2], [-3.8, -2]], PA, 0, 4.3);
+    polyS([[-3.6, sy + 1], [-1.2, sy - .6], [2.2, sy - .6], [4.4, sy + 2.2], [4.3, 3.2], [-4.2, 3.2], [-3.4, sy + 9]], SH, .3, 4.2);
+    seg([-3.8, 2.8], [4, 2.8], .4, 17); seg([3.4, sy + 4], [3.6, 1], .4, 17);
+    neck(); sprite(HS, -10, sy - 18, 0);
     drawArm(f.aL);
   } else {                                        // анфас
-    poly([[-R.HIP - 3.9, -1], [R.HIP + 3.9, -1], [R.HIP + 3.8, 4.5], [-R.HIP - 3.8, 4.5]], 8);
-    drawLeg(f.lL, 8, 9, 0); const kneeUp = (p.seat || 0) > .5; if (!kneeUp) drawLeg(f.lR, 8, 9, 0);
-    poly(sh([[-R.SHW, sy + 1], [-2, sy - .5], [2, sy - .5], [R.SHW, sy + 1], [R.SHW - .2, sy + 8], [5.6, 3.4], [-5.6, 3.4], [-R.SHW + .2, sy + 8]]), 6);
-    seg([-1.8 + ln, sy - .2], [1.8 + ln, sy - .2], .5, 7);
+    polyS([[-R.HIP - 4.1, -1], [R.HIP + 4.1, -1], [R.HIP + 4, 4.6], [-R.HIP - 4, 4.6]], PA, 0, 6.6);
+    const kneeUp = (p.seat || 0) > .5; drawLeg(f.lL, 0); if (!kneeUp) drawLeg(f.lR, 0);
+    polyS(sh([[-R.SHW - .6, sy + 1.2], [-2.4, sy - .6], [2.4, sy - .6], [R.SHW + .6, sy + 1.2], [R.SHW - .2, sy + 8], [5.6, 3.4], [-5.6, 3.4], [-R.SHW + .2, sy + 8]]), SH, ln * .6, R.SHW + .4);
+    for (const [a, b] of [[[-3.2, sy + 11], [-1.6, sy + 13.5]], [[3.4, sy + 12], [2, 2.2]], [[-5.2, 2.9], [5.2, 2.9]], [[-R.SHW + 1, sy + 3], [-R.SHW + 1.4, sy + 6]]]) seg([a[0] + ln * .4, a[1]], [b[0] + ln * .3, b[1]], .4, 17);
+    seg([-2.3 + ln, sy - .3], [2.3 + ln, sy - .3], .55, 7);
     PRINT.forEach((r, j) => [...r].forEach((c, i) => { if (c === '#') put(OX + i - 3 + Math.round(ln * .6), OY + sy + 4 + j, 20); }));
-    seg([-1 + ln, sy - 2], [1 + ln, sy - 2], .9, 5); sprite(HF, Math.round(-8 + hx), Math.round(sy - 18 + hy), 0);
+    neck(); sprite(HF, Math.round(-8 + hx), Math.round(sy - 18 + hy), 0);
     if (!p.noCig) { seg([-.4, sy - 3.6], [-2.8, sy - 1.4], .6, 13); put(OX - 3, OY + sy - 1, 14); }
-    if (kneeUp) drawLeg(f.lR, 8, 9, 0); drawArm(f.aL, p.cigHand); drawArm(f.aR);
+    if (kneeUp) drawLeg(f.lR, 0, 1); drawArm(f.aL, p.cigHand); drawArm(f.aR);
   }
-  if (p.blink) { for (const [x, y] of [[4, 10], [5, 10], [5, 11], [12, 10], [12, 11], [11, 10]]) put(OX - 8 + Math.round(hx) + x, OY + Math.round(sy - 18 + hy) + y, 4); }
+  if (p.blink) { for (const [x, y] of [[4, 10], [5, 10], [12, 10], [13, 10]]) put(OX - 8 + Math.round(hx) + x, OY + Math.round(sy - 18 + hy) + y, 4); }
   // контур
   const out = new Uint8Array(buf);
   for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) if (!buf[y * GW + x] && ((x && buf[y * GW + x - 1] > 1) || (x < GW - 1 && buf[y * GW + x + 1] > 1) || (y && buf[(y - 1) * GW + x] > 1) || (y < GH - 1 && buf[(y + 1) * GW + x] > 1))) out[y * GW + x] = 1;
