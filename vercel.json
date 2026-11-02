@@ -1,1 +1,1 @@
-{"cleanUrls":true,"headers":[{"source":"/projects.js","headers":[{"key":"Cache-Control","value":"no-cache, must-revalidate"}]}]}
+{"cleanUrls":true,"headers":[{"source":"/(.*)\\.(js|html)","headers":[{"key":"Cache-Control","value":"no-cache, must-revalidate"}]},{"source":"/","headers":[{"key":"Cache-Control","value":"no-cache, must-revalidate"}]}]}
