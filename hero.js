@@ -1,9 +1,7 @@
 /* Пиксельный qwekurasa: поза собирается из суставов, растеризуется в сетку пикселей и выводится в SVG */
 (() => {
 const sv = document.getElementById('hero'), txt = document.getElementById('heroText'), NS = 'http://www.w3.org/2000/svg';
-const PAL = ['', '#120d0b', '#9c7c56', '#c3a175', '#efc8b1', '#d09c85', '#1d1d22', '#34343d', '#1b1b20', '#2e2e36', '#141416', '#060607', '#2a1d16', '#f3bfe2', '#ff5a1f', '#b9746a', '#6b5238', '#111114', '#0e0e11', '#f8dccb', '#f2c12e', '#38383e', '#5a4430'];
-// 1 контур; 2,3,16 русые волосы (база, блик, тень); 4,5,19 кожа (база, тень, блик); 6,7,17 чёрная футболка; 8,9,18 чёрные штаны;
-// 10,21 чёрные ботинки, 11 подошва; 12 глаза; 13 сигарета; 14 огонёк; 15 рот; 20 жёлтый принт; 22 брови
+const PAL = ['', '#120d0b', '#392c26', '#554239', '#efc8b1', '#d09c85', '#855137', '#a16c49', '#343438', '#48484c', '#141416', '#060607', '#2a1d16', '#ede7dd', '#bcb5ad', '#b9746a', '#241e1d', '#593725', '#0e0e11', '#f8dccb', '#f2c12e', '#38383e', '#5a4430'];
 const MAP = { K: 1, H: 2, h: 3, D: 16, S: 4, s: 5, L: 19, E: 12, m: 15, B: 22 };
 const HEAD_F = [
   '....KKKKKKKKK.....',
@@ -42,7 +40,6 @@ const HEAD_S = [
   '..KSSSSSSKDHHHHDK.',
   '...KsSSSK.KDDDDK..',
   '....KKSSK..KKKK...'];
-const PRINT = ['..#.#..', '.#####.', '##.#.##', '.#####.', '..#.#..', '...#...'];
 const parseHead = a => a.map(r => [...r].map(c => MAP[c] || 0));
 const HF = parseHead(HEAD_F), HS = parseHead(HEAD_S);
 
@@ -91,13 +88,14 @@ function fk(p) {
   const hx = side ? .5 : R.HIP;
   return { sy, aL: arm(-shw, p.aL), aR: arm(shw, p.aR), lL: leg(-hx, p.lL, p.ftL || 0), lR: leg(hx, p.lR, p.ftR || 0) };
 }
-function drawArm(a, cig) {
-  const m = lp(a.s, a.e, .5), sl = lp(a.s, a.e, .62);
+function drawArm(a) {
+  const m = lp(a.s, a.e, .5), sl = lp(a.e, a.w, .45);
   segS(m, a.e, 2.8, 2.65, KK); segS(a.e, a.w, 2.65, 2.3, KK); segS(a.w, a.h, 2.3, 2.6, KK);   // контур поверх тела
   segS(m, a.e, 1.95, 1.75, SK); segS(a.e, a.w, 1.8, 1.35, SK);                                       // плечо и предплечье сужаются
   segS(a.w, lp(a.w, a.h, 1.15), 1.4, 1.65, SK); seg(lp(a.w, a.h, .9), lp(a.w, a.h, .9), .5, 5);     // кисть
-  segS(a.s, sl, 2.5, 2.35, SH); segS(lp(a.s, a.e, .56), sl, 2.15, 2.15, [17, 17, 17]);             // рукав и подгиб
-  if (cig) { seg(a.h, [a.h[0] - 2.5, a.h[1] - .8], .55, 13); put(Math.round(a.h[0] - 3 + OX), Math.round(a.h[1] - 1 + OY), 14); }
+  segS(a.s, a.e, 2.7, 2.35, [13, 13, 14]);
+  segS(a.e, sl, 2.35, 2.15, [13, 13, 14]);
+  segS(lp(a.e, a.w, .35), sl, 2.45, 2.35, [13, 14, 14]);
 }
 function drawLeg(g, side, ring) {
   const f = side ? [g.an[0] - 3.4, g.an[1] + 1.5] : [g.an[0] + (g.hp[0] < 0 ? -.9 : .9), g.an[1] + 1.8], an = [g.an[0], g.an[1] - .4];
@@ -118,9 +116,9 @@ function draw(p) {
   if (p.side) {                                   // профиль (смотрит влево)
     drawArm(f.aR); drawLeg(f.lR, 1); drawLeg(f.lL, 1);
     polyS([[-4.3, 3.6], [4.3, 3.6], [4.3, -2], [-3.8, -2]], PA, 0, 4.3);
-    polyS([[-3.6, sy + 1], [-1.2, sy - .6], [2.2, sy - .6], [4.4, sy + 2.2], [4.3, 3.2], [-4.2, 3.2], [-3.4, sy + 9]], SH, .3, 4.2);
+    polyS(sh([[-3.6, sy + 1], [-1.2, sy - .6], [2.2, sy - .6], [4.4, sy + 2.2], [4.3, 3.2], [-4.2, 3.2], [-3.4, sy + 9]]), SH, ln * .5 + .3, 4.2);
     seg([-3.8, 2.8], [4, 2.8], .4, 17); seg([3.4, sy + 4], [3.6, 1], .4, 17);
-    neck(); sprite(HS, -10, sy - 18, 0);
+    neck(); poly(sh([[-4,sy], [1,sy], [-2,sy+5]]),13); sprite(HS, Math.round(ln)-10, sy - 18, 0);
     drawArm(f.aL);
   } else {                                        // анфас
     polyS([[-R.HIP - 4.1, -1], [R.HIP + 4.1, -1], [R.HIP + 4, 4.6], [-R.HIP - 4, 4.6]], PA, 0, 6.6);
@@ -128,24 +126,33 @@ function draw(p) {
     polyS(sh([[-R.SHW - .6, sy + 1.2], [-2.4, sy - .6], [2.4, sy - .6], [R.SHW + .6, sy + 1.2], [R.SHW - .2, sy + 8], [5.6, 3.4], [-5.6, 3.4], [-R.SHW + .2, sy + 8]]), SH, ln * .6, R.SHW + .4);
     for (const [a, b] of [[[-3.2, sy + 11], [-1.6, sy + 13.5]], [[3.4, sy + 12], [2, 2.2]], [[-5.2, 2.9], [5.2, 2.9]], [[-R.SHW + 1, sy + 3], [-R.SHW + 1.4, sy + 6]]]) seg([a[0] + ln * .4, a[1]], [b[0] + ln * .3, b[1]], .4, 17);
     seg([-2.3 + ln, sy - .3], [2.3 + ln, sy - .3], .55, 7);
-    PRINT.forEach((r, j) => [...r].forEach((c, i) => { if (c === '#') put(OX + i - 3 + Math.round(ln * .6), OY + sy + 4 + j, 20); }));
+    poly(sh([[-4,sy], [4,sy], [0,sy+6]]), 13);
+    poly(sh([[-1,sy+1], [1,sy+1], [0,sy+5]]), 8);
     neck(); sprite(HF, Math.round(-8 + hx), Math.round(sy - 18 + hy), 0);
-    if (!p.noCig) { seg([-.4, sy - 3.6], [-2.8, sy - 1.4], .6, 13); put(OX - 3, OY + sy - 1, 14); }
-    if (kneeUp) drawLeg(f.lR, 0, 1); drawArm(f.aL, p.cigHand); drawArm(f.aR);
+    if (kneeUp) drawLeg(f.lR, 0, 1); drawArm(f.aL); drawArm(f.aR);
   }
   if (p.blink) { for (const [x, y] of [[4, 10], [5, 10], [12, 10], [13, 10]]) put(OX - 8 + Math.round(hx) + x, OY + Math.round(sy - 18 + hy) + y, 4); }
   // контур
   const out = new Uint8Array(buf);
   for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) if (!buf[y * GW + x] && ((x && buf[y * GW + x - 1] > 1) || (x < GW - 1 && buf[y * GW + x + 1] > 1) || (y && buf[(y - 1) * GW + x] > 1) || (y < GH - 1 && buf[(y + 1) * GW + x] > 1))) out[y * GW + x] = 1;
-  return { out, tip: p.side || p.noCig ? null : [-3, sy - 1], hand: f.aL.h };
+  return { out };
 }
 
 /* ---------- SVG ---------- */
-let S = 3, W = 0, H = 0, G = 0, X0 = 0, XT = 0, t0 = 0, raf = 0, done = false, lastQ = -1;
+let S = 3, W = 0, H = 0, G = 0, XT = 0, t0 = 0, raf = 0, done = false, lastQ = -1;
 const paths = PAL.map((c, i) => { if (!i) return null; const p = document.createElementNS(NS, 'path'); p.setAttribute('fill', c); sv.append(p); return p; });
-const smokeG = document.createElementNS(NS, 'path'); smokeG.setAttribute('fill', '#b5b5b5'); sv.append(smokeG);
-const cigG = document.createElementNS(NS, 'path'); cigG.setAttribute('fill', PAL[13]); sv.append(cigG);
-const cigT = document.createElementNS(NS, 'path'); cigT.setAttribute('fill', PAL[14]); sv.append(cigT);
+const chair = document.createElementNS(NS, 'g');
+sv.prepend(chair);
+for (const [color, d] of [
+  ['#595a61','M-3 6h4v14h-4z M-12 21h24v2h-24z M-8 19H8v2H-8z'],
+  ['#33343a','M-14 22h5v4h-5z M9 22h5v4H9z M-2 22h4v5h-4z'],
+  ['#46474e','M4 5l7-25h4L8 7z'],
+  ['#23242a','M8-21h9v5h-1v6h-2v6h-2v4H6v-6h1v-8h1z M-10 2h20v5H7v2H-8V7h-2z'],
+  ['#64646b','M9-21h7v2H9z M-9 2H8v2H-9z']
+]) {
+  const part = document.createElementNS(NS, 'path');
+  part.setAttribute('fill', color); part.setAttribute('d', d); chair.append(part);
+}
 function emit(o, ox, oy) {
   const D = PAL.map(() => []);
   for (let y = 0; y < GH; y++) { let run = 0, st = 0;
@@ -156,62 +163,36 @@ function emit(o, ox, oy) {
 /* ---------- сцена ---------- */
 const lerp = (a, b, k) => a + (b - a) * k, ease = k => k <= 0 ? 0 : k >= 1 ? 1 : k * k * (3 - 2 * k);
 const STAND = { aL: [-.12, .05], aR: [.12, -.05], lL: [-.03, 0], lR: [.03, 0] };
-const TL = { drop: .45, pull: 1.0, slip: 1.7, one: 2.0, rel: 2.5 }, GR = 260;
-function hangPose(t) {
-  const kick = t > TL.drop ? 1 : 0, one = ease((t - TL.one) / .15), sw = .12 * Math.sin(Math.max(0, t - TL.drop) * 4.3);
-  const pull = t < TL.pull ? 0 : t < TL.slip ? ease((t - TL.pull) / .3) * (1 - ease((t - TL.slip + .2) / .2)) : 0;
-  const k1 = Math.sin(t * 9) * kick, k2 = Math.sin(t * 9 + 2) * kick;
-  return { aL: [Math.PI + .25 + pull * .8 + sw, -pull * 1.6], aR: [lerp(Math.PI - .25 - pull * .8 + sw, .7 + .5 * Math.sin(t * 12), one), lerp(pull * 1.6, .3, one)],
-    lL: [-.08 - .25 * k1, .3 * Math.max(0, k1)], lR: [.08 + .25 * k2, -.3 * Math.max(0, k2)], ftL: .4 * Math.max(0, k1), ftR: .4 * Math.max(0, k2) };
-}
-const handY = p => { const f = fk(p); return Math.min(f.aL.h[1], f.aR.h[1]); }, footY = p => { const f = fk(p); return Math.max(f.lL.an[1], f.lR.an[1]) + 2.5; };
+const GR = 260;
+const footY = p => { const f = fk(p); return Math.max(f.lL.an[1], f.lR.an[1]) + 3.5; };
+const seated = { aL: [.25, -1.65], aR: [-.35, -1.2], lL: [-1.99, .14], lR: [-2.08, .35] };
 function scene(t) {
-  if (t < TL.rel) { const p = hangPose(t); let dy = 0;
-    if (t < TL.drop) { const u = t / TL.drop; dy = -(1 - u * u) * (H * .5 + 60); } else { const u = t - TL.drop; dy = Math.sin(u * 26) * Math.exp(-u * 9) * 3; }
-    return { p, x: X0, y: 1 - handY(p) + dy + ease((t - TL.one) / .15) * 2 }; }
-  const y0 = 1 - handY(hangPose(TL.rel - 1e-3)) + 2;
-  const pf = { aL: [Math.PI + .6 + .3 * Math.sin(t * 15), .3], aR: [Math.PI - .6 + .3 * Math.sin(t * 15 + 1), -.3], lL: [-.15, .25], lR: [.12, -.15] };
-  const yl = G - footY(pf), tl = TL.rel + Math.sqrt(2 * Math.max(1, yl - y0) / GR);
-  if (t < tl) { const u = t - TL.rel; return { p: pf, x: X0, y: y0 + GR * u * u / 2 }; }
-  const u = t - tl, c = u < .08 ? ease(u / .08) : u < .5 ? 1 : 1 - ease((u - .5) / .5);
-  const cr = { aL: [-.6, -.4], aR: [.6, .4], lL: [-.7, 1.35], lR: [.7, -1.35] };
-  let p = {}; for (const n in STAND) p[n] = STAND[n].map((v, i) => lerp(v, cr[n][i], c));
-  let x = X0, cig = null; const tw = tl + 1.2, dist = X0 - XT, dur = dist / 39, end = tw + dur;
-  if (t >= tw && t < end) {                       // идёт влево, профиль
-    const e = (t - tw) / dur; x = X0 - dist * e; const ph = (dist * e) / 7 * Math.PI, sn = Math.sin(ph);
-    p = { side: 1, aL: [.45 * sn, -.25], aR: [-.45 * sn, -.25], lL: [.5 * sn, -.6 * Math.max(0, -sn) * 0 + (sn > 0 ? -.5 * sn : 0)], lR: [-.5 * sn, sn < 0 ? .5 * sn : 0] };
-    p.lL = [-.5 * sn, Math.max(0, sn) * .9]; p.lR = [.5 * sn, Math.max(0, -sn) * .9];
-  } else if (t >= end) {
-    x = XT; const id = t - end, th = id - 2.3;          // через ~2 c после появления текста: бросок и посадка
-    p.br = Math.sin(id * 1.8) > .3 ? 1 : 0; p.blink = id % 3.6 < .14;
-    if (th > 0) {
-      const up = ease(th / .25), out = ease((th - .3) / .15), back = ease((th - .55) / .3);
-      p.aL = [lerp(lerp(-.12, -2.5, up), -1.6, out), lerp(lerp(.05, -1.9, up), -.1, out)];
-      p.aL = p.aL.map((v, i) => lerp(v, STAND.aL[i], back));
-      p.noCig = th > .2; p.cigHand = th > .2 && th < .45;
-      const sit = { aL: [-.25, .5], aR: [-.05, -1.6], lL: [-1.35, 2.55], lR: [2.5, -2.3] }, k = ease((th - .9) / .6);
-      if (k > 0) { for (const n in sit) p[n] = p[n].map((v, i) => lerp(v, sit[n][i], k)); p.ln = 4 * k; p.hdx = 3 * k; p.hdy = 4 * k; p.br = 0; }
-      p.seat = k;
-      if (th > .45) { const u = th - .45, h0 = fk(Object.assign({}, p, { aL: [-1.6, -.1] })).aL.h; cig = { x: x + h0[0] - 2 - 70 * u, y: G - footY(STAND) + h0[1] - 1 - 70 * u + 170 * u * u, a: u * 14 }; }
-    }
-  }
-  return { p, x, y: lerp(G - footY(p), G - 5, p.seat || 0), end, cig };
+  const sit = ease((t - 1.15) / .65);
+  const p = { side: t >= 1.15, ln: 6 * sit };
+  for (const joint in STAND) p[joint] = STAND[joint].map((angle,i) => lerp(angle,seated[joint][i],sit));
+  const seatY = G - 26;
+  const standY = G - footY(STAND);
+  const drop = Math.min(1, t / .68);
+  const y = lerp(-32,standY,drop * drop) + 2 * Math.sin(Math.PI * ease((t-.68)/.22));
+  const roll = ease((t - .7) / .65);
+  chair.setAttribute('transform', 'translate(' + Math.round(lerp(W+18,XT,roll)) + ' ' + seatY + ')');
+  return { p, x: XT, y: lerp(y, seatY, sit) };
 }
-
 function layout() {
-  const vw = innerWidth, vh = innerHeight, mob = vw < 700;
-  S = mob ? (vh < 640 ? 2 : 3) : 3; W = Math.floor(vw / S); H = Math.floor(vh / S);
-  sv.setAttribute('viewBox', `0 0 ${W} ${H}`); sv.style.width = W * S + 'px'; sv.style.height = H * S + 'px';
-  X0 = Math.round(W / 2);
-  if (mob) {                                       // телефон: персонаж сверху, текст под ним на всю ширину
-    G = Math.round(H * .44); XT = Math.round(W * .36);
-    Object.assign(txt.style, { left: '20px', top: (G + 12) * S + 30 + 'px', maxWidth: vw - 40 + 'px' });
-  } else {
-    G = Math.round(H / 2 + 30); XT = Math.round(W / 2 - W * .14);
-    Object.assign(txt.style, { left: (XT + 23) * S + 'px', top: (G - 64) * S + 'px', maxWidth: Math.min(440, vw - (XT + 23) * S - 16) + 'px' });
-  }
+  const vw = innerWidth, vh = innerHeight;
+  S = vw < 700 || vh < 500 ? 2 : 3;
+  W = Math.floor(vw / S); H = Math.floor(vh / S);
+  sv.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  sv.style.width = W*S+'px'; sv.style.height = H*S+'px';
+  const mobile = vw < 700, margin = mobile ? 16 : 32;
+  const width = Math.min(440, vw - margin*2 - (mobile ? 0 : 48*S));
+  const left = mobile ? margin : Math.round((vw-width-42*S)/2);
+  XT = Math.min(W-19, Math.round((left+width)/S)+17);
+  txt.style.left = left+'px'; txt.style.width = width+'px'; txt.style.maxWidth = width+'px';
+  const top = Math.round(Math.max(43*S, (vh-txt.offsetHeight)/2) / S);
+  txt.style.top = top*S+'px';
+  G = top - footY(seated) + 26;
 }
-const puffs = [];
 /* ---------- перетаскивание мышкой: невесомость, ветер, падение ---------- */
 let drag = null, free = null, last = null, lastPt = null, lastMv = 0, lastF = 0;
 const vel = { x: 0, y: 0 }, cl = (v, a, b) => v < a ? a : v > b ? b : v;
@@ -256,7 +237,7 @@ const onMap = () => document.body.dataset.v === 'map', cur = c => { document.doc
 addEventListener('pointerdown', e => {
   if (!onMap() || e.button) return; const g = gridPt(e); if (!hit(g)) return; e.preventDefault(); e.stopPropagation();
   drag = { ox: last.x - g[0], oy: last.y - g[1], mx: g[0], my: g[1], x: last.x, y: last.y }; vel.x = vel.y = 0; lastPt = { g, t: performance.now() };
-  puffs.length = 0; smokeG.setAttribute('d', ''); cigG.setAttribute('d', ''); cigT.setAttribute('d', ''); txt.classList.add('on'); cur('grabbing');
+  txt.classList.add('on'); cur('grabbing');
   if (!free) { free = { mode: 'fall' }; cancelAnimationFrame(raf); raf = requestAnimationFrame(frame); }
 });
 addEventListener('pointermove', e => {
@@ -272,26 +253,21 @@ function frame(now) {
   if (drag || free) { freeFrame(now); if (document.body.dataset.v === 'map') raf = requestAnimationFrame(frame); return; }
   const t = (now - t0) / 1000, q = Math.floor(t * 12);
   if (q !== lastQ) {                               // 12 кадров в секунду — как у спрайтов
-    lastQ = q; const tq = q / 12, s = scene(tq), ox = Math.round(s.x) - OX, oy = Math.round(s.y) - OY, r = draw(s.p); emit(r.out, ox, oy); last = { out: r.out, ox, oy, x: s.x, y: s.y };
-    if (r.tip && q % 3 === 0) puffs.push({ x: ox + OX + r.tip[0], y: oy + OY + r.tip[1] - 1, a: 0 });
-    puffs.forEach(o => { o.a++; o.y -= .6; o.x += Math.sin(o.a * .7) * .5 - .15; });
-    while (puffs.length && puffs[0].a > 22) puffs.shift();
-    smokeG.setAttribute('d', puffs.filter(o => o.a % 4 !== 3).map(o => `M${Math.round(o.x)} ${Math.round(o.y)}h1v1h-1z`).join(''));
-    if (t > s.end + .3) txt.classList.add('on');
-    if (s.cig && s.cig.y < H + 4) { const c = s.cig, dx = Math.round(Math.cos(c.a) * 1.5), dy = Math.round(Math.sin(c.a) * 1.5), X = Math.round(c.x), Y = Math.round(c.y);
-      cigG.setAttribute('d', [[-dx, -dy], [0, 0], [dx, dy]].map(([a, b]) => `M${X + a} ${Y + b}h1v1h-1z`).join('')); cigT.setAttribute('d', `M${X + 2 * dx} ${Y + 2 * dy}h1v1h-1z`); }
-    else { cigG.setAttribute('d', ''); cigT.setAttribute('d', ''); }
+    lastQ = q;
+    const s = scene(q / 12);
+    show(s.p, s.x, s.y);
+    if (t >= .5) txt.classList.add('on');
   }
-  if (document.body.dataset.v === 'map') raf = requestAnimationFrame(frame);
+  if (t < 2 && document.body.dataset.v === 'map') raf = requestAnimationFrame(frame);
 }
 function start(replay) {
   cancelAnimationFrame(raf); layout(); lastQ = -1; lastF = 0; if (free) free.x = cl(free.x, 12, W - 12);
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches, q = new URLSearchParams(location.search).get('t');
   if (replay) txt.classList.remove('on');
-  t0 = performance.now() - (q ? +q * 1000 : (!replay && (done || calm)) ? 60000 : 0); done = true;
+  t0 = performance.now() - (q ? +q * 1000 : (calm || (!replay && done)) ? 60000 : 0); done = true;
   raf = requestAnimationFrame(frame);
 }
-addEventListener('resize', () => { if (document.body.dataset.v === 'map') { layout(); lastQ = -1; } });
+addEventListener('resize', () => { if (document.body.dataset.v === 'map') { layout(); lastQ = -1; cancelAnimationFrame(raf); raf = requestAnimationFrame(frame); } });
 window.HERO = { start };
 if (document.body.dataset.v === 'map') start();
 })();
