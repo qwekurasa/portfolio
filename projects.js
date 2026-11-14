@@ -11,6 +11,32 @@ window.CUSTOM=[
   "device": "phone",
   "folder": "0",
   "desc": "",
+  "gallery": [
+   {
+    "src": "img/mvdximll/ehkga22a.png",
+    "alt": "",
+    "width": 1615,
+    "height": 974
+   },
+   {
+    "src": "img/mvdximll/5xqv4v5p.png",
+    "alt": "",
+    "width": 1740,
+    "height": 904
+   },
+   {
+    "src": "img/mvdximll/gnkhfryh.png",
+    "alt": "",
+    "width": 1669,
+    "height": 942
+   },
+   {
+    "src": "img/mvdximll/sb9rvuzw.png",
+    "alt": "",
+    "width": 1601,
+    "height": 982
+   }
+  ],
   "shots": [
    {
     "src": "img/mvdximll/bx8dpaw9.png",
@@ -101,7 +127,8 @@ window.CUSTOM=[
     "p": ""
    }
   ],
-  "features": []
+  "features": [],
+  "gallery": []
  }
 ];
 window.CATS=[];
