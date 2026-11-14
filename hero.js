@@ -31,11 +31,11 @@ function part(name, polygon, pivot, parent = actor) {
 // Each rigid part retains the original texture. Joint pivots match the toy.
 part('legL','270,950 542,950 542,1448 270,1448',[420,963]);
 part('legR','542,950 810,950 810,1448 542,1448',[665,963]);
+part('body','400,465 681,465 721,620 768,879 757,960 329,960 317,874 366,615',[543,950]);
 const armL = part('armL','390,500 410,530 365,690 333,833 211,846 192,785 239,652 302,537',[395,535]);
 part('handL','210,832 333,832 335,1010 145,1010 145,870',[263,850],armL);
 const armR = part('armR','687,500 782,526 837,646 895,789 879,846 755,835 723,690 677,530',[691,535]);
 part('handR','755,832 879,832 948,870 948,1010 751,1010',[823,850],armR);
-part('body','400,465 681,465 721,620 768,879 757,960 329,960 317,874 366,615',[543,950]);
 part('head','275,0 800,0 800,455 652,455 652,490 437,490 437,455 275,455',[543,466]);
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -57,6 +57,8 @@ function handTop(p) {
     rotatePoint(823,935,691,535,p.armR)[1])-950;
 }
 function render(x,y,p,rotation=0,squash=1) {
+  // Keep the shoulders on their outward arc in every animation state.
+  p = {...p, armL:clamp(p.armL || 0,0,165), armR:clamp(p.armR || 0,-165,0)};
   state={x,y,pose:p,rotation};
   actor.setAttribute('transform', 'translate('+x+' '+y+') rotate('+rotation+') scale('+scale+' '+scale*squash+') translate(-543 -950)');
   for (const [name, {group,pivot}] of Object.entries(parts))
@@ -121,7 +123,7 @@ function freeFrame(dt,now) {
     drag.y=mix(drag.y,drag.my+drag.oy,blend);
     drag.vx*=Math.exp(-dt*2);drag.vy*=Math.exp(-dt*2);
     const swing=clamp(drag.vx*.045,-35,35), flutter=Math.sin(now*8)*6;
-    render(drag.x,drag.y,pose(-35-swing+flutter,35-swing-flutter,-swing*.5-7,-swing*.5+7,-swing*.15),clamp(-drag.vx*.025,-20,20));
+    render(drag.x,drag.y,pose(40-swing+flutter,-40-swing-flutter,-swing*.5-7,-swing*.5+7,-swing*.15),clamp(-drag.vx*.025,-20,20));
     return;
   }
   const ground=floor-498*scale;
@@ -134,8 +136,8 @@ function freeFrame(dt,now) {
     free.vy=Math.abs(free.vy)>90 ? -free.vy*.22 : 0;
     free.vx*=Math.exp(-dt*10);
   }
-  const lift=clamp(free.vy*.08,-90,90);
-  render(free.x,free.y,pose(-lift,lift,-lift*.15,lift*.15,2*Math.sin(now)),clamp(free.vx*.02,-15,15));
+  const lift=clamp(free.vy*.08,0,90);
+  render(free.x,free.y,pose(lift,-lift,-lift*.15,lift*.15,2*Math.sin(now)),clamp(free.vx*.02,-15,15));
 }
 function frame(now) {
   if(document.body.dataset.v!=='map'){raf=0;return;}
