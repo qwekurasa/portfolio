@@ -138,20 +138,6 @@ window.CUSTOM=[
   "desc": "",
   "shots": [],
   "features": []
- },
- {
-  "id": "mvm2o1pq",
-  "name": "refgvtrgrt",
-  "type": "",
-  "created": "",
-  "stack": "",
-  "platforms": "",
-  "link": "",
-  "pwa": "",
-  "device": "phone",
-  "desc": "",
-  "shots": [],
-  "features": []
  }
 ];
 window.CATS=[];
