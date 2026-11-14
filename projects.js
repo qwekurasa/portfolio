@@ -124,20 +124,6 @@ window.CUSTOM=[
   "desc": "",
   "shots": [],
   "features": []
- },
- {
-  "id": "mvm2nzti",
-  "name": "qwefrqfer",
-  "type": "",
-  "created": "",
-  "stack": "",
-  "platforms": "",
-  "link": "",
-  "pwa": "",
-  "device": "phone",
-  "desc": "",
-  "shots": [],
-  "features": []
  }
 ];
 window.CATS=[];
