@@ -9,7 +9,7 @@ window.CUSTOM=[
   "link": "https://kesh-money.vercel.app/web/#install",
   "pwa": "https://kesh-money.vercel.app/",
   "device": "phone",
-  "folder": "1",
+  "folder": "0",
   "desc": "",
   "shots": [
    {
