@@ -318,9 +318,8 @@ body[data-v=index]{background:#fff}
 .fd-fr b,.fd-fr span,.fd-fr i{display:none}
 .fd-f{all:unset;position:absolute;left:25%;top:7%;width:49%;height:77%;border-radius:8%;overflow:hidden;background:linear-gradient(140deg,#fafafa,#dcdcdc);box-shadow:inset 0 1px 1px #fff,0 2px 7px #0002;cursor:pointer;transform:translate(calc(var(--i)*15%),calc(var(--i)*4%)) rotate(calc(var(--i)*11deg));transition:transform .6s cubic-bezier(.2,.9,.25,1.15) var(--d)}
 .fd-f:after{content:"";position:absolute;inset:16% 13%;background:linear-gradient(#ccc,#ccc) 0 0/100% 8%,linear-gradient(#d0d0d0,#d0d0d0) 0 23%/85% 5%,linear-gradient(#d0d0d0,#d0d0d0) 0 42%/100% 5%,linear-gradient(#d0d0d0,#d0d0d0) 0 61%/76% 5%;background-repeat:no-repeat;pointer-events:none;transition:opacity .3s}
-.fd-f img{opacity:0;transition:opacity .3s}
-.fd:is(:hover,:focus-visible,.open) .fd-f img{opacity:1}
-.fd:is(:hover,:focus-visible,.open) .fd-f:after{opacity:0}
+/* Keep document icons visible in every folder state. */
+.fd-f img{opacity:0}
 .fd-f img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
 .fd:is(:hover,:focus-visible,.open) .fd-fr{transform:rotateX(-24deg)}
 .fd:is(:hover,:focus-visible,.open) .fd-f{transform:translate(calc(var(--i)*var(--sx,30%)),calc(-55% - (2 - var(--i)*var(--i)/2)*6%)) rotate(calc(var(--i)*9deg)) scale(.82)}
@@ -333,6 +332,9 @@ body[data-v=index]{background:#fff}
 .lb button{all:unset;cursor:pointer;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.08);font-size:24px;justify-self:center}.lb button:hover{background:rgba(255,255,255,.18)}
 .lb .lb-x{position:absolute;top:16px;right:16px;font-size:22px}
 @media(max-width:1079px){.fd{--sx:22%;touch-action:pan-y;position:relative;width:min(100%,280px);margin:90px auto 50px}.lb{grid-template-columns:40px minmax(0,1fr) 40px}.lb button{width:36px;height:36px}}
+/* Full-width case images live below the existing project desktop. */
+.project-gallery{display:block;width:100%;margin:0;padding:0;line-height:0;filter:invert(1)}
+.project-gallery img{display:block;width:100%;max-width:none;height:auto;margin:0;padding:0;border:0;border-radius:0}
 </style>
 </head>
 <body>
@@ -375,6 +377,7 @@ const P=[
  ...(window.CUSTOM||[]).map(c=>{const e=v=>String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[m]),sh=c.shots||[];
    const url=/^https?:\/\//.test(c.link||'')?c.link:'';
    return{id:'c'+e(c.id),url,device:c.device==='ipad'?'ipad':'phone',folder:c.folder!=='0',pwa:/^https:\/\//.test(c.pwa||'')?c.pwa:'',name:e(c.name),type:e(c.type),created:e(c.created),year:(c.created||'').slice(-4),desc:e(c.desc),cover:sh[0]?.src,
+    gallery:(c.gallery||[]).filter(x=>/^\/?img\/[a-z0-9_-]+\/[a-z0-9_.-]+\.(webp|jpe?g|png)$/i.test(x.src||'')).map(x=>({src:e(x.src),alt:e(x.alt),width:Number(x.width)||0,height:Number(x.height)||0})),
     meta:[c.stack&&['Стек',e(c.stack)],c.platforms&&['Платформы',e(c.platforms)],url&&['Ссылка',`<a href="${e(url)}" target="_blank" rel="noopener">${e(url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''))}</a>`]].filter(Boolean),
     shots:sh.length?sh.map(x=>e(x.h)||'Фото'):undefined,wins:sh.length||(c.features||[]).length?[...sh.map(x=>({img:e(x.src),h:e(x.h),p:e(x.p)})),...(c.features||[]).map(f=>({h:e(f.h),p:e(f.p),ul:(f.ul||[]).map(e)}))]:undefined}}),
 ];
@@ -422,6 +425,9 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   </div></div>`;
   if(p.device==='ipad'&&p.pwa)window.Phone?.mountPad($('#stPhone'),{url:p.pwa});
   else window.Phone?.mount($('#stPhone'),{id:p.id,pwa:p.pwa,name:p.name,icon:p.icon,screens:shots.map(w=>`<img src="${w.img}" alt="">`)});
+  if(p.gallery?.length){const gallery=document.createElement('div');gallery.className='project-gallery';gallery.setAttribute('aria-label','Изображения проекта');
+    gallery.innerHTML=p.gallery.map((x,i)=>`<img src="${x.src}" alt="${x.alt}" loading="${i?'lazy':'eager'}" decoding="async"${x.width>0&&x.height>0?` width="${x.width}" height="${x.height}"`:''}>`).join('');
+    $('#project').append(gallery)}
   $('.st').classList.toggle('pad',pad);
   /* устройство можно двигать за корпус, двойной клик по корпусу — вернуть на место */
   {const dev=$('#stPhone .ph');if(dev){let d=null,tx=0,ty=0;
@@ -511,5 +517,7 @@ function carousel(box,p){const ring=box.querySelector('.ixc-ring'),w=p.wins||[];
 })();
 </script>
 <script src="hero.js?v=restored-hero-1"></script>
+<script src="pigeon.js?v=landing-1"></script>
 </body>
 </html>
+

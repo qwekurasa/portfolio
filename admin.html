@@ -112,6 +112,10 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
     <p class="sec">Экраны — окна Form Editor</p>
     <div id="shots"></div>
     <div class="pad"><label class="btn" style="display:inline-block;margin:0">+ Добавить фото<input type="file" id="files" accept="image/*" multiple hidden></label></div>
+    <p class="sec">Лента изображений под проектом</p>
+    <div class="pad note">Изображения идут сверху вниз на всю ширину сайта, без отступов между ними. Верхний блок с устройством, папкой и таблицами остаётся на месте.</div>
+    <div id="gallery"></div>
+    <div class="pad"><label class="btn" style="display:inline-block;margin:0">+ Добавить изображения в ленту<input type="file" id="galleryFiles" accept="image/png,image/jpeg,image/webp" multiple hidden></label><p class="note" id="galleryStatus" role="status"></p></div>
     <p class="sec">Функции — окно File List</p>
     <div id="feats"></div>
     <div class="pad"><button id="addF">+ Добавить функцию</button></div>
@@ -163,7 +167,8 @@ $('#f-device').onchange=()=>{$('#pwaLbl').textContent=$('#f-device').value==='ip
 function open(i){edit={i,shots:(i==null?[]:list[i].shots||[]).map(s=>({...s})),feats:(i==null?[]:list[i].features||[]).map(f=>({h:f.h||'',p:f.p||'',ul:(f.ul||[]).join('\n')}))};
   const p=i==null?{}:list[i];fillTypes(p.type);F.forEach(k=>k!=='type'&&($('#f-'+k).value=p[k]||(k==='device'?'phone':k==='folder'?'1':'')));$('#f-device').onchange();
   $('#ftitle').textContent=i==null?'Project Editor · новый':'Project Editor · '+p.name;$('#del').hidden=i==null;
-  $('#form').hidden=false;drawShots();drawFeats();$('#form').scrollIntoView({behavior:'smooth'})}
+  edit.gallery=(p.gallery||[]).map(s=>({...s}));
+  $('#form').hidden=false;drawShots();drawGallery();drawFeats();$('#form').scrollIntoView({behavior:'smooth'})}
 $('#add').onclick=()=>open(null);
 $('#cancel').onclick=()=>{edit=null;$('#form').hidden=true};
 
@@ -174,6 +179,19 @@ function drawShots(){$('#shots').innerHTML=edit.shots.map((s,k)=>`<div class="it
 $('#shots').oninput=e=>{const t=e.target;if(t.dataset.f)edit.shots[t.dataset.k][t.dataset.f]=t.value};
 $('#shots').onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k,S=edit.shots;
   if(b.dataset.a==='rm')S.splice(k,1);else{const j=b.dataset.a==='up'?k-1:k+1;[S[k],S[j]]=[S[j],S[k]]}drawShots()};
+function drawGallery(){$('#gallery').innerHTML=edit.gallery.map((s,k)=>`<div class="item"><img src="${s.preview||'/'+esc(s.src)}" alt="">
+  <div><p class="note">Изображение ${k+1}${s.width&&s.height?' · '+s.width+' × '+s.height:''}</p><input data-k="${k}" placeholder="Описание изображения для доступности" value="${esc(s.alt)}">
+  <div class="tools"><button class="ghost" data-k="${k}" data-a="up" aria-label="Выше изображение ${k+1}" ${k?'':'disabled'}>↑</button><button class="ghost" data-k="${k}" data-a="down" aria-label="Ниже изображение ${k+1}" ${k<edit.gallery.length-1?'':'disabled'}>↓</button><button class="ghost" data-k="${k}" data-a="rm">Убрать</button></div></div></div>`).join('')}
+$('#gallery').oninput=e=>{if(e.target.matches('input'))edit.gallery[+e.target.dataset.k].alt=e.target.value};
+$('#gallery').onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k,S=edit.gallery;
+  if(b.dataset.a==='rm'){const [s]=S.splice(k,1);if(s.preview)URL.revokeObjectURL(s.preview)}else{const j=b.dataset.a==='up'?k-1:k+1;if(j<0||j>=S.length)return;[S[k],S[j]]=[S[j],S[k]]}drawGallery()};
+let galleryLoading=false;
+$('#galleryFiles').onchange=async e=>{const current=edit,files=[...e.target.files];e.target.value='';galleryLoading=true;$('#done').disabled=true;
+  try{for(const f of files){if(!/^image\/(jpeg|png|webp)$/.test(f.type))throw new Error('Поддерживаются PNG, JPG и WebP');
+    $('#galleryStatus').textContent='Подготовка: '+f.name;const blob=await shrink(f),bm=await createImageBitmap(blob);const width=bm.width,height=bm.height;bm.close();
+    if(edit!==current)break;current.gallery.push({blob,preview:URL.createObjectURL(blob),alt:'',width,height});drawGallery()}
+    $('#galleryStatus').textContent='Изображения добавлены. Нажмите «Готово», чтобы опубликовать.';
+  }catch(err){$('#galleryStatus').textContent='Ошибка: '+err.message}finally{galleryLoading=false;$('#done').disabled=false}};
 function drawFeats(){$('#feats').innerHTML=edit.feats.map((f,k)=>`<div class="item f"><div><input data-k="${k}" data-f="h" placeholder="Название, например «Импорт выписки»" value="${esc(f.h)}">
   <textarea data-k="${k}" data-f="p" placeholder="Короткое описание" style="min-height:52px;margin-bottom:6px">${esc(f.p)}</textarea>
   <textarea data-k="${k}" data-f="ul" placeholder="Пункты списка — каждый с новой строки (необязательно)" style="min-height:52px">${esc(f.ul)}</textarea>
@@ -190,23 +208,24 @@ async function shrink(f){if(f.size<=3e6&&/^image\/(jpeg|png|webp)$/.test(f.type)
   for(const q of[.95,.9,.85,.75]){const b=await new Promise(res=>c.toBlob(res,'image/webp',q));if(b.size<=3e6)return b}
   return new Promise(res=>c.toBlob(res,'image/webp',.7))}
 
-$('#done').onclick=()=>{const name=$('#f-name').value.trim();if(!name){$('#f-name').focus();return}
+$('#done').onclick=()=>{if(galleryLoading)return;const name=$('#f-name').value.trim();if(!name){$('#f-name').focus();return}
   const old=edit.i==null?null:list[edit.i],p={id:old?.id||Date.now().toString(36)};F.forEach(k=>p[k]=$('#f-'+k).value.trim());if(p.type==='+')p.type='';
   (old?.shots||[]).forEach(s=>{if(!edit.shots.some(n=>n.src===s.src))removed.push(s.src)});
+  (old?.gallery||[]).forEach(s=>{if(!edit.gallery.some(n=>n.src===s.src))removed.push(s.src)});p.gallery=edit.gallery;
   p.shots=edit.shots;p.features=edit.feats.filter(f=>f.h.trim()).map(f=>({h:f.h.trim(),p:f.p.trim(),ul:f.ul.split('\n').map(x=>x.trim()).filter(Boolean)}));if(old)list[edit.i]=p;else list.push(p);
   edit=null;$('#form').hidden=true;mark();render();renderCats()};
 $('#del').onclick=()=>{const p=list[edit.i];if(!confirm('Удалить «'+p.name+'»?'))return;
-  (p.shots||[]).forEach(s=>s.src&&removed.push(s.src));list.splice(edit.i,1);edit=null;$('#form').hidden=true;mark();render();renderCats()};
+  [...(p.shots||[]),...(p.gallery||[])].forEach(s=>s.src&&removed.push(s.src));list.splice(edit.i,1);edit=null;$('#form').hidden=true;mark();render();renderCats()};
 
 const b64=b=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result.split(',')[1]);fr.readAsDataURL(b)});
 let busy=false,again=false;
 async function publish(){if(busy){again=true;return}busy=true;$('#publish').hidden=true;const files=pending;
-  try{let n=0,total=list.reduce((a,p)=>a+(p.shots||[]).filter(s=>s.blob).length,0);
-    for(const p of list)for(const s of p.shots||[])if(s.blob){$('#bmsg').textContent=`Загрузка фото ${++n}/${total}…`;
+  try{let n=0,total=list.reduce((a,p)=>a+[...(p.shots||[]),...(p.gallery||[])].filter(s=>s.blob).length,0);
+    for(const p of list)for(const s of [...(p.shots||[]),...(p.gallery||[])])if(s.blob){$('#bmsg').textContent=`Загрузка фото ${++n}/${total}…`;
       const {sha}=await api({op:'blob',data:await b64(s.blob)}),path=`img/${p.id}/${Math.random().toString(36).slice(2,10)}.${{'image/jpeg':'jpg','image/png':'png'}[s.blob.type]||'webp'}`;
       files.push({path,sha});s.src=path;delete s.blob;delete s.preview}
     $('#bmsg').textContent='Публикация…';
-    const clean=list.map(p=>({...p,features:p.features||[],shots:(p.shots||[]).map(s=>({src:s.src,h:s.h||'',p:s.p||''}))}));
+    const clean=list.map(p=>({...p,features:p.features||[],shots:(p.shots||[]).map(s=>({src:s.src,h:s.h||'',p:s.p||''})),gallery:(p.gallery||[]).map(s=>({src:s.src,alt:s.alt||'',width:s.width||0,height:s.height||0}))}));
     await api({op:'commit',json:JSON.stringify(clean),cats,files,del:removed.filter(x=>!files.some(f=>f.path===x)),msg:'Админка: обновление проектов'});
     removed=[];pending=[];dirty=false;$('#bmsg').textContent='Опубликовано. Сайт обновится примерно через минуту.';setTimeout(()=>{if(!dirty)$('#bar').hidden=true},6000);render()}
   catch(e){$('#bmsg').textContent='Ошибка: '+e.message;$('#publish').hidden=false}
@@ -216,3 +235,4 @@ addEventListener('beforeunload',e=>{if(dirty)e.preventDefault()});
 </script>
 </body>
 </html>
+
