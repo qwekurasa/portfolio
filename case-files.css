@@ -1,0 +1,29 @@
+/* The site inverts its root; invert this self-contained monochrome artwork back. */
+.case-field{position:relative;isolation:isolate;filter:invert(1);background:#000;color:#eee;width:100%;height:clamp(460px,68svh,760px);overflow:hidden;contain:layout paint}
+.case-field canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.case-field-head{position:absolute;left:clamp(20px,3vw,52px);right:clamp(20px,3vw,52px);top:30px;display:flex;justify-content:space-between;gap:18px;font:12px/1.5 var(--sans);color:#717176;pointer-events:none}
+.case-field-head strong{font-weight:400;color:#a0a0a5}.case-field-head span:last-child{text-align:right}
+.case-file{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;width:clamp(100px,13vw,190px);touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;color:#b5b5ba;border:0;background:none;padding:0;will-change:transform;outline-offset:8px}
+.case-file:focus-visible{outline:1px solid #c2c2c7;border-radius:8px}.case-file.dragging{cursor:grabbing;z-index:3}
+.case-file svg{display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 15px 20px #000a);transition:filter .25s}
+.case-file:hover svg,.case-file:focus-visible svg{filter:drop-shadow(0 0 13px #ffffff18) drop-shadow(0 18px 25px #000a)}
+.case-file-name{font:12px/1.4 var(--sans);margin-top:10px;max-width:100%;overflow-wrap:anywhere;text-align:center;color:#b0b0b6}
+.case-file-count{font:10px/1.4 var(--sans);color:#606067;margin-top:5px;letter-spacing:.07em}
+.case-file.dragging .case-file-name{color:#fff}
+.case-view{position:fixed;inset:0;z-index:500;filter:invert(1);color:#eee;font:14px/1.5 var(--sans);display:none;isolation:isolate}
+.case-view.visible{display:block}
+.case-scrim{position:absolute;inset:0;background:#0008;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);animation:caseFade .28s ease-out}
+.case-panel{position:absolute;right:24px;top:24px;bottom:24px;width:min(480px,calc(100vw - 48px));background:linear-gradient(155deg,#151516,#101011 60%);border:1px solid #303033;border-radius:28px;box-shadow:0 25px 90px #000b;display:flex;flex-direction:column;overflow:hidden;animation:caseSlide .36s cubic-bezier(.2,.8,.2,1);outline:none}
+.case-panel-head{flex:none;padding:22px 24px 23px;border-bottom:1px solid #242427}
+.case-close{all:unset;cursor:pointer;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#202023;border:1px solid #2c2c30;color:#b8b8be;font-size:22px;line-height:1;margin-bottom:26px}
+.case-close:hover{background:#303034;color:#fff}.case-close:focus-visible,.case-tabs button:focus-visible{outline:1px solid #eee;outline-offset:3px}
+.case-panel h2{margin:0 0 7px;font:500 24px/1.2 var(--sans);letter-spacing:-.04em;color:#f4f4f5}.case-panel-subtitle{font-size:12px;color:#85858c;margin:0}
+.case-panel-content{flex:1;overflow:auto;overscroll-behavior:contain;min-height:0;scrollbar-width:thin;scrollbar-color:#37373c transparent}
+.case-panel-images{line-height:0}.case-panel-images img{display:block;width:100%;height:auto;max-width:none;margin:0;border:0;border-radius:0}
+.case-empty{padding:65px 28px;text-align:center;color:#85858e;font-size:13px}
+.case-tabs{flex:none;border-top:1px solid #29292d;padding:12px 14px 16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;background:#141415}
+.case-tabs button{padding:9px 6px;border-radius:12px;font:11px/1.4 var(--sans);color:#77777f;text-align:center;overflow-wrap:anywhere}
+.case-tabs button[aria-pressed=true]{background:#242427;color:#f0f0f2}.case-tabs svg{display:block;width:19px;height:19px;margin:0 auto 6px}
+@keyframes caseSlide{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:none}}@keyframes caseFade{from{opacity:0}to{opacity:1}}
+@media(max-width:600px){.case-field{height:470px}.case-field-head{top:23px;font-size:10px}.case-file{width:clamp(82px,23vw,130px)}.case-file-name{font-size:10px;margin-top:8px}.case-file-count{font-size:9px}.case-panel{inset:max(8px,env(safe-area-inset-top)) 8px max(8px,env(safe-area-inset-bottom));width:auto;border-radius:23px}.case-panel-head{padding:17px 18px 18px}.case-close{margin-bottom:20px}.case-panel h2{font-size:23px}.case-tabs{padding-bottom:max(12px,env(safe-area-inset-bottom))}}
+@media(prefers-reduced-motion:reduce){.case-panel,.case-scrim{animation:none}.case-file svg{transition:none}}
