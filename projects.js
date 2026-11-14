@@ -9,9 +9,30 @@ window.CUSTOM=[
   "link": "https://kesh-money.vercel.app/web/#install",
   "pwa": "https://kesh-money.vercel.app/",
   "device": "phone",
-  "folder": "0",
+  "folder": "1",
   "desc": "",
-  "shots": [],
+  "shots": [
+   {
+    "src": "img/mvdximll/bx8dpaw9.png",
+    "h": "",
+    "p": ""
+   },
+   {
+    "src": "img/mvdximll/e1lqxe8m.png",
+    "h": "",
+    "p": ""
+   },
+   {
+    "src": "img/mvdximll/gt72pkoh.png",
+    "h": "",
+    "p": ""
+   },
+   {
+    "src": "img/mvdximll/wldu03go.png",
+    "h": "",
+    "p": ""
+   }
+  ],
   "features": [
    {
     "h": "Главная",
@@ -79,19 +100,6 @@ window.CUSTOM=[
     "p": "Сайт - это, скорее, мой последний творческий порыв по проекту «tempt» Стараюсь сделать его максимально удобным для вас. Даже если не будете заказывать, юзайте его как единый сборник вещей с таблицами размеров и крутыми фотками."
    }
   ],
-  "features": []
- },
- {
-  "id": "mvgdcb9q",
-  "name": "uihiutrhgtrh",
-  "type": "trhtr",
-  "created": "4352435",
-  "stack": "253452345",
-  "platforms": "234534",
-  "link": "https://kesh-money.vercel.app/",
-  "pwa": "https://kesh-money.vercel.app/",
-  "desc": "rgrtgtrg",
-  "shots": [],
   "features": []
  }
 ];
