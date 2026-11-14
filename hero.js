@@ -186,12 +186,12 @@ function layout() {
   sv.style.width = W*S+'px'; sv.style.height = H*S+'px';
   const mobile = vw < 700, margin = mobile ? 16 : 32;
   const width = Math.min(440, vw - margin*2 - (mobile ? 0 : 48*S));
-  const left = mobile ? margin : Math.round((vw-width-42*S)/2);
+  const left = (vw - width) / 2;
   XT = Math.min(W-19, Math.round((left+width)/S)+17);
   txt.style.left = left+'px'; txt.style.width = width+'px'; txt.style.maxWidth = width+'px';
-  const top = Math.round(Math.max(43*S, (vh-txt.offsetHeight)/2) / S);
-  txt.style.top = top*S+'px';
-  G = top - footY(seated) + 26;
+  const top = (vh - txt.offsetHeight) / 2;
+  txt.style.top = top+'px';
+  G = top / S - footY(seated) + 26;
 }
 /* ---------- перетаскивание мышкой: невесомость, ветер, падение ---------- */
 let drag = null, free = null, last = null, lastPt = null, lastMv = 0, lastF = 0;
