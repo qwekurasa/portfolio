@@ -4,7 +4,7 @@ window.CUSTOM=[
   "name": "kesh - трекер финансов",
   "type": "Приложение",
   "created": "11.09.2026",
-  "stack": "JS,swift,css,html",
+  "stack": "Vanilla JS · IndexedDB · Service Worker PDF.js · Air Datepicker · esbuild",
   "platforms": "IOS, Android, Windows",
   "link": "https://kesh-money.vercel.app/web/#install",
   "pwa": "https://kesh-money.vercel.app/",
@@ -13,9 +13,51 @@ window.CUSTOM=[
   "desc": "",
   "gallery": [
    {
-    "src": "img/mvdximll/uu54sewd.png",
+    "src": "img/mvdximll/9rsasxhz.png",
     "alt": "",
     "file": 0,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mvdximll/q7gpe2qu.png",
+    "alt": "",
+    "file": 0,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mvdximll/im1nv2f0.png",
+    "alt": "",
+    "file": 1,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mvdximll/b24mk4gr.png",
+    "alt": "",
+    "file": 1,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mvdximll/3qwhg4gx.png",
+    "alt": "",
+    "file": 1,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mvdximll/udy232hz.png",
+    "alt": "",
+    "file": 1,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mvdximll/2ve5ujlt.png",
+    "alt": "",
+    "file": 2,
     "width": 1600,
     "height": 1200
    }
