@@ -365,6 +365,30 @@ body[data-v=index]{background:#fff}
  .st.phone-project .st-br{grid-column:1;grid-row:2;margin:0}
  .st.phone-project .st-fl{grid-column:1;grid-row:3;margin:0}
 }
+
+/* Tablet projects keep independent draggable panels around the device. */
+#project .st.pad{display:grid;grid-template-columns:minmax(230px,.8fr) minmax(0,2fr) minmax(280px,1.1fr);gap:clamp(24px,2.8vw,60px);align-items:center;align-content:start;min-height:0;padding:170px 2.2vw 112px!important;background:#fff}
+.st.pad .st-desk{display:contents}
+.st.pad .st-phone{grid-area:1/2;position:static;width:100%;margin:0;justify-self:center}
+.st.pad .st-w{position:relative!important;left:auto!important;top:auto!important;width:100%!important;height:auto!important;min-width:0;filter:invert(1);background:linear-gradient(145deg,#292929,#222);backdrop-filter:none;-webkit-backdrop-filter:none}
+.st.pad .st-br{grid-area:1/3}
+.st.pad .st-fl{grid-area:1/1}
+.st.pad>.st-fdw{grid-area:2/2;padding:40px 0 0}
+.st.pad .st-w>.rz{display:none}
+.st.pad .st-code pre{white-space:pre-wrap;overflow-wrap:anywhere}
+.st.pad .st-pane{min-width:0;overflow:hidden}
+.st.pad .st-pane li{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:1199px){
+ #project .st.pad{grid-template-columns:1fr 1fr;gap:30px;padding:100px 24px 112px!important}
+ .st.pad .st-phone{grid-area:1/1/2/3;width:min(800px,100%);margin:0}
+ .st.pad .st-fl{grid-area:2/1}.st.pad .st-br{grid-area:2/2}
+ .st.pad>.st-fdw{grid-area:3/1/4/3}
+}
+@media(max-width:699px){
+ #project .st.pad{grid-template-columns:minmax(0,1fr);padding:90px 20px 112px!important}
+ .st.pad .st-phone{grid-area:1/1}.st.pad .st-br{grid-area:2/1}.st.pad .st-fl{grid-area:3/1}
+ .st.pad>.st-fdw{grid-area:4/1}
+}
 </style>
 </head>
 <body>
@@ -480,7 +504,7 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
     fd.addEventListener('dblclick',()=>{tx=ty=0;fd.style.transition='translate .35s cubic-bezier(.2,.8,.2,1)';fd.style.translate='0 0';setTimeout(()=>fd.style.transition='',400)});
     fd.addEventListener('click',e=>{if(Date.now()-noClick<300)return;const f=e.target.closest('.fd-f');if(touch&&!fd.classList.contains('open')){fd.classList.add('open');return}lbOpen(shots,f?+f.dataset.k:0,p.name)});
     fd.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();lbOpen(shots,0,p.name)}})}
-  const lay=()=>{if(p.device!=='ipad'){desk.style.height=desk.style.marginTop='';return}const mob=innerWidth<1080,Wd=desk.clientWidth;if(mob){desk.style.height=desk.style.marginTop='';return}if(!Wd)return;
+  const lay=()=>{if(desk.closest('.phone-project,.pad')){desk.style.height=desk.style.marginTop='';return}const mob=innerWidth<1080,Wd=desk.clientWidth;if(mob){desk.style.height=desk.style.marginTop='';return}if(!Wd)return;
     const L=fdIn?Math.round(Math.min(540,(Wd-60)/2)):Math.min(pad?480:620,Wd),put=(e,x,y,w,h)=>{if(!e||e.dataset.moved)return;e.style.left=x+'px';e.style.top=y+'px';e.style.width=w+'px';if(h)e.style.height=h+'px'};
     const br=desk.querySelector('.st-br'),fl=desk.querySelector('.st-fl'),X=fdIn?0:Math.round((Wd-L)/2);
     if(p.device!=='ipad'&&innerWidth>=1300){
@@ -510,7 +534,7 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   $('#project').querySelectorAll('.st-files li[data-j]').forEach(li=>li.onclick=()=>{$('#project').querySelectorAll('.st-files li').forEach(x=>x.classList.toggle('on',x===li));show(+li.dataset.j)});
   // окна: клик поднимает наверх, тянуть за заголовок
   $('#project').querySelectorAll('.st-w').forEach(w=>{w.style.zIndex=++stZ;w.addEventListener('pointerdown',()=>w.style.zIndex=++stZ);
-    const t=w.querySelector('.st-t'), inGrid=!!w.closest('.phone-project');
+    const t=w.querySelector('.st-t'), inGrid=!!w.closest('.phone-project,.pad');
     let translateX=0,translateY=0;
     t.addEventListener('pointerdown',e=>{
       if(e.button || (!inGrid && innerWidth<1080))return;
