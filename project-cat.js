@@ -4,7 +4,7 @@
   window.ProjectCat = {
     mount(host) {
       cleanup();
-      const stage = host.querySelector('.phone-project');
+      const stage = host.querySelector('.st');
       if (!stage) return;
       stage.style.position = 'relative';
       const strip = document.createElement('div');
@@ -17,28 +17,31 @@
             <path d="M-8-5Q5-9 9 4M-10 0Q0-4 8 7M-7 7Q-2 0-4-9M1-10Q7 0 0 10M-9 4Q0 7 8-6"/>
           </g>
         </g>
-        <g data-cat shape-rendering="crispEdges">
-          <path d="M-33 0H33V3H-33Z" fill="#343438" opacity=".4"/>
+        <defs>
+          <linearGradient id="cat-plastic" x2=".7" y2="1"><stop stop-color="#515159"/><stop offset=".24" stop-color="#25252b"/><stop offset="1" stop-color="#08080c"/></linearGradient>
+          <linearGradient id="cat-face" x2=".7" y2="1"><stop stop-color="#3d3d45"/><stop offset=".5" stop-color="#17171d"/><stop offset="1" stop-color="#09090d"/></linearGradient>
+        </defs>
+        <g data-cat>
+          <ellipse cy="1" rx="34" ry="2" fill="#50505a" opacity=".2"/>
           <g data-body>
-            <path data-tail d="M-24-21H-36V-27H-42V-45H-39V-54H-30V-48H-33V-42H-33V-30H-24Z" fill="#17171d" stroke="#42424b" stroke-width="2"/>
-            <g fill="#111116" stroke="#35353d" stroke-width="2">
-              <path data-leg="0" d="M-24-21H-15V-6H-9V0H-24Z"/>
-              <path data-leg="1" d="M12-21H21V-6H27V0H12Z"/>
+            <path data-tail d="M-26-22H-35Q-44-22-44-33V-44Q-44-51-38-51" fill="none" stroke="#34343c" stroke-width="7" stroke-linecap="round"/>
+            <g fill="#14141b" stroke="#45454d" stroke-width="1.2">
+              <path data-leg="0" d="M-24-24h10v18h5v6h-15z"/><path data-leg="1" d="M11-24h10v18h5v6H11z"/>
             </g>
-            <path d="M-30-27H-24V-33H-12V-36H12V-33H24V-27H27V-15H18V-12H-21V-15H-30Z" fill="#131319" stroke="#41414a" stroke-width="2"/>
-            <path d="M-21-30H-9V-33H9V-30H18V-27H-21Z" fill="#282831"/>
-            <g fill="#18181f" stroke="#484852" stroke-width="2">
-              <path data-leg="2" d="M-24-18H-15V-6H-9V0H-24Z"/>
-              <path data-leg="3" d="M12-21H21V-6H27V0H12Z"/>
+            <path d="M-30-29Q-30-34-24-34H18L26-27V-12H-26Q-30-12-30-16Z" fill="url(#cat-plastic)" stroke="#52525c" stroke-width="1.2"/>
+            <path d="M-25-31H14L20-27H-25Z" fill="#696972" opacity=".35"/>
+            <g fill="url(#cat-plastic)" stroke="#4e4e58" stroke-width="1.2">
+              <path data-leg="2" d="M-24-23h11v17h6v6h-17z"/><path data-leg="3" d="M11-24h11v18h6v6H11z"/>
             </g>
             <g data-head>
-              <path d="M15-36V-54H21V-51H24V-48H27V-42H39V-48H42V-51H45V-54H51V-24H48V-18H21V-21H15Z" fill="#131318" stroke="#4b4b54" stroke-width="2"/>
-              <path d="M18-48H21V-45H24V-42H18ZM45-48H48V-42H42V-45H45Z" fill="#56505a"/>
-              <path d="M21-36H30V-30H21ZM39-36H48V-30H39Z" fill="#f9d94a"/>
-              <path d="M27-36H30V-30H27ZM45-36H48V-30H45Z" fill="#171719"/>
-              <path d="M33-27H39V-24H33Z" fill="#928389"/>
-              <path d="M33-21H30V-24H33ZM39-21H42V-24H39Z" fill="#56515e"/>
-              <path d="M9-30H18V-28H9ZM6-24H18V-22H6ZM48-30H60V-28H48ZM48-24H60V-22H48Z" fill="#686873"/>
+              <rect x="19" y="-29" width="22" height="15" rx="3" fill="#1d1d24" stroke="#45454d"/>
+              <path d="M14-32V-53Q14-57 17-55L26-45H39L49-55Q52-57 52-53V-27Q52-20 45-20H21Q14-20 14-27Z" fill="url(#cat-face)" stroke="#5d5d67" stroke-width="1.3"/>
+              <path d="M18-49l6 7h-6zm24 7 6-7v7z" fill="#66616d"/>
+              <ellipse cx="25" cy="-33" rx="5.5" ry="5" fill="#f1cb38"/><ellipse cx="43" cy="-33" rx="5.5" ry="5" fill="#f1cb38"/>
+              <path d="M25-37v8m18-8v8" stroke="#15151b" stroke-width="2.5"/>
+              <circle cx="23" cy="-35" r="1.2" fill="#fff2a0"/><circle cx="41" cy="-35" r="1.2" fill="#fff2a0"/>
+              <path d="M31-27h6l-3 3z" fill="#81717a"/><path d="M34-24q-3 4-6 1m6-1q3 4 6 1M19-29l-10-2m10 6-10 1m39-5 10-2m-10 6 10 1" fill="none" stroke="#77717e" stroke-width="1"/>
+              <path d="M18-39h6m15 0h9" stroke="#8e8e96" stroke-width="1" opacity=".5"/>
             </g>
           </g>
         </g>
@@ -66,13 +69,13 @@
         const jumpPhase = (phase - travel * .52) / .85;
         const jump = jumpPhase > 0 && jumpPhase < 1 ? Math.sin(jumpPhase * Math.PI) * 28 : 0;
         const stride = playing ? 0 : Math.sin(time * 14);
-        cat.setAttribute('transform', 'translate(' + Math.round(x / 3) * 3 + ' 90) scale(' + direction + ' 1)');
-        body.setAttribute('transform', 'translate(0 ' + (Math.round((-jump - Math.abs(stride) * 3) / 3) * 3) + ')');
+        cat.setAttribute('transform', 'translate(' + x + ' 90) scale(' + direction + ' 1)');
+        body.setAttribute('transform', 'translate(0 ' + (-jump - Math.abs(stride)*1.5) + ')');
         head.setAttribute('transform', 'translate(0 ' + (playing ? 3 : 0) + ')');
         tail.setAttribute('transform', 'translate(' + Math.round(Math.sin(time * 3)) * 3 + ' 0)');
         legs.forEach((leg, i) => {
           const angle = playing && i === 3 ? -35 * Math.max(0, Math.sin(play * 5)) : stride * (i === 0 || i === 3 ? 22 : -22);
-          leg.setAttribute('transform', 'translate(' + Math.round(angle / 8) * 3 + ' ' + (angle > 8 ? -3 : 0) + ')');
+          leg.setAttribute('transform', 'rotate(' + angle + ' ' + (i % 2 === 0 ? '-19 -23' : '16 -23') + ')');
         });
         ball.setAttribute('opacity', playing ? Math.min(1, play * 3, (4 - play) * 3) : 0);
         const roll = Math.max(0, Math.sin(play * 5)) * 13;
