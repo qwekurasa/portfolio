@@ -360,7 +360,7 @@ body[data-v=index]{background:#fff}
 #project:has(.phone-project) .case-field{height:clamp(480px,56svh,640px);margin-bottom:32px}
 #project:has(.phone-project){background:#fff}
 @media(max-width:899px){
- #project .st.phone-project{grid-template-columns:minmax(0,1fr);gap:32px;padding:100px 20px 64px!important}
+ #project .st.phone-project{grid-template-columns:minmax(0,1fr);gap:32px;padding:100px 20px 112px!important}
  .st.phone-project .st-phone{grid-column:1;grid-row:1;width:min(210px,55vw)}
  .st.phone-project .st-br{grid-column:1;grid-row:2;margin:0}
  .st.phone-project .st-fl{grid-column:1;grid-row:3;margin:0}
@@ -400,6 +400,7 @@ body[data-v=index]{background:#fff}
 <script>document.write('<script src="projects.js?v='+Date.now()+'"><\/script>')</script>
 <script src="phone.js?v=baecc87"></script>
 <script src="case-files.js?v=2"></script>
+<script src="project-cat.js?v=1"></script>
 <script>
 const $=s=>document.querySelector(s);
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
@@ -460,6 +461,7 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   window.CaseFiles?.mount(p,$('#project'));
   $('.st').classList.toggle('pad',pad);
   $('.st').classList.toggle('phone-project',p.device!=='ipad');
+  window.ProjectCat?.mount($('#project'));
   /* устройство можно двигать за корпус, двойной клик по корпусу — вернуть на место */
   {const dev=$('#stPhone .ph');if(dev){let d=null,tx=0,ty=0;
     dev.addEventListener('pointerdown',e=>{if(e.target.closest('.ph-scr,.pd-scr'))return;e.preventDefault();dev.setPointerCapture(e.pointerId);d={x:e.clientX-tx,y:e.clientY-ty};dev.classList.add('drag')});
