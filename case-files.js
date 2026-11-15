@@ -36,7 +36,7 @@
       el.querySelector('.case-file-count').textContent=`0${i+1} / ${count} ФОТО`;
       el.setAttribute('aria-label',`${name}, ${count} фото. Нажмите для просмотра; стрелки перемещают файл.`);el.setAttribute('aria-haspopup','dialog');
       section.append(el);
-      return {el,i,nx:[.23,.5,.77][i],ny:[.38,.62,.43][i],x:0,y:0,dx:0,dy:0,dragged:false,suppressClick:false};
+      return {el,i,nx:[.23,.5,.77][i],ny:project.device==='ipad'?[.38,.62,.43][i]:.5,x:0,y:0,dx:0,dy:0,dragged:false,suppressClick:false};
     });
     const canvas=section.querySelector('canvas'),ctx=canvas.getContext('2d');
     let w=0,h=0,dpr=1,nodes=[],cols=0,raf=0,visible=false,last=0,time=0,drag=null,destroyed=false;
