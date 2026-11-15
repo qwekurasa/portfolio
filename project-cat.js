@@ -17,23 +17,28 @@
             <path d="M-8-5Q5-9 9 4M-10 0Q0-4 8 7M-7 7Q-2 0-4-9M1-10Q7 0 0 10M-9 4Q0 7 8-6"/>
           </g>
         </g>
-        <g data-cat>
-          <ellipse cx="0" cy="0" rx="33" ry="2.5" fill="#fff" opacity=".07"/>
+        <g data-cat shape-rendering="crispEdges">
+          <path d="M-33 0H33V3H-33Z" fill="#343438" opacity=".4"/>
           <g data-body>
-            <path data-tail d="M-24-23Q-47-23-43-45Q-41-55-36-50" fill="none" stroke="#e1e3e5" stroke-width="8" stroke-linecap="round"/>
-            <g fill="none" stroke="#bfc5cb" stroke-width="7" stroke-linecap="round">
-              <path data-leg="0" d="M-20-20L-23-4H-16"/><path data-leg="1" d="M14-20L16-4H23"/>
+            <path data-tail d="M-24-21H-36V-27H-42V-45H-39V-54H-30V-48H-33V-42H-33V-30H-24Z" fill="#17171d" stroke="#42424b" stroke-width="2"/>
+            <g fill="#111116" stroke="#35353d" stroke-width="2">
+              <path data-leg="0" d="M-24-21H-15V-6H-9V0H-24Z"/>
+              <path data-leg="1" d="M12-21H21V-6H27V0H12Z"/>
             </g>
-            <path d="M-28-26Q-21-40-1-33L22-31Q31-25 23-14Q1-7-21-13Q-32-14-28-26Z" fill="#f4f4f1"/>
-            <g fill="none" stroke="#f9faf7" stroke-width="8" stroke-linecap="round">
-              <path data-leg="2" d="M-21-19L-22-4H-15"/><path data-leg="3" d="M15-22L17-4H24"/>
+            <path d="M-30-27H-24V-33H-12V-36H12V-33H24V-27H27V-15H18V-12H-21V-15H-30Z" fill="#131319" stroke="#41414a" stroke-width="2"/>
+            <path d="M-21-30H-9V-33H9V-30H18V-27H-21Z" fill="#282831"/>
+            <g fill="#18181f" stroke="#484852" stroke-width="2">
+              <path data-leg="2" d="M-24-18H-15V-6H-9V0H-24Z"/>
+              <path data-leg="3" d="M12-21H21V-6H27V0H12Z"/>
             </g>
             <g data-head>
-              <path d="M17-36L15-54Q16-58 20-54L30-45 38-46 47-56Q50-57 50-52L49-35Q54-21 40-18L25-19Q12-23 17-36Z" fill="#fffefa"/>
-              <path d="M19-49L20-39 26-44M42-44L47-50 46-39" fill="#dbb8b8"/>
-              <path d="M30-32v3M45-33v3" stroke="#53635d" stroke-width="2.6" stroke-linecap="round"/>
-              <path d="M39-27l4 0-2 3z" fill="#bd9295"/>
-              <path d="M41-24q-2 4-5 2M43-26l14-2m-14 5 13 2M32-26l-13-3m13 6-13 1" fill="none" stroke="#aeb5b4" stroke-width=".8"/>
+              <path d="M15-36V-54H21V-51H24V-48H27V-42H39V-48H42V-51H45V-54H51V-24H48V-18H21V-21H15Z" fill="#131318" stroke="#4b4b54" stroke-width="2"/>
+              <path d="M18-48H21V-45H24V-42H18ZM45-48H48V-42H42V-45H45Z" fill="#56505a"/>
+              <path d="M21-36H30V-30H21ZM39-36H48V-30H39Z" fill="#f9d94a"/>
+              <path d="M27-36H30V-30H27ZM45-36H48V-30H45Z" fill="#171719"/>
+              <path d="M33-27H39V-24H33Z" fill="#928389"/>
+              <path d="M33-21H30V-24H33ZM39-21H42V-24H39Z" fill="#56515e"/>
+              <path d="M9-30H18V-28H9ZM6-24H18V-22H6ZM48-30H60V-28H48ZM48-24H60V-22H48Z" fill="#686873"/>
             </g>
           </g>
         </g>
@@ -61,14 +66,13 @@
         const jumpPhase = (phase - travel * .52) / .85;
         const jump = jumpPhase > 0 && jumpPhase < 1 ? Math.sin(jumpPhase * Math.PI) * 28 : 0;
         const stride = playing ? 0 : Math.sin(time * 14);
-        cat.setAttribute('transform', 'translate(' + x + ' 90) scale(' + direction + ' 1)');
-        body.setAttribute('transform', 'translate(0 ' + (-jump - Math.abs(stride) * 1.3) + ')');
-        head.setAttribute('transform', 'rotate(' + (playing ? 12 + Math.sin(play * 5) * 5 : 0) + ' 25 -30)');
-        tail.setAttribute('transform', 'rotate(' + (Math.sin(time * 3) * 12) + ' -24 -23)');
+        cat.setAttribute('transform', 'translate(' + Math.round(x / 3) * 3 + ' 90) scale(' + direction + ' 1)');
+        body.setAttribute('transform', 'translate(0 ' + (Math.round((-jump - Math.abs(stride) * 3) / 3) * 3) + ')');
+        head.setAttribute('transform', 'translate(0 ' + (playing ? 3 : 0) + ')');
+        tail.setAttribute('transform', 'translate(' + Math.round(Math.sin(time * 3)) * 3 + ' 0)');
         legs.forEach((leg, i) => {
-          const rear = i % 2 === 0;
           const angle = playing && i === 3 ? -35 * Math.max(0, Math.sin(play * 5)) : stride * (i === 0 || i === 3 ? 22 : -22);
-          leg.setAttribute('transform', 'rotate(' + angle + ' ' + (rear ? '-21 -20' : '15 -22') + ')');
+          leg.setAttribute('transform', 'translate(' + Math.round(angle / 8) * 3 + ' ' + (angle > 8 ? -3 : 0) + ')');
         });
         ball.setAttribute('opacity', playing ? Math.min(1, play * 3, (4 - play) * 3) : 0);
         const roll = Math.max(0, Math.sin(play * 5)) * 13;
