@@ -13,56 +13,19 @@ window.CUSTOM=[
   "desc": "",
   "gallery": [
    {
-    "src": "img/mvdximll/ehkga22a.png",
+    "src": "img/mvdximll/uu54sewd.png",
     "alt": "",
     "file": 0,
-    "width": 1615,
-    "height": 974
-   },
-   {
-    "src": "img/mvdximll/5xqv4v5p.png",
-    "alt": "",
-    "file": 0,
-    "width": 1740,
-    "height": 904
-   },
-   {
-    "src": "img/mvdximll/gnkhfryh.png",
-    "alt": "",
-    "file": 0,
-    "width": 1669,
-    "height": 942
-   },
-   {
-    "src": "img/mvdximll/sb9rvuzw.png",
-    "alt": "",
-    "file": 0,
-    "width": 1601,
-    "height": 982
+    "width": 1600,
+    "height": 1200
    }
   ],
-  "shots": [
-   {
-    "src": "img/mvdximll/bx8dpaw9.png",
-    "h": "",
-    "p": ""
-   },
-   {
-    "src": "img/mvdximll/e1lqxe8m.png",
-    "h": "",
-    "p": ""
-   },
-   {
-    "src": "img/mvdximll/gt72pkoh.png",
-    "h": "",
-    "p": ""
-   },
-   {
-    "src": "img/mvdximll/wldu03go.png",
-    "h": "",
-    "p": ""
-   }
+  "caseFiles": [
+   "Обзор проекта",
+   "Интерфейс",
+   "Детали"
   ],
+  "shots": [],
   "features": [
    {
     "h": "Главная",
