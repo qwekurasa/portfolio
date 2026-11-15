@@ -132,6 +132,53 @@ window.CUSTOM=[
     ]
    }
   ]
+ },
+ {
+  "id": "mwi649gy",
+  "name": "конструктор мебели",
+  "type": "Сайт",
+  "created": "11.11.2026",
+  "stack": "JS,swift,css,html",
+  "platforms": "desktop, mobile app",
+  "link": "https://qwekurasa.github.io/terekhov-bureau/",
+  "pwa": "https://qwekurasa.github.io/terekhov-bureau/",
+  "device": "ipad",
+  "folder": "1",
+  "desc": "",
+  "gallery": [
+   {
+    "src": "img/mwi649gy/n0fg6dli.png",
+    "alt": "",
+    "file": 0,
+    "width": 1240,
+    "height": 760
+   }
+  ],
+  "caseFiles": [
+   "Обзор проекта",
+   "Интерфейс",
+   "Детали"
+  ],
+  "shots": [],
+  "features": [
+   {
+    "h": "tyhg",
+    "p": "trehrth",
+    "ul": []
+   },
+   {
+    "h": "erth",
+    "p": "erth",
+    "ul": []
+   },
+   {
+    "h": "erth",
+    "p": "reth",
+    "ul": [
+     "reth"
+    ]
+   }
+  ]
  }
 ];
 window.CATS=[];
