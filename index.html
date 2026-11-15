@@ -342,6 +342,29 @@ body[data-v=index]{background:#fff}
   .st.phone-project .st-desk{position:relative;grid-column:auto;width:100%;max-width:none;margin:0}
 }
 .st-br{background:linear-gradient(145deg,#292929,#222);background-blend-mode:normal;-webkit-backdrop-filter:none;backdrop-filter:none}
+
+/* iPhone project: information / device / functions, followed by case files. */
+#project .st.phone-project{display:grid;grid-template-columns:minmax(0,1fr) clamp(174px,14vw,240px) minmax(0,1fr);gap:clamp(24px,4.4vw,76px);align-items:start;min-height:0;padding:72px clamp(28px,7.5vw,144px) 60px!important;background:#fff}
+.st.phone-project .st-desk{display:contents}
+.st.phone-project .st-phone{grid-column:2;grid-row:1;position:static;left:auto;top:auto;width:100%;margin:0;justify-self:center}
+.st.phone-project .st-w{position:relative!important;left:auto!important;top:auto!important;width:100%!important;height:auto!important;filter:invert(1);min-width:0}
+.st.phone-project .st-br{grid-column:1;grid-row:1;margin-top:24px}
+.st.phone-project .st-fl{grid-column:3;grid-row:1;margin-top:58px}
+.st.phone-project .st-desk>.fd{display:none}
+.st.phone-project .st-w>.rz{display:none}
+.st.phone-project .st-code pre{white-space:pre-wrap;overflow-wrap:anywhere}
+.st.phone-project .st-pane{min-width:0;overflow:hidden}
+.st.phone-project .st-pane li{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st.phone-project .st-out{min-height:100px}
+.st.phone-project .st-w{background:linear-gradient(145deg,#292929,#222);background-blend-mode:normal;backdrop-filter:none;-webkit-backdrop-filter:none}
+#project:has(.phone-project) .case-field{height:clamp(400px,48svh,540px)}
+#project:has(.phone-project){background:#fff}
+@media(max-width:899px){
+ #project .st.phone-project{grid-template-columns:minmax(0,1fr);gap:26px;padding:70px 20px 40px!important}
+ .st.phone-project .st-phone{grid-column:1;grid-row:1;width:min(210px,55vw)}
+ .st.phone-project .st-br{grid-column:1;grid-row:2;margin:0}
+ .st.phone-project .st-fl{grid-column:1;grid-row:3;margin:0}
+}
 </style>
 </head>
 <body>
@@ -455,7 +478,7 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
     fd.addEventListener('dblclick',()=>{tx=ty=0;fd.style.transition='translate .35s cubic-bezier(.2,.8,.2,1)';fd.style.translate='0 0';setTimeout(()=>fd.style.transition='',400)});
     fd.addEventListener('click',e=>{if(Date.now()-noClick<300)return;const f=e.target.closest('.fd-f');if(touch&&!fd.classList.contains('open')){fd.classList.add('open');return}lbOpen(shots,f?+f.dataset.k:0,p.name)});
     fd.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();lbOpen(shots,0,p.name)}})}
-  const lay=()=>{const mob=innerWidth<1080,Wd=desk.clientWidth;if(mob){desk.style.height=desk.style.marginTop='';return}if(!Wd)return;
+  const lay=()=>{if(p.device!=='ipad'){desk.style.height=desk.style.marginTop='';return}const mob=innerWidth<1080,Wd=desk.clientWidth;if(mob){desk.style.height=desk.style.marginTop='';return}if(!Wd)return;
     const L=fdIn?Math.round(Math.min(540,(Wd-60)/2)):Math.min(pad?480:620,Wd),put=(e,x,y,w,h)=>{if(!e||e.dataset.moved)return;e.style.left=x+'px';e.style.top=y+'px';e.style.width=w+'px';if(h)e.style.height=h+'px'};
     const br=desk.querySelector('.st-br'),fl=desk.querySelector('.st-fl'),X=fdIn?0:Math.round((Wd-L)/2);
     if(p.device!=='ipad'&&innerWidth>=1300){
