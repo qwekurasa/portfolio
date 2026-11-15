@@ -424,7 +424,6 @@ body[data-v=index]{background:#fff}
 <script>document.write('<script src="projects.js?v='+Date.now()+'"><\/script>')</script>
 <script src="phone.js?v=baecc87"></script>
 <script src="case-files.js?v=2"></script>
-<script src="project-cat.js?v=1"></script>
 <script>
 const $=s=>document.querySelector(s);
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
@@ -485,7 +484,6 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   window.CaseFiles?.mount(p,$('#project'));
   $('.st').classList.toggle('pad',pad);
   $('.st').classList.toggle('phone-project',p.device!=='ipad');
-  window.ProjectCat?.mount($('#project'));
   /* устройство можно двигать за корпус, двойной клик по корпусу — вернуть на место */
   {const dev=$('#stPhone .ph');if(dev){let d=null,tx=0,ty=0;
     dev.addEventListener('pointerdown',e=>{if(e.target.closest('.ph-scr,.pd-scr'))return;e.preventDefault();dev.setPointerCapture(e.pointerId);d={x:e.clientX-tx,y:e.clientY-ty};dev.classList.add('drag')});
