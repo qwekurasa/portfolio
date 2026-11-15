@@ -148,15 +148,57 @@ window.CUSTOM=[
   "link": "https://qwekurasa.github.io/terekhov-bureau/",
   "pwa": "https://qwekurasa.github.io/terekhov-bureau/",
   "device": "ipad",
-  "folder": "1",
+  "folder": "0",
   "desc": "",
   "gallery": [
    {
-    "src": "img/mwi649gy/n0fg6dli.png",
+    "src": "img/mwi649gy/614pni4l.png",
     "alt": "",
     "file": 0,
-    "width": 1240,
-    "height": 760
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mwi649gy/p2gxryk1.png",
+    "alt": "",
+    "file": 0,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mwi649gy/bxfppi9g.png",
+    "alt": "",
+    "file": 1,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mwi649gy/ona2xfmc.png",
+    "alt": "",
+    "file": 1,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mwi649gy/ep8johh9.png",
+    "alt": "",
+    "file": 1,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mwi649gy/kl51pvl9.png",
+    "alt": "",
+    "file": 1,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mwi649gy/mlmtimrc.png",
+    "alt": "",
+    "file": 2,
+    "width": 1600,
+    "height": 1200
    }
   ],
   "caseFiles": [
@@ -167,21 +209,29 @@ window.CUSTOM=[
   "shots": [],
   "features": [
    {
-    "h": "tyhg",
-    "p": "trehrth",
+    "h": "Параметрика",
+    "p": "Шесть типов изделий: шкаф, кухня, комод, полка, тумба, стол. Размеры, секции, полки, ящики, штанги, цоколь, ручки.",
     "ul": []
    },
    {
-    "h": "erth",
-    "p": "erth",
+    "h": "Визуализация",
+    "p": "Фотореалистичный рендер на видеокарте — без выгрузки модели в облако. Материалы: берёза, дуб, HPL.",
     "ul": []
    },
    {
-    "h": "erth",
-    "p": "reth",
-    "ul": [
-     "reth"
-    ]
+    "h": "Крепёж и фурнитура",
+    "p": "Отверстия, пазы, скругления, шканты в соседнюю деталь. Петли, направляющие и кронштейны: двери и ящики открываются с доводчиком.",
+    "ul": []
+   },
+   {
+    "h": "Чертежи и раскрой",
+    "p": "Деталь с размерами, толщиной и материалом; формат листа под фанеру; карта раскроя считается сразу.",
+    "ul": []
+   },
+   {
+    "h": "Экспорт",
+    "p": "DXF, SVG, OBJ, DAE, CSV, PDF для станка и SketchUp. Импорт DAE, OBJ, FBX, GLB, STL — чужие модели тоже открываются.",
+    "ul": []
    }
   ]
  }
