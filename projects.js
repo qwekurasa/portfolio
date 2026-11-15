@@ -15,24 +15,28 @@ window.CUSTOM=[
    {
     "src": "img/mvdximll/ehkga22a.png",
     "alt": "",
+    "file": 0,
     "width": 1615,
     "height": 974
    },
    {
     "src": "img/mvdximll/5xqv4v5p.png",
     "alt": "",
+    "file": 0,
     "width": 1740,
     "height": 904
    },
    {
     "src": "img/mvdximll/gnkhfryh.png",
     "alt": "",
+    "file": 0,
     "width": 1669,
     "height": 942
    },
    {
     "src": "img/mvdximll/sb9rvuzw.png",
     "alt": "",
+    "file": 0,
     "width": 1601,
     "height": 982
    }
@@ -103,32 +107,16 @@ window.CUSTOM=[
   "link": "https://temptstr.vercel.app/#/",
   "pwa": "https://temptstr.vercel.app/#/",
   "device": "ipad",
-  "folder": "1",
+  "folder": "0",
   "desc": "Магазин одежды",
-  "shots": [
-   {
-    "src": "img/mvjxhkra/6o4l2cd1.png",
-    "h": "",
-    "p": ""
-   },
-   {
-    "src": "img/mvjxhkra/csh9qgfs.png",
-    "h": "",
-    "p": ""
-   },
-   {
-    "src": "img/mvjxhkra/mq251j53.png",
-    "h": "",
-    "p": ""
-   },
-   {
-    "src": "img/mvjxhkra/l381wpsl.png",
-    "h": "",
-    "p": ""
-   }
+  "gallery": [],
+  "caseFiles": [
+   "Обзор проекта",
+   "Интерфейс",
+   "Детали"
   ],
-  "features": [],
-  "gallery": []
+  "shots": [],
+  "features": []
  }
 ];
 window.CATS=[];
