@@ -14,11 +14,11 @@
       <path d="M21 9H102M11 21V182" fill="none" stroke="#ffffff18"/>
       <text x="29" y="43" font-size="10" letter-spacing="1.8" fill="#9d9da5" font-family="Arial,sans-serif">IMG</text>
       <rect x="29" y="65" width="102" height="95" rx="5" fill="url(#${id}-glass)" stroke="#44444a" stroke-width=".65"/>
-      <path d="M38 78H83M38 83H65" stroke="#71717a" stroke-width="1"/>
-      ${Array.from({length:13},(_,i)=>`<path d="M39 ${94+i*4}H${50+((i*17+n*11)%61)}" stroke="#${i%3?'45454d':'777780'}" stroke-width=".75"/>`).join('')}
-      ${Array.from({length:7},(_,i)=>`<rect x="${88+i*4}" y="${126-((i*9+n*5)%21)}" width="1.5" height="${8+((i*9+n*5)%21)}" rx=".7" fill="#8e8e97" opacity=".7"/>`).join('')}
-      <circle cx="115" cy="78" r="1.1" fill="#bebec4"/><path d="M39 148H120" stroke="#303036"/>
-      <path d="M29 176H131" stroke="#4a4a50" stroke-width=".6"/><text x="29" y="189" font-size="7.5" letter-spacing="1.2" fill="#777780" font-family="Arial,sans-serif">PROJECT / 0${n+1}</text>
+      ${[
+        '<path d="M42 141l22-30 17 18 15-23 24 35Z" fill="#55555f"/><circle cx="53" cy="91" r="7" fill="#9999a2"/>',
+        '<g fill="#42424a" stroke="#686872"><rect x="41" y="80" width="32" height="27" rx="3"/><rect x="85" y="80" width="32" height="27" rx="3"/><rect x="41" y="119" width="32" height="27" rx="3"/><rect x="85" y="119" width="32" height="27" rx="3"/></g>',
+        '<g fill="#85858e"><circle cx="45" cy="88" r="3"/><circle cx="45" cy="111" r="3"/><circle cx="45" cy="134" r="3"/></g><path d="M57 88h57m-57 23h45m-45 23h53" stroke="#70707b" stroke-width="3" stroke-linecap="round"/>'
+      ][n % 3]}
     </svg>`;
   }
   const tabIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6M9 15h6M9 18h4"/></svg>';
@@ -33,7 +33,7 @@
       const el=document.createElement('button');el.type='button';el.className='case-file';el.innerHTML=fileArt(i)+'<span class="case-file-name"></span><span class="case-file-count"></span>';
       el.querySelector('.case-file-name').textContent=name;
       const count=photos.filter(p=>(p.file||0)===i).length;
-      el.querySelector('.case-file-count').textContent=`0${i+1} / ${count} ФОТО`;
+      el.querySelector('.case-file-count').textContent=`${count} ФОТО`;
       el.setAttribute('aria-label',`${name}, ${count} фото. Нажмите для просмотра; стрелки перемещают файл.`);el.setAttribute('aria-haspopup','dialog');
       section.append(el);
       return {el,i,nx:[.23,.5,.77][i],ny:project.device==='ipad'?[.38,.62,.43][i]:.5,x:0,y:0,dx:0,dy:0,dragged:false,suppressClick:false};
