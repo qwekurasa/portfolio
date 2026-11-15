@@ -116,7 +116,22 @@ window.CUSTOM=[
    "Детали"
   ],
   "shots": [],
-  "features": []
+  "features": [
+   {
+    "h": "reg",
+    "p": "erg",
+    "ul": [
+     "erg"
+    ]
+   },
+   {
+    "h": "erg",
+    "p": "erger",
+    "ul": [
+     "ger"
+    ]
+   }
+  ]
  }
 ];
 window.CATS=[];
