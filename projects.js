@@ -114,11 +114,35 @@ window.CUSTOM=[
   "device": "ipad",
   "folder": "0",
   "desc": "Магазин одежды",
-  "gallery": [],
-  "caseFiles": [
-   "Обзор проекта",
-   "Интерфейс",
-   "Детали"
+  "gallery": [
+   {
+    "src": "img/mvjxhkra/jk9jlloh.png",
+    "alt": "",
+    "file": 0,
+    "width": 1600,
+    "height": 900
+   },
+   {
+    "src": "img/mvjxhkra/22qpmt9p.png",
+    "alt": "",
+    "file": 0,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mvjxhkra/uso8595t.png",
+    "alt": "",
+    "file": 0,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mvjxhkra/yct9zc7s.png",
+    "alt": "",
+    "file": 0,
+    "width": 1600,
+    "height": 998
+   }
   ],
   "shots": [],
   "features": [
