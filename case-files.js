@@ -8,13 +8,17 @@
     section.className='project-photo-grid';
     section.setAttribute('aria-label','Фотографии проекта');
     photos.forEach((photo,index)=>{
-      const button=document.createElement('button');
-      button.type='button';button.setAttribute('aria-label','Открыть фотографию '+(index+1));
+      const tile=document.createElement('div');
+      tile.className='project-photo-tile';
+      tile.style.setProperty('--drift-duration',(21+index*3.7)+'s');
+      tile.style.setProperty('--drift-delay',(-index*5.3)+'s');
+      tile.style.setProperty('--drift-x',(index%2 ? -3 : 3)+'px');
+      tile.style.setProperty('--drift-y',(index%3 ? 3 : -3)+'px');
       const image=new Image();image.src=photo.src;image.alt=decode(photo.alt);
       image.loading='lazy';image.decoding='async';
-      button.append(image);
-      button.onclick=()=>window.lbOpen(photos.map(p=>({img:p.src,h:decode(p.alt),p:''})),index,project.name);
-      section.append(button);
+      image.draggable=false;
+      tile.append(image);
+      section.append(tile);
     });
     host.append(section);
   }};
