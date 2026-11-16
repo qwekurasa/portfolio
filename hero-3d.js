@@ -3,7 +3,7 @@
  const host=document.getElementById('map'),card=document.getElementById('heroText');if(!host||!card)return;
  host.classList.add('home-3d');document.getElementById('hero').hidden=true;card.hidden=true;card.classList.remove('on');
  const wrap=document.createElement('div');wrap.className='home-model';
- wrap.innerHTML='<model-viewer id="deskModel" tabindex="0" src="desk-scan.glb" alt="3D-скан рабочего места Артёма. Нажмите на модель, чтобы открыть проекты. Перетаскивайте для вращения." camera-controls disable-pan disable-tap camera-orbit="25deg 72deg auto" field-of-view="32deg" min-camera-orbit="auto 20deg 65%" max-camera-orbit="auto 105deg 200%" exposure="1" shadow-intensity="0" environment-image="neutral" interaction-prompt="none" loading="eager" reveal="auto"><span slot="progress-bar" class="model-loading">Загрузка 3D…</span></model-viewer><p class="model-error" hidden>Не удалось загрузить 3D. <a href="#index">Открыть проекты</a></p>';
+ wrap.innerHTML='<model-viewer id="deskModel" tabindex="0" src="desk-scan.glb" alt="3D-скан рабочего места Артёма. Нажмите на модель, чтобы открыть проекты. Перетаскивайте для вращения." camera-controls rotation-per-second="4deg" auto-rotate-delay="1500" disable-pan disable-tap camera-orbit="25deg 72deg auto" field-of-view="32deg" min-camera-orbit="auto 20deg 65%" max-camera-orbit="auto 105deg 200%" exposure="1" shadow-intensity="0" environment-image="neutral" interaction-prompt="none" loading="eager" reveal="auto"><span slot="progress-bar" class="model-loading">Загрузка 3D…</span></model-viewer><p class="model-error" hidden>Не удалось загрузить 3D. <a href="#index">Открыть проекты</a></p>';
  host.prepend(wrap);const viewer=wrap.querySelector('model-viewer');
  const style=document.createElement('style');style.textContent=`
  #map.home-3d{touch-action:auto;background:#fff}
@@ -16,9 +16,15 @@
  viewer.addEventListener('load',()=>{viewer.model.materials.forEach(m=>{m.pbrMetallicRoughness.setMetallicFactor(0);m.pbrMetallicRoughness.setRoughnessFactor(1);});wrap.querySelector('.model-loading').hidden=true;viewer.dataset.ready='true';});
  viewer.addEventListener('error',()=>{wrap.querySelector('.model-error').hidden=false;wrap.querySelector('.model-loading').hidden=true;});
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');let transitioning=false,press=null,animation=null;const pointers=new Set();
+ function syncRotation(){
+  viewer.toggleAttribute('auto-rotate',!reduced.matches&&!document.hidden&&document.body.dataset.v==='map'&&!transitioning);
+ }
+ reduced.addEventListener('change',syncRotation);
+ document.addEventListener('visibilitychange',syncRotation);
+ syncRotation();
  function openProjects(){
   if(transitioning||document.body.dataset.v!=='map')return;
-  transitioning=true;
+  transitioning=true;syncRotation();
   const go=()=>{if(document.body.dataset.v==='map')location.hash='index';else transitioning=false;};
   if(reduced.matches){go();return;}
   animation=wrap.animate([
@@ -46,7 +52,7 @@
  addEventListener('hashchange',()=>{
   const v=document.body.dataset.v;
   if(v==='index'&&transitioning&&!reduced.matches)document.getElementById('index').animate([{opacity:0,transform:'translateY(32px) scale(.96)',filter:'blur(6px)'},{opacity:1,transform:'none',filter:'blur(0)'}],{duration:520,easing:'cubic-bezier(.16,1,.3,1)'});
-  animation?.cancel();animation=null;transitioning=false;press=null;pointers.clear();
+  animation?.cancel();animation=null;transitioning=false;press=null;pointers.clear();syncRotation();
  });
- window.HERO={start(){}};
+ window.HERO={start:syncRotation};
 })();
