@@ -389,10 +389,16 @@ body[data-v=index]{background:#fff}
  .st.pad .st-phone{grid-area:1/1}.st.pad .st-br{grid-area:2/1}.st.pad .st-fl{grid-area:3/1}
  .st.pad>.st-fdw{grid-area:4/1}
 }
-.project-photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3mm;width:100%;margin:0;padding:0;filter:invert(1);background:#292929}
-.project-photo-grid button{display:block;width:100%;min-width:0;aspect-ratio:4/3;margin:0;padding:0;border:0;overflow:hidden;background:#111;cursor:zoom-in}
+.project-photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3mm;width:100%;margin:0;padding:0;filter:invert(1);background:#292929;overflow:hidden}
+.project-photo-grid .project-photo-tile{display:block;width:100%;min-width:0;aspect-ratio:4/3;margin:0;padding:0;border:0;overflow:hidden;background:#111;animation:photo-drift var(--drift-duration,24s) ease-in-out var(--drift-delay,0s) infinite}
 .project-photo-grid img{display:block;width:100%;height:100%;max-width:none;object-fit:cover}
-.project-photo-grid button:focus-visible{outline:2px solid #fff;outline-offset:-3px}
+@keyframes photo-drift{
+  0%,100%{transform:translate(0,0) rotate(0)}
+  24%{transform:translate(var(--drift-x),var(--drift-y)) rotate(.12deg)}
+  53%{transform:translate(calc(var(--drift-x)*-.8),calc(var(--drift-y)*.4)) rotate(-.1deg)}
+  78%{transform:translate(calc(var(--drift-x)*.3),calc(var(--drift-y)*-1)) rotate(.07deg)}
+}
+@media(prefers-reduced-motion:reduce){.project-photo-grid .project-photo-tile{animation:none}}
 </style>
 </head>
 <body>
@@ -427,7 +433,7 @@ body[data-v=index]{background:#fff}
 
 <script>document.write('<script src="projects.js?v='+Date.now()+'"><\/script>')</script>
 <script src="phone.js?v=baecc87"></script>
-<script src="case-files.js?v=photo-grid-1"></script>
+<script src="case-files.js?v=floating-photos-1"></script>
 <script>
 const $=s=>document.querySelector(s);
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
