@@ -5,11 +5,18 @@
  const wrap=document.createElement('div');wrap.className='home-model';
  wrap.innerHTML='<model-viewer id="deskModel" tabindex="0" src="desk-scan.glb" alt="3D-скан рабочего места Артёма. Нажмите на модель, чтобы открыть проекты. Перетаскивайте для вращения." camera-controls rotation-per-second="4deg" auto-rotate-delay="1500" disable-pan disable-tap camera-orbit="25deg 72deg auto" field-of-view="32deg" min-camera-orbit="auto 20deg 65%" max-camera-orbit="auto 105deg 200%" exposure="1" shadow-intensity="0" environment-image="neutral" interaction-prompt="none" loading="eager" reveal="auto"><span slot="progress-bar" class="model-loading">Загрузка 3D…</span></model-viewer><p class="model-error" hidden>Не удалось загрузить 3D. <a href="#index">Открыть проекты</a></p>';
  host.prepend(wrap);const viewer=wrap.querySelector('model-viewer');
+ const doll=document.createElement('model-viewer');doll.id='artemDoll';
+ doll.setAttribute('src','artem-doll.glb');doll.setAttribute('alt','Фигурка Артёма в коричневой рубашке');
+ for(const [key,value] of Object.entries({'camera-controls':'','disable-pan':'','disable-tap':'','camera-orbit':'0deg 90deg auto','field-of-view':'30deg','interaction-prompt':'none','environment-image':'neutral','exposure':'1','shadow-intensity':'0','loading':'eager'}))doll.setAttribute(key,value);
+ wrap.append(doll);
+ doll.addEventListener('load',()=>{doll.model.materials.forEach(m=>{m.pbrMetallicRoughness.setMetallicFactor(0);m.pbrMetallicRoughness.setRoughnessFactor(.85);});doll.exposure=1.3;doll.dataset.surfaceReady='true';});
  const style=document.createElement('style');style.textContent=`
  #map.home-3d{touch-action:auto;background:#fff}
  .home-model{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(1100px,86vw);height:82svh;filter:invert(1);color:#ddd}
  .home-model model-viewer{display:block;width:100%;height:100%;background:transparent;--poster-color:transparent;touch-action:pan-y;outline:none}
  .home-model model-viewer:not([data-surface-ready]){visibility:hidden}
+ .home-model #deskModel{position:absolute;left:22%;width:78%;height:100%}
+ .home-model #artemDoll{position:absolute;left:0;top:23%;width:27%;height:58%}
  .model-loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:12px var(--sans);color:#888}
  .model-error{position:absolute;left:0;right:0;top:48%;text-align:center;font-size:13px}.model-error a{text-decoration:underline}
  @media(max-width:700px){.home-model{width:100vw;height:70svh}}
@@ -147,4 +154,3 @@
  });
  window.HERO={start:syncRotation};
 })();
-
