@@ -17,17 +17,15 @@
  viewer.addEventListener('load',()=>{viewer.model.materials.forEach(m=>{m.pbrMetallicRoughness.setMetallicFactor(0);m.pbrMetallicRoughness.setRoughnessFactor(1);});wrap.querySelector('.model-loading').hidden=true;startPaperUnfold();});
  viewer.addEventListener('error',()=>{viewer.dataset.surfaceReady='true';wrap.querySelector('.model-error').hidden=false;wrap.querySelector('.model-loading').hidden=true;});
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');let transitioning=false,press=null,animation=null,unfolding=false,finishUnfold=null;const pointers=new Set();
- // A thin sheet with precomputed, length-constrained crumpling. Playback opens
- // successive folds instead of radially shrinking the scanned room geometry.
+ // A single textured mesh unfolds along the paper simulation and finishes at
+ // its exact original vertices. No screenshot, second surface, or crossfade.
  async function startPaperUnfold(){
   if(viewer.dataset.surfaceReady)return;
   const scene=viewer[Object.getOwnPropertySymbols(viewer).find(key=>key.description==='scene')];
-  let paper=null,geometry=null,material=null,texture=null,bitmap=null,raf=0,finished=false;
-  const model=scene?.model;
+  const model=scene?.model,parts=[];let raf=0,finished=false;
   const restore=()=>{
    if(finished)return;finished=true;cancelAnimationFrame(raf);
-   if(paper)scene.remove(paper);geometry?.dispose();material?.dispose();texture?.dispose();bitmap?.close();
-   if(model)model.visible=true;
+   for(const part of parts){part.mesh.geometry=part.original;part.geometry.dispose();}
    scene?.queueRender?.();unfolding=false;finishUnfold=null;
    viewer.dataset.surfaceReady='true';viewer.dataset.ready='true';viewer.dataset.unfold='complete';
    viewer.setAttribute('camera-controls','');syncRotation();
@@ -35,97 +33,75 @@
   if(reduced.matches||!model||typeof scene.queueRender!=='function'){restore();return;}
   unfolding=true;finishUnfold=restore;syncRotation();viewer.removeAttribute('camera-controls');
   try{
-   const response=await fetch('paper-unfold.json?v=2');
-   if(!response.ok)throw new Error('Paper geometry unavailable');
+   const response=await fetch('paper-unfold.json?v=2');if(!response.ok)throw new Error('Paper geometry unavailable');
    const data=await response.json();if(finished)return;
-   await new Promise(resolve=>{
-    const wait=()=>{if(finished||(!document.hidden&&document.body.dataset.v==='map'))resolve();else requestAnimationFrame(wait);};wait();
-   });
+   await new Promise(resolve=>{const wait=()=>{if(finished||(!document.hidden&&document.body.dataset.v==='map'))resolve();else requestAnimationFrame(wait);};wait();});
    if(finished)return;
-   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-   bitmap=await createImageBitmap(await viewer.toBlob({idealAspect:false}));
-   if(finished){bitmap.close();return;}
-   let source;model.traverse(object=>{if(!source&&object.isMesh&&object.material?.map)source=object;});
-   if(!source){bitmap.close();restore();return;}
-   const canvas=document.createElement('canvas');canvas.width=bitmap.width;canvas.height=bitmap.height;
-   const ctx=canvas.getContext('2d');
-   ctx.drawImage(bitmap,0,0);
-   const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
-   let limitX=0,limitY=0;
-   for(let y=0;y<canvas.height;y+=4)for(let x=0;x<canvas.width;x+=4){
-    if(pixels[(y*canvas.width+x)*4+3]>32){limitX=Math.max(limitX,Math.abs(2*x/canvas.width-1));limitY=Math.max(limitY,Math.abs(2*y/canvas.height-1));}
+   const decode=value=>{const bytes=Uint8Array.from(atob(value),c=>c.charCodeAt(0)),view=new DataView(bytes.buffer);return Float32Array.from({length:bytes.length/2},(_,i)=>view.getInt16(i*2,true)/12000);};
+   const frames=data.frames.map(decode),uv=decode(data.uv),tri=data.triangles;
+   const camera=scene.camera;model.updateWorldMatrix(true,true);camera.updateWorldMatrix(true,false);
+   const distance=viewer.getCameraOrbit().radius,halfHeight=distance*Math.tan(camera.fov*Math.PI/360);
+   let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+   model.traverse(mesh=>{
+    if(!mesh.isMesh||!mesh.geometry?.attributes.position||mesh.isSkinnedMesh)return;
+    const original=mesh.geometry,geometry=original.clone(),position=original.attributes.position;
+    const source=new Float32Array(position.count*3),screen=new Float32Array(position.count*2),point=model.position.clone();
+    for(let i=0;i<position.count;i++){
+     source.set([position.getX(i),position.getY(i),position.getZ(i)],i*3);
+     point.fromBufferAttribute(position,i).applyMatrix4(mesh.matrixWorld).project(camera);
+     screen.set([point.x,point.y],i*2);minX=Math.min(minX,point.x);maxX=Math.max(maxX,point.x);minY=Math.min(minY,point.y);maxY=Math.max(maxY,point.y);
+    }
+    parts.push({mesh,original,geometry,source,screen,inverse:mesh.matrixWorld.clone().invert(),point,mapping:[]});
+   });
+   if(!parts.length){restore();return;}
+   const buckets=Array.from({length:1024},()=>[]),cell=v=>Math.max(0,Math.min(31,Math.floor(v*32)));
+   for(let k=0;k<tri.length;k+=3){
+    const a=tri[k]*2,b=tri[k+1]*2,c=tri[k+2]*2;
+    for(let y=cell(Math.min(uv[a+1],uv[b+1],uv[c+1]));y<=cell(Math.max(uv[a+1],uv[b+1],uv[c+1]));y++)
+     for(let x=cell(Math.min(uv[a],uv[b],uv[c]));x<=cell(Math.max(uv[a],uv[b],uv[c]));x++)buckets[y*32+x].push(k);
    }
-   limitX=limitX||.7;limitY=limitY||.7;
-   // The original render is the print on the paper, including the final camera framing.
-   const paint=(backing=1)=>{
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.globalAlpha=backing;
-    ctx.drawImage(bitmap,bitmap.width*.37,bitmap.height*.28,bitmap.width*.27,bitmap.height*.4,0,0,canvas.width,canvas.height);
-    ctx.globalAlpha=1;ctx.drawImage(bitmap,0,0);
-    if(texture)texture.needsUpdate=true;
-   };
-   paint();texture=new source.material.map.constructor(canvas);texture.colorSpace='srgb';texture.flipY=true;texture.needsUpdate=true;
-   material=source.material.clone();material.map=texture;material.normalMap=null;material.roughnessMap=null;material.metalnessMap=null;
-   material.side=2;material.roughness=1;material.metalness=0;material.flatShading=true;material.transparent=true;
-   material.color.setRGB(1,1,1);material.emissive.setRGB(.1,.1,.1);material.emissiveMap=texture;
-   geometry=new source.geometry.constructor();
-   const Attribute=source.geometry.attributes.position.constructor;
-   const decode=value=>{const binary=atob(value),bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));const view=new DataView(bytes.buffer);return Float32Array.from({length:bytes.length/2},(_,i)=>view.getInt16(i*2,true)/12000);};
-   const frames=data.frames.map(decode),uv=decode(data.uv),indices=data.triangles;
-   const positions=new Float32Array(indices.length*3),uvs=new Float32Array(indices.length*2);
-   indices.forEach((index,i)=>{uvs[i*2]=uv[index*2];uvs[i*2+1]=uv[index*2+1];});
-   geometry.setAttribute('position',new Attribute(positions,3));geometry.setAttribute('uv',new Attribute(uvs,2));
-   paper=new source.constructor(geometry,material);paper.frustumCulled=false;scene.add(paper);
-   const camera=scene.camera;camera.updateWorldMatrix(true,false);
-   const distance=viewer.getCameraOrbit().radius;
-   function align(progress){
-    camera.updateWorldMatrix(true,false);
-    paper.quaternion.copy(camera.getWorldQuaternion(paper.quaternion));
-    paper.position.set(0,0,-distance).applyMatrix4(camera.matrixWorld);
-    const halfHeight=distance*Math.tan(camera.fov*Math.PI/360);
-    paper.scale.set(halfHeight*(1+(camera.aspect-1)*progress),halfHeight,halfHeight);
-    // Keep every folded pose inside the final scan's visible footprint.
-    const fits=scale=>{
-     for(let i=0;i<positions.length;i+=3){
-      const depth=distance-positions[i+2]*paper.scale.z*scale;
-      if(depth<=0||Math.abs(positions[i]*paper.scale.x*scale*distance/depth)>halfHeight*camera.aspect*limitX||Math.abs(positions[i+1]*paper.scale.y*scale*distance/depth)>halfHeight*limitY)return false;
+   for(const part of parts){
+    for(let i=0;i<part.screen.length/2;i++){
+     const u=Math.max(.00001,Math.min(.99999,(part.screen[i*2]-minX)/(maxX-minX))),v=Math.max(.00001,Math.min(.99999,(part.screen[i*2+1]-minY)/(maxY-minY)));
+     let mapping;
+     for(const k of buckets[cell(v)*32+cell(u)]){
+      const a=tri[k],b=tri[k+1],c=tri[k+2],ax=uv[a*2],ay=uv[a*2+1],bx=uv[b*2],by=uv[b*2+1],cx=uv[c*2],cy=uv[c*2+1];
+      const d=(by-cy)*(ax-cx)+(cx-bx)*(ay-cy),wa=((by-cy)*(u-cx)+(cx-bx)*(v-cy))/d,wb=((cy-ay)*(u-cx)+(ax-cx)*(v-cy))/d,wc=1-wa-wb;
+      if(Math.min(wa,wb,wc)>=-.0001){mapping=[a,b,c,wa,wb,wc];break;}
      }
-     return true;
-    };
-    if(!fits(1)){let lo=0,hi=1;for(let i=0;i<12;i++){const mid=(lo+hi)/2;if(fits(mid))lo=mid;else hi=mid;}paper.scale.multiplyScalar(lo);}
+     if(!mapping)throw new Error('Paper mapping incomplete');part.mapping.push(mapping);
+    }
+    part.mesh.geometry=part.geometry;
    }
+   const width=halfHeight*camera.aspect*(maxX-minX)/2,height=halfHeight*(maxY-minY)/2;
+   const centerX=halfHeight*camera.aspect*(minX+maxX)/2,centerY=halfHeight*(minY+maxY)/2;
    function pose(time){
-    // Hand over while the sheet is still folded; never expand to a flat rectangle.
-    const progress=Math.min(.62,time*.78);
-    const index=Math.min(frames.length-1,progress*(frames.length-1)),lo=Math.floor(index),hi=Math.min(frames.length-1,lo+1),mix=index-lo;
-    const a=frames[lo],b=frames[hi];
-    const turn=Math.pow(1-progress,1.4),rx=1.65*turn,ry=.7*turn,rz=-.28*turn;
-    indices.forEach((vertex,i)=>{
-     const k=vertex*3;let x=a[k]+(b[k]-a[k])*mix,y=a[k+1]+(b[k+1]-a[k+1])*mix,z=a[k+2]+(b[k+2]-a[k+2])*mix;
-     const y1=y*Math.cos(rx)-z*Math.sin(rx),z1=y*Math.sin(rx)+z*Math.cos(rx);
-     const x1=x*Math.cos(ry)+z1*Math.sin(ry);z=-x*Math.sin(ry)+z1*Math.cos(ry);
-     positions[i*3]=x1*Math.cos(rz)-y1*Math.sin(rz);positions[i*3+1]=x1*Math.sin(rz)+y1*Math.cos(rz);positions[i*3+2]=z;
-    });
-    geometry.attributes.position.needsUpdate=true;geometry.computeVertexNormals();align(progress);
-    const blend=Math.max(0,Math.min(1,(time-.82)/.18));paint(1-blend);
-    material.color.setScalar(1-blend);material.emissiveIntensity=1+blend*9;
-    const reveal=Math.max(0,Math.min(1,(time-.88)/.12));
-    model.visible=reveal>0;material.opacity=1-reveal;
-    material.depthTest=reveal===0;paper.renderOrder=reveal>0?100:0;
+    const paperProgress=time*.62,index=paperProgress*(frames.length-1),lo=Math.floor(index),hi=Math.min(frames.length-1,lo+1),mix=index-lo;
+    const a=frames[lo],b=frames[hi],t=Math.max(0,Math.min(1,(time-.16)/.84)),blend=t*t*t*(t*(t*6-15)+10);
+    const turn=Math.pow(1-time,1.4),rx=1.65*turn,ry=.7*turn,rz=-.28*turn;
+    for(const part of parts){
+     const positions=part.geometry.attributes.position;
+     for(let i=0;i<positions.count;i++){
+      const m=part.mapping[i],q=[0,0,0];
+      for(let axis=0;axis<3;axis++)for(let j=0;j<3;j++){const k=m[j]*3+axis;q[axis]+=(a[k]+(b[k]-a[k])*mix)*m[j+3];}
+      const y=q[1]*Math.cos(rx)-q[2]*Math.sin(rx),z=q[1]*Math.sin(rx)+q[2]*Math.cos(rx),x=q[0]*Math.cos(ry)+z*Math.sin(ry);
+      const depth=-q[0]*Math.sin(ry)+z*Math.cos(ry);
+      part.point.set(centerX+(x*Math.cos(rz)-y*Math.sin(rz))*width,centerY+(x*Math.sin(rz)+y*Math.cos(rz))*height,-distance+depth*Math.min(width,height)).applyMatrix4(camera.matrixWorld).applyMatrix4(part.inverse);
+      positions.setXYZ(i,part.point.x+(part.source[i*3]-part.point.x)*blend,part.point.y+(part.source[i*3+1]-part.point.y)*blend,part.point.z+(part.source[i*3+2]-part.point.z)*blend);
+     }
+     positions.needsUpdate=true;part.geometry.computeVertexNormals();part.geometry.computeBoundingSphere();
+    }
     scene.queueRender();
    }
-   model.visible=false;pose(0);viewer.dataset.surfaceReady='true';viewer.dataset.unfold='playing';
+   pose(0);viewer.dataset.surfaceReady='true';viewer.dataset.unfold='playing';
    let elapsed=0,last=0,frame=-1;
    function tick(now){
-    if(finished)return;
-    if(reduced.matches){restore();return;}
+    if(finished)return;if(reduced.matches){restore();return;}
     if(document.hidden||document.body.dataset.v!=='map'){last=0;raf=requestAnimationFrame(tick);return;}
     if(last)elapsed+=Math.min(now-last,100);last=now;
     const next=Math.floor(Math.max(0,elapsed-180)/70);
     if(next!==frame){frame=next;pose(Math.min(1,next/24));}
-    if(elapsed>=1900){restore();return;}
-    raf=requestAnimationFrame(tick);
+    if(elapsed>=1900){restore();return;}raf=requestAnimationFrame(tick);
    }
    raf=requestAnimationFrame(tick);
   }catch(error){console.warn('Paper intro unavailable; showing original scan.',error);restore();}
