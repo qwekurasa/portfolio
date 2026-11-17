@@ -17,68 +17,97 @@
  viewer.addEventListener('load',()=>{viewer.model.materials.forEach(m=>{m.pbrMetallicRoughness.setMetallicFactor(0);m.pbrMetallicRoughness.setRoughnessFactor(1);});wrap.querySelector('.model-loading').hidden=true;startPaperUnfold();});
  viewer.addEventListener('error',()=>{viewer.dataset.surfaceReady='true';wrap.querySelector('.model-error').hidden=false;wrap.querySelector('.model-loading').hidden=true;});
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');let transitioning=false,press=null,animation=null,unfolding=false,finishUnfold=null;const pointers=new Set();
- // Deform a private copy of the scan, keeping its own UVs and texture intact.
- // The bundled model-viewer exposes its Three scene via this internal symbol.
- // If the implementation changes, fall back to the original untouched model.
- function startPaperUnfold(){
+ // A thin sheet with precomputed, length-constrained crumpling. Playback opens
+ // successive folds instead of radially shrinking the scanned room geometry.
+ async function startPaperUnfold(){
   if(viewer.dataset.surfaceReady)return;
   const scene=viewer[Object.getOwnPropertySymbols(viewer).find(key=>key.description==='scene')];
-  const parts=[];let raf=0,finished=false;
+  let paper=null,geometry=null,material=null,texture=null,bitmap=null,raf=0,finished=false;
+  const model=scene?.model;
   const restore=()=>{
    if(finished)return;finished=true;cancelAnimationFrame(raf);
-   for(const part of parts){part.mesh.geometry=part.original;part.geometry.dispose();}
+   if(paper)scene.remove(paper);geometry?.dispose();material?.dispose();texture?.dispose();bitmap?.close();
+   if(model)model.visible=true;
    scene?.queueRender?.();unfolding=false;finishUnfold=null;
    viewer.dataset.surfaceReady='true';viewer.dataset.ready='true';viewer.dataset.unfold='complete';
    viewer.setAttribute('camera-controls','');syncRotation();
   };
-  if(reduced.matches||!scene?.model||typeof scene.queueRender!=='function'){restore();return;}
+  if(reduced.matches||!model||typeof scene.queueRender!=='function'){restore();return;}
+  unfolding=true;finishUnfold=restore;syncRotation();viewer.removeAttribute('camera-controls');
   try{
-   const model=scene.model;model.updateWorldMatrix(true,true);
-   const bounds=scene.boundingBox,center=bounds.getCenter(model.position.clone());
-   const span=Math.max(scene.size.x,scene.size.y,scene.size.z);
-   model.traverse(mesh=>{
-    if(!mesh.isMesh||!mesh.geometry?.attributes.position||mesh.isSkinnedMesh)return;
-    const original=mesh.geometry,geometry=original.clone(),position=geometry.attributes.position;
-    const source=new Float32Array(position.count*3),folded=new Float32Array(source.length),delays=new Float32Array(position.count);
-    const inverse=mesh.matrixWorld.clone().invert(),point=model.position.clone();
-    for(let i=0;i<position.count;i++){
-     source[i*3]=position.getX(i);source[i*3+1]=position.getY(i);source[i*3+2]=position.getZ(i);
-     point.fromBufferAttribute(position,i).applyMatrix4(mesh.matrixWorld);
-     const x=(point.x-center.x)/span,y=(point.y-center.y)/span,z=(point.z-center.z)/span;
-     const theta=Math.atan2(z,x)+y*2.4,phi=Math.atan2(Math.hypot(x,z),y);
-     const crease=Math.abs(Math.sin(theta*7+phi*5))*Math.abs(Math.sin(phi*9-theta*3));
-     const radius=span*(.125+.045*crease+.012*Math.sin(theta*13+phi*11));
-     point.set(center.x+radius*Math.sin(phi)*Math.cos(theta),center.y+radius*Math.cos(phi),center.z+radius*Math.sin(phi)*Math.sin(theta)).applyMatrix4(inverse);
-     folded.set([point.x,point.y,point.z],i*3);delays[i]=.12*(.5+.5*Math.sin(theta*3+phi*2));
-    }
-    parts.push({mesh,original,geometry,source,folded,delays});mesh.geometry=geometry;
+   const response=await fetch('paper-unfold.json?v=2');
+   if(!response.ok)throw new Error('Paper geometry unavailable');
+   const data=await response.json();if(finished)return;
+   await new Promise(resolve=>{
+    const wait=()=>{if(finished||(!document.hidden&&document.body.dataset.v==='map'))resolve();else requestAnimationFrame(wait);};wait();
    });
-   if(!parts.length){restore();return;}
-   unfolding=true;finishUnfold=restore;syncRotation();viewer.removeAttribute('camera-controls');
+   if(finished)return;
+   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+   bitmap=await createImageBitmap(await viewer.toBlob({idealAspect:false}));
+   if(finished){bitmap.close();return;}
+   let source;model.traverse(object=>{if(!source&&object.isMesh&&object.material?.map)source=object;});
+   if(!source){bitmap.close();restore();return;}
+   const canvas=document.createElement('canvas');canvas.width=bitmap.width;canvas.height=bitmap.height;
+   const ctx=canvas.getContext('2d');
+   // The original render is the print on the paper, including the final camera framing.
+   const paint=(backing=1)=>{
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.globalAlpha=backing;
+    ctx.drawImage(bitmap,bitmap.width*.37,bitmap.height*.28,bitmap.width*.27,bitmap.height*.4,0,0,canvas.width,canvas.height);
+    ctx.globalAlpha=1;ctx.drawImage(bitmap,0,0);
+    if(texture)texture.needsUpdate=true;
+   };
+   paint();texture=new source.material.map.constructor(canvas);texture.colorSpace='srgb';texture.flipY=true;texture.needsUpdate=true;
+   material=source.material.clone();material.map=texture;material.normalMap=null;material.roughnessMap=null;material.metalnessMap=null;
+   material.side=2;material.roughness=1;material.metalness=0;material.flatShading=true;material.transparent=true;
+   material.color.setRGB(1,1,1);material.emissive.setRGB(.1,.1,.1);material.emissiveMap=texture;
+   geometry=new source.geometry.constructor();
+   const Attribute=source.geometry.attributes.position.constructor;
+   const decode=value=>{const binary=atob(value),bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));const view=new DataView(bytes.buffer);return Float32Array.from({length:bytes.length/2},(_,i)=>view.getInt16(i*2,true)/12000);};
+   const frames=data.frames.map(decode),uv=decode(data.uv),indices=data.triangles;
+   const positions=new Float32Array(indices.length*3),uvs=new Float32Array(indices.length*2);
+   indices.forEach((index,i)=>{uvs[i*2]=uv[index*2];uvs[i*2+1]=uv[index*2+1];});
+   geometry.setAttribute('position',new Attribute(positions,3));geometry.setAttribute('uv',new Attribute(uvs,2));
+   paper=new source.constructor(geometry,material);paper.frustumCulled=false;scene.add(paper);
+   const camera=scene.camera;camera.updateWorldMatrix(true,false);
+   const distance=viewer.getCameraOrbit().radius;
+   function align(progress){
+    camera.updateWorldMatrix(true,false);
+    paper.quaternion.copy(camera.getWorldQuaternion(paper.quaternion));
+    paper.position.set(0,0,-distance).applyMatrix4(camera.matrixWorld);
+    const halfHeight=distance*Math.tan(camera.fov*Math.PI/360);
+    paper.scale.set(halfHeight*(1+(camera.aspect-1)*progress),halfHeight,halfHeight);
+   }
    function pose(progress){
-    for(const part of parts){
-     const p=part.geometry.attributes.position;
-     for(let i=0;i<p.count;i++){
-      const t=Math.max(0,Math.min(1,(progress-part.delays[i])/(1-part.delays[i])));
-      const ease=t*t*(3-2*t);
-      for(let axis=0;axis<3;axis++){const j=i*3+axis;p.array[j]=part.folded[j]+(part.source[j]-part.folded[j])*ease;}
-     }
-     p.needsUpdate=true;part.geometry.computeVertexNormals();
-     part.geometry.computeBoundingSphere();
-    }
+    const index=Math.min(frames.length-1,progress*(frames.length-1)),lo=Math.floor(index),hi=Math.min(frames.length-1,lo+1),mix=index-lo;
+    const a=frames[lo],b=frames[hi];
+    const turn=Math.pow(1-progress,1.4),rx=1.65*turn,ry=.7*turn,rz=-.28*turn;
+    indices.forEach((vertex,i)=>{
+     const k=vertex*3;let x=a[k]+(b[k]-a[k])*mix,y=a[k+1]+(b[k+1]-a[k+1])*mix,z=a[k+2]+(b[k+2]-a[k+2])*mix;
+     const y1=y*Math.cos(rx)-z*Math.sin(rx),z1=y*Math.sin(rx)+z*Math.cos(rx);
+     const x1=x*Math.cos(ry)+z1*Math.sin(ry);z=-x*Math.sin(ry)+z1*Math.cos(ry);
+     positions[i*3]=x1*Math.cos(rz)-y1*Math.sin(rz);positions[i*3+1]=x1*Math.sin(rz)+y1*Math.cos(rz);positions[i*3+2]=z;
+    });
+    geometry.attributes.position.needsUpdate=true;geometry.computeVertexNormals();align(progress);
+    // Remove the printed border only once the sheet has almost opened.
+    const blend=Math.max(0,(progress-.84)/.16);paint(1-blend);
+    material.color.setScalar(1-blend);material.emissiveIntensity=1+blend*9;
+    const reveal=Math.max(0,(progress-.94)/.06);
+    model.visible=reveal>0;material.opacity=1-reveal;
+    material.depthTest=reveal===0;paper.renderOrder=reveal>0?100:0;
     scene.queueRender();
    }
-   pose(0);viewer.dataset.surfaceReady='true';viewer.dataset.unfold='playing';
+   model.visible=false;pose(0);viewer.dataset.surfaceReady='true';viewer.dataset.unfold='playing';
    let elapsed=0,last=0,frame=-1;
    function tick(now){
     if(finished)return;
     if(reduced.matches){restore();return;}
     if(document.hidden||document.body.dataset.v!=='map'){last=0;raf=requestAnimationFrame(tick);return;}
     if(last)elapsed+=Math.min(now-last,100);last=now;
-    // Hold the crumpled shape, then open at twelve deliberately stepped poses/sec.
-    const next=Math.floor(Math.max(0,elapsed-450)/1000*12);
-    if(next!==frame){frame=next;pose(Math.min(1,next/36));}
-    if(elapsed>=3550){restore();return;}
+    const next=Math.floor(Math.max(0,elapsed-550)/110);
+    if(next!==frame){frame=next;pose(Math.min(1,next/32));}
+    if(elapsed>4200){restore();return;}
     raf=requestAnimationFrame(tick);
    }
    raf=requestAnimationFrame(tick);
