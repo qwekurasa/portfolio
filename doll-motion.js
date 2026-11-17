@@ -9,8 +9,8 @@ export function start(doll,card){
  // Generated scans may bridge fingers to trousers. Hide only those bridge
  // triangles in every pose so small idle gestures cannot pull the trousers.
  for(const part of parts){
-  const ix=part.original.index,kept=[];part.fullIndex=ix;
-  if(ix){for(let i=0;i<ix.count;i+=3){const ids=[ix.getX(i),ix.getX(i+1),ix.getX(i+2)];const flags=ids.map(v=>Math.abs(part.world[v*3]-cx)/H>.09&&(part.world[v*3+1]-box.min.y)/H>.34&&(part.world[v*3+1]-box.min.y)/H<.68);const bridge=flags.some(Boolean)&&!flags.every(Boolean)&&ids.some(v=>(part.world[v*3+1]-box.min.y)/H<.60);if(!bridge)kept.push(...ids);}part.cutIndex=kept;part.g.setIndex(kept);}
+  const ix=part.original.index,kept=[],standing=[];part.fullIndex=ix;
+  if(ix){for(let i=0;i<ix.count;i+=3){const ids=[ix.getX(i),ix.getX(i+1),ix.getX(i+2)];const flags=ids.map(v=>Math.abs(part.world[v*3]-cx)/H>.09&&(part.world[v*3+1]-box.min.y)/H>.34&&(part.world[v*3+1]-box.min.y)/H<.68);const bridge=flags.some(Boolean)&&!flags.every(Boolean)&&ids.some(v=>(part.world[v*3+1]-box.min.y)/H<.60);if(!bridge)kept.push(...ids);if(!bridge||!ids.some(v=>(part.world[v*3+1]-box.min.y)/H<.46))standing.push(...ids);}part.cutIndex=kept;part.standingIndex=standing;}
  }
  const css=document.createElement('style');css.textContent=`#map.home-3d{overflow:hidden}#heroText.doll-about{position:fixed;z-index:8;width:min(350px,calc(100vw - 32px));max-width:none;font-size:13px;background:transparent;border:0;border-radius:0;box-shadow:none;color:#999;padding:0;transition:opacity .22s steps(3),transform .22s steps(3)}#heroText.doll-about.on{transform:none}#heroText.doll-about .ht-name{display:none}#heroText.doll-about .ht-links{background:none;border:0;padding:0;margin:0!important}@media(max-width:700px){#heroText.doll-about{font-size:12px}}`;document.head.append(css);
  card.classList.add('doll-about');
@@ -19,7 +19,7 @@ export function start(doll,card){
  function placeCard(){const r=doll.getBoundingClientRect();card.style.left=Math.max(16,Math.min(innerWidth-card.offsetWidth-16,r.left))+'px';card.style.top=Math.max(16,Math.min(innerHeight-card.offsetHeight-16,r.bottom+12))+'px';}
  function showCard(){if(settled)return;settled=true;doll.dataset.motion='idle';doll.setAttribute('camera-controls','');card.hidden=false;placeCard();requestAnimationFrame(()=>card.classList.add('on'));}
  function pose(hang,head,arms,legs,crouch,t){
-  for(const part of parts){const p=part.g.attributes.position;
+  for(const part of parts){const p=part.g.attributes.position;const raised=hang>.01;if(part.cutIndex&&part.raised!==raised){part.g.setIndex(raised?part.cutIndex:part.standingIndex);part.raised=raised;}
    for(let i=0;i<p.count;i++){
     const j=i*3;let x=part.world[j],y=part.world[j+1],z=part.world[j+2];const h=(y-box.min.y)/H,side=x<cx?-1:1,dx=Math.abs(x-cx)/H;
     const arm=(dx>.09&&h>.34?1-smooth(.61,.68,h):0);
