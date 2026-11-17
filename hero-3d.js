@@ -9,7 +9,7 @@
  doll.setAttribute('src','artem-doll.glb');doll.setAttribute('alt','Фигурка Артёма в коричневой рубашке');
  for(const [key,value] of Object.entries({'camera-controls':'','disable-pan':'','disable-tap':'','camera-orbit':'0deg 90deg auto','field-of-view':'30deg','interaction-prompt':'none','environment-image':'neutral','exposure':'1','shadow-intensity':'0','loading':'eager'}))doll.setAttribute(key,value);
  wrap.append(doll);
- doll.addEventListener('load',()=>{doll.model.materials.forEach(m=>{m.pbrMetallicRoughness.setMetallicFactor(0);m.pbrMetallicRoughness.setRoughnessFactor(.85);});doll.exposure=1.3;doll.dataset.surfaceReady='true';});
+ doll.addEventListener('load',()=>{doll.model.materials.forEach(m=>{m.pbrMetallicRoughness.setMetallicFactor(0);m.pbrMetallicRoughness.setRoughnessFactor(.85);});doll.exposure=1.3;import('./doll-motion.js?v=1').then(m=>m.start(doll,card)).catch(()=>{doll.dataset.surfaceReady='true';});});
  const style=document.createElement('style');style.textContent=`
  #map.home-3d{touch-action:auto;background:#fff}
  .home-model{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(1100px,86vw);height:82svh;filter:invert(1);color:#ddd}
