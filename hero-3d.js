@@ -49,6 +49,13 @@
    if(!source){bitmap.close();restore();return;}
    const canvas=document.createElement('canvas');canvas.width=bitmap.width;canvas.height=bitmap.height;
    const ctx=canvas.getContext('2d');
+   ctx.drawImage(bitmap,0,0);
+   const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+   let limitX=0,limitY=0;
+   for(let y=0;y<canvas.height;y+=4)for(let x=0;x<canvas.width;x+=4){
+    if(pixels[(y*canvas.width+x)*4+3]>32){limitX=Math.max(limitX,Math.abs(2*x/canvas.width-1));limitY=Math.max(limitY,Math.abs(2*y/canvas.height-1));}
+   }
+   limitX=limitX||.7;limitY=limitY||.7;
    // The original render is the print on the paper, including the final camera framing.
    const paint=(backing=1)=>{
     ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -78,8 +85,19 @@
     paper.position.set(0,0,-distance).applyMatrix4(camera.matrixWorld);
     const halfHeight=distance*Math.tan(camera.fov*Math.PI/360);
     paper.scale.set(halfHeight*(1+(camera.aspect-1)*progress),halfHeight,halfHeight);
+    // Keep every folded pose inside the final scan's visible footprint.
+    const fits=scale=>{
+     for(let i=0;i<positions.length;i+=3){
+      const depth=distance-positions[i+2]*paper.scale.z*scale;
+      if(depth<=0||Math.abs(positions[i]*paper.scale.x*scale*distance/depth)>halfHeight*camera.aspect*limitX||Math.abs(positions[i+1]*paper.scale.y*scale*distance/depth)>halfHeight*limitY)return false;
+     }
+     return true;
+    };
+    if(!fits(1)){let lo=0,hi=1;for(let i=0;i<12;i++){const mid=(lo+hi)/2;if(fits(mid))lo=mid;else hi=mid;}paper.scale.multiplyScalar(lo);}
    }
-   function pose(progress){
+   function pose(time){
+    // Hand over while the sheet is still folded; never expand to a flat rectangle.
+    const progress=Math.min(.62,time*.78);
     const index=Math.min(frames.length-1,progress*(frames.length-1)),lo=Math.floor(index),hi=Math.min(frames.length-1,lo+1),mix=index-lo;
     const a=frames[lo],b=frames[hi];
     const turn=Math.pow(1-progress,1.4),rx=1.65*turn,ry=.7*turn,rz=-.28*turn;
@@ -90,10 +108,9 @@
      positions[i*3]=x1*Math.cos(rz)-y1*Math.sin(rz);positions[i*3+1]=x1*Math.sin(rz)+y1*Math.cos(rz);positions[i*3+2]=z;
     });
     geometry.attributes.position.needsUpdate=true;geometry.computeVertexNormals();align(progress);
-    // Remove the printed border only once the sheet has almost opened.
-    const blend=Math.max(0,(progress-.84)/.16);paint(1-blend);
+    const blend=Math.max(0,Math.min(1,(time-.82)/.18));paint(1-blend);
     material.color.setScalar(1-blend);material.emissiveIntensity=1+blend*9;
-    const reveal=Math.max(0,(progress-.94)/.06);
+    const reveal=Math.max(0,Math.min(1,(time-.88)/.12));
     model.visible=reveal>0;material.opacity=1-reveal;
     material.depthTest=reveal===0;paper.renderOrder=reveal>0?100:0;
     scene.queueRender();
@@ -105,9 +122,9 @@
     if(reduced.matches){restore();return;}
     if(document.hidden||document.body.dataset.v!=='map'){last=0;raf=requestAnimationFrame(tick);return;}
     if(last)elapsed+=Math.min(now-last,100);last=now;
-    const next=Math.floor(Math.max(0,elapsed-550)/110);
-    if(next!==frame){frame=next;pose(Math.min(1,next/32));}
-    if(elapsed>4200){restore();return;}
+    const next=Math.floor(Math.max(0,elapsed-180)/70);
+    if(next!==frame){frame=next;pose(Math.min(1,next/24));}
+    if(elapsed>=1900){restore();return;}
     raf=requestAnimationFrame(tick);
    }
    raf=requestAnimationFrame(tick);
