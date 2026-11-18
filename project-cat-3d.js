@@ -28,15 +28,15 @@
    const eye=Math.exp(-Math.pow((Math.abs(x)-.125)/.048,2)-Math.pow((y-.17)/.055,2)-Math.pow((z-.35)/.09,2));y+=(.17-y)*eye*blink*.85;
    // Rotate around the shoulder/hip instead of shearing each paw upward.
    // Continuous weights prevent triangles spanning left/right legs from tearing.
-   const leg=1-smooth(-.33,-.16,y),front=smooth(-.06,.14,z),side=Math.tanh(x/.055);
+   const leg=1-smooth(-.25,-.12,y),front=smooth(-.035,.025,z),side=Math.tanh(x/.055);
    if(leg){
-    const shoulderY=-.17,pivotZ=front*.25+(1-front)*(-.23);
+    const shoulderY=-.13,pivotZ=front*.085+(1-front)*(-.27);
     const phase=side*(front*2-1),angle=walk*step*phase*.22;
-    const lift=groom*front*smooth(.015,.10,x)*.58;
+    const lift=(part.source[j+2]>-.015&&part.source[j]>0)?groom*1.85:0;
     const a=(angle-lift)*leg,dy=y-shoulderY,dz=z-pivotZ;
     y=shoulderY+dy*Math.cos(a)-dz*Math.sin(a);z=pivotZ+dy*Math.sin(a)+dz*Math.cos(a);
    }
-   const rear=1-smooth(-.10,.06,z);y-=sit*(.11*rear+.025)*(1-smooth(-.48,-.35,y));z+=sit*rear*.06;
+   const rear=1-smooth(-.10,.06,part.source[j+2]);y-=sit*(.07*rear+.008)*smooth(-.45,-.20,part.source[j+1]);z+=sit*rear*.035;
    y+=walk*.006*Math.sin(time*10.4);
    part.v.set(x,y,z).applyMatrix4(part.inverse);p.setXYZ(i,part.v.x,part.v.y,part.v.z);
   }p.needsUpdate=true;part.g.computeVertexNormals();part.g.computeBoundingSphere();}
