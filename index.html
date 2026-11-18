@@ -427,6 +427,7 @@ body[data-v=index]{background:#fff}
 <nav class="dots" aria-label="Вид"><a href="#map" data-v="map" title="Карта"></a><a href="#index" data-v="index" title="Проекты"></a></nav>
 
 <script>document.write('<script src="projects.js?v='+Date.now()+'"><\/script>')</script>
+<script src="project-cat.js?v=clay-2"></script>
 <script src="phone.js?v=baecc87"></script>
 <script src="case-files.js?v=grid-3px"></script>
 <script>
@@ -487,6 +488,7 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   if(p.device==='ipad'&&p.pwa)window.Phone?.mountPad($('#stPhone'),{url:p.pwa});
   else window.Phone?.mount($('#stPhone'),{id:p.id,pwa:p.pwa,name:p.name,icon:p.icon,screens:shots.map(w=>`<img src="${w.img}" alt="">`)});
   window.CaseFiles?.mount(p,$('#project'));
+  window.ProjectCat?.mount($('#project'));
   $('.st').classList.toggle('pad',pad);
   $('.st').classList.toggle('phone-project',p.device!=='ipad');
   /* устройство можно двигать за корпус, двойной клик по корпусу — вернуть на место */

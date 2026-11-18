@@ -10,8 +10,8 @@ export function start(doll,card){
  card.classList.add('doll-about');
  card.querySelector('.ht-links a[href="#index"]')?.remove();
  const links=card.querySelector('.ht-links');
- if(links){const stars=document.createElement('span');stars.className='social-stars';stars.setAttribute('aria-hidden','true');stars.innerHTML='<i>✦</i><i>✧</i><i>✦</i><i>✧</i>';links.append(stars);}
- const starsStyle=document.createElement('style');starsStyle.textContent=`#heroText.doll-about .ht-links{position:relative;display:inline-flex;gap:22px;padding:10px 12px!important;margin-top:8px!important;overflow:visible}#heroText.doll-about .ht-links a{color:#505054;font-weight:400;text-decoration:none;transition:color .2s}#heroText.doll-about .ht-links a:hover,#heroText.doll-about .ht-links a:focus-visible{color:#999}.social-stars{position:absolute;inset:0;pointer-events:none}.social-stars i{position:absolute;font-style:normal;font-size:7px;color:#626268;opacity:0;animation:social-spark 5s ease-in-out infinite}.social-stars i:nth-child(1){left:1px;top:1px}.social-stars i:nth-child(2){left:46%;bottom:0;animation-delay:1.4s}.social-stars i:nth-child(3){right:0;top:3px;animation-delay:2.8s}.social-stars i:nth-child(4){right:22%;bottom:0;animation-delay:3.8s}@keyframes social-spark{0%,100%{opacity:0;transform:translateY(2px) rotate(-12deg) scale(.5)}40%,60%{opacity:.6;transform:translateY(-2px) rotate(15deg) scale(1)}}@media(prefers-reduced-motion:reduce){.social-stars i{animation:none;opacity:.25}}`;document.head.append(starsStyle);
+ if(links){const stars=document.createElement('span');stars.className='social-stars';stars.setAttribute('aria-hidden','true');for(let i=0;i<28;i++){const star=document.createElement('i');star.textContent=i%3?'✦':'✧';const x=3+(i*37%94),y=i%2?83:5;star.style.cssText=`left:${x}%;top:${y+(i%5-2)*3}%;right:auto;bottom:auto;color:${['#bda2d8','#d8c98e','#93bccb','#c892b0','#a7c9ae'][i%5]};font-size:${i%6===0?11:4+i%4}px;animation-delay:${-(i*.37)}s;animation-duration:${3+i%4}s`;stars.append(star);}links.append(stars);}
+ const starsStyle=document.createElement('style');starsStyle.textContent=`#heroText.doll-about .ht-links{position:relative;display:inline-flex;gap:22px;padding:15px 14px!important;margin-top:8px!important;overflow:visible}#heroText.doll-about .ht-links a{color:#505054;font-weight:400;text-decoration:none;transition:color .2s}#heroText.doll-about .ht-links a:hover,#heroText.doll-about .ht-links a:focus-visible{color:#999}.social-stars{position:absolute;inset:0;pointer-events:none}.social-stars i{position:absolute;font-style:normal;font-size:7px;color:#626268;opacity:0;animation:social-spark 5s ease-in-out infinite}.social-stars i:nth-child(1){left:1px;top:1px}.social-stars i:nth-child(2){left:46%;bottom:0;animation-delay:1.4s}.social-stars i:nth-child(3){right:0;top:3px;animation-delay:2.8s}.social-stars i:nth-child(4){right:22%;bottom:0;animation-delay:3.8s}@keyframes social-spark{0%,100%{opacity:0;transform:translateY(2px) rotate(-12deg) scale(.5)}40%,60%{opacity:.85;transform:translateY(-2px) rotate(15deg) scale(1)}}@media(prefers-reduced-motion:reduce){.social-stars i{animation:none;opacity:.25}}`;document.head.append(starsStyle);
  let elapsed=0,last=0,frame=-1,settled=false,startX=0;
  const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
  function placeCard(){const r=doll.getBoundingClientRect();card.style.left=Math.max(16,Math.min(innerWidth-card.offsetWidth-16,r.left))+'px';card.style.top=Math.max(16,Math.min(innerHeight-card.offsetHeight-16,r.bottom+12))+'px';}
@@ -32,6 +32,8 @@ export function start(doll,card){
    p.needsUpdate=true;part.g.computeVertexNormals();part.g.computeBoundingSphere();
   }if(handCount)handPosition.set(handX/handCount,handY/handCount,handZ/handCount);scene.queueRender();
  }
+ const mouth=model.position.clone().set(cx,box.min.y+H*.8,H*.1);
+ let lipZ=-Infinity;for(const part of parts)for(let j=0;j<part.world.length;j+=3){const x=part.world[j],y=part.world[j+1],z=part.world[j+2],h=(y-box.min.y)/H;if(Math.abs(x-cx)<H*.012&&h>.812&&h<.824&&z>lipZ){lipZ=z;mouth.set(x,y,z-H*.012);}}
  const source=parts[0].mesh,props=[];
  function cylinder(length,radius){
   const g=new source.geometry.constructor(),vertices=[],normals=[],uvs=[];
@@ -60,9 +62,9 @@ export function start(doll,card){
   if(disposed)return;
   if(t>=3||reduced.matches){if(!disposed){for(const m of props){scene.remove(m);m.geometry.dispose();m.material.map?.dispose();m.material.dispose();}smoke.remove();disposed=true;}return;}
   const take=smooth(1.9,2.25,t),flight=Math.max(0,(t-2.35)/.65);
-  cigarette.position.set(cx+H*.005,box.min.y+H*.82,H*.12).lerp(handPosition,take);if(flight>0){if(!releasePoint)releasePoint=cigarette.position.clone();cigarette.position.copy(releasePoint);cigarette.position.x+=H*.32*flight;cigarette.position.y+=H*(.12*Math.sin(flight*Math.PI)-.65*flight*flight);}
-  cigarette.rotation.z=-.15-take*.5-flight*4.5;
-  ember.position.set(H*.047,0,0).applyAxisAngle(ember.up.clone().set(0,0,1),cigarette.rotation.z).add(cigarette.position);ember.rotation.copy(cigarette.rotation);
+  cigarette.position.copy(mouth).lerp(handPosition,take);if(flight>0){if(!releasePoint)releasePoint=cigarette.position.clone();cigarette.position.copy(releasePoint);cigarette.position.x+=H*.32*flight;cigarette.position.y+=H*(.12*Math.sin(flight*Math.PI)-.65*flight*flight);}
+  cigarette.rotation.set(0,-Math.PI/2*(1-take),-.08-take*.5-flight*4.5);
+  ember.position.set(H*.047,0,0).applyQuaternion(cigarette.quaternion).add(cigarette.position);ember.rotation.copy(cigarette.rotation);
   smoke.style.display=t>2.35?'none':'block';smoke.dataset.position=`${ember.position.x}m ${ember.position.y}m ${ember.position.z}m`;
   doll.updateHotspot({name:'hotspot-cigarette',position:smoke.dataset.position,normal:'0 0 1'});scene.queueRender();
  }
