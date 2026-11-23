@@ -13,59 +13,26 @@ window.CUSTOM=[
   "desc": "",
   "gallery": [
    {
-    "src": "img/mvdximll/9rsasxhz.png",
+    "src": "img/mvdximll/lax3n8y4.gif",
     "alt": "",
     "file": 0,
-    "width": 1600,
-    "height": 1200
+    "width": 1080,
+    "height": 1080
    },
    {
-    "src": "img/mvdximll/q7gpe2qu.png",
+    "src": "img/mvdximll/o4ynevcq.gif",
     "alt": "",
     "file": 0,
-    "width": 1600,
-    "height": 1200
+    "width": 1080,
+    "height": 1080
    },
    {
-    "src": "img/mvdximll/im1nv2f0.png",
+    "src": "img/mvdximll/42mq9zb2.gif",
     "alt": "",
-    "file": 1,
-    "width": 1600,
-    "height": 1200
-   },
-   {
-    "src": "img/mvdximll/b24mk4gr.png",
-    "alt": "",
-    "file": 1,
-    "width": 1600,
-    "height": 1200
-   },
-   {
-    "src": "img/mvdximll/3qwhg4gx.png",
-    "alt": "",
-    "file": 1,
-    "width": 1600,
-    "height": 1200
-   },
-   {
-    "src": "img/mvdximll/udy232hz.png",
-    "alt": "",
-    "file": 1,
-    "width": 1600,
-    "height": 1200
-   },
-   {
-    "src": "img/mvdximll/2ve5ujlt.png",
-    "alt": "",
-    "file": 2,
-    "width": 1600,
-    "height": 1200
+    "file": 0,
+    "width": 1080,
+    "height": 1080
    }
-  ],
-  "caseFiles": [
-   "Обзор проекта",
-   "Интерфейс",
-   "Детали"
   ],
   "shots": [],
   "features": [
