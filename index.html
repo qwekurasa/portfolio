@@ -389,8 +389,8 @@ body[data-v=index]{background:#fff}
  .st.pad .st-phone{grid-area:1/1}.st.pad .st-br{grid-area:2/1}.st.pad .st-fl{grid-area:3/1}
  .st.pad>.st-fdw{grid-area:4/1}
 }
-.project-photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;width:100%;margin:0;padding:0;filter:invert(1);background:#000;overflow:hidden}
-.project-photo-grid .project-photo-tile{display:block;width:100%;min-width:0;aspect-ratio:4/3;margin:0;padding:0;border:0;overflow:hidden;background:#000;box-shadow:0 0 0 3px #292929}
+.project-photo-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px;width:100%;margin:0;padding:0;filter:invert(1);background:#000;overflow:hidden}
+.project-photo-grid .project-photo-tile{display:block;width:100%;min-width:0;aspect-ratio:1/1;margin:0;padding:0;border:0;overflow:hidden;background:#000;box-shadow:0 0 0 3px #292929}
 .project-photo-grid img{display:block;width:100%;height:100%;max-width:none;object-fit:cover;user-select:none}
 
 
@@ -439,7 +439,7 @@ const P=[
    const url=/^https?:\/\//.test(c.link||'')?c.link:'';
    return{id:'c'+e(c.id),url,device:c.device==='ipad'?'ipad':'phone',folder:c.folder!=='0',pwa:/^https:\/\//.test(c.pwa||'')?c.pwa:'',name:e(c.name),type:e(c.type),created:e(c.created),year:(c.created||'').slice(-4),desc:e(c.desc),cover:sh[0]?.src,
     caseFiles:(c.caseFiles||[]).slice(0,3).map(e),
-    gallery:(c.gallery||[]).filter(x=>/^\/?img\/[a-z0-9_-]+\/[a-z0-9_.-]+\.(webp|jpe?g|png)$/i.test(x.src||'')).map(x=>({src:e(x.src),alt:e(x.alt),file:Math.max(0,Math.min(2,Math.floor(Number(x.file)||0))),width:Number(x.width)||0,height:Number(x.height)||0})),
+    gallery:(c.gallery||[]).filter(x=>/^\/?img\/[a-z0-9_-]+\/[a-z0-9_.-]+\.(webp|jpe?g|png|gif)$/i.test(x.src||'')).map(x=>({src:e(x.src),alt:e(x.alt),file:Math.max(0,Math.min(2,Math.floor(Number(x.file)||0))),width:Number(x.width)||0,height:Number(x.height)||0})),
     meta:[c.stack&&['Стек',e(c.stack)],c.platforms&&['Платформы',e(c.platforms)],url&&['Ссылка',`<a href="${e(url)}" target="_blank" rel="noopener">${e(url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''))}</a>`]].filter(Boolean),
     shots:sh.length?sh.map(x=>e(x.h)||'Фото'):undefined,wins:sh.length||(c.features||[]).length?[...sh.map(x=>({img:e(x.src),h:e(x.h),p:e(x.p)})),...(c.features||[]).map(f=>({h:e(f.h),p:e(f.p),ul:(f.ul||[]).map(e)}))]:undefined}}),
 ];

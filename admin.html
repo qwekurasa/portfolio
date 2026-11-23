@@ -113,9 +113,9 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
     <div id="shots"></div>
     <div class="pad"><label class="btn" style="display:inline-block;margin:0">+ Добавить фото<input type="file" id="files" accept="image/*" multiple hidden></label></div>
     <p class="sec">Фотографии под проектом</p>
-    <div class="pad"><p class="note">Добавьте 3–6 фотографий. На странице фотографии отображаются по три в ряд с зазором 3 px. Превью заполняет ячейку формата 4:3.</p></div>
+    <div class="pad"><p class="note">Фото и GIF отображаются по шесть в ряд, в квадратных ячейках 1:1 с зазором 3 px. GIF зацикливаются автоматически. До 60 изображений; GIF — до 3 МБ.</p></div>
     <div id="gallery"></div>
-    <div class="pad"><label class="btn" style="display:inline-block;margin:0">+ Добавить фотографии<input type="file" id="galleryFiles" accept="image/png,image/jpeg,image/webp" multiple hidden></label><p class="note" id="galleryStatus" role="status"></p></div>
+    <div class="pad"><label class="btn" style="display:inline-block;margin:0">+ Добавить фото / GIF<input type="file" id="galleryFiles" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden></label><p class="note" id="galleryStatus" role="status"></p></div>
     <p class="sec">Функции — окно File List</p>
     <div id="feats"></div>
     <div class="pad"><button id="addF">+ Добавить функцию</button></div>
@@ -126,6 +126,7 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
 
 <div class="bar" id="bar" hidden><span id="bmsg">Публикация…</span><button class="dark" id="publish" hidden>Повторить</button></div>
 
+<script src="gallery-media.js?v=1"></script>
 <script>
 const $=s=>document.querySelector(s);
 let PW=sessionStorage.getItem('pw')||'',cats=[],list=[],removed=[],pending=[],edit=null,dirty=false;
@@ -186,8 +187,8 @@ $('#gallery').oninput=e=>{if(e.target.matches('input'))edit.gallery[+e.target.da
 $('#gallery').onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k,S=edit.gallery;
   if(b.dataset.a==='rm'){const [s]=S.splice(k,1);if(s.preview)URL.revokeObjectURL(s.preview)}else{const j=b.dataset.a==='up'?k-1:k+1;if(j<0||j>=S.length)return;[S[k],S[j]]=[S[j],S[k]]}drawGallery()};
 let galleryLoading=false;
-$('#galleryFiles').onchange=async e=>{const current=edit,files=[...e.target.files];e.target.value='';if(galleryLoading)return;if(current.gallery.length+files.length>6){$('#galleryStatus').textContent='Можно добавить до 6 фотографий. Удалите лишние или выберите меньше файлов.';return;}galleryLoading=true;$('#done').disabled=true;
-  try{for(const f of files){if(!/^image\/(jpeg|png|webp)$/.test(f.type))throw new Error('Поддерживаются PNG, JPG и WebP');
+$('#galleryFiles').onchange=async e=>{const current=edit,files=[...e.target.files];e.target.value='';if(galleryLoading)return;if(current.gallery.length+files.length>60){$('#galleryStatus').textContent='Можно добавить до 60 изображений. Удалите лишние или выберите меньше файлов.';return;}galleryLoading=true;$('#done').disabled=true;
+  try{for(const f of files){if(!/^image\/(jpeg|png|webp|gif)$/.test(f.type))throw new Error('Поддерживаются PNG, JPG, WebP и GIF');
     $('#galleryStatus').textContent='Подготовка: '+f.name;const blob=await shrink(f),bm=await createImageBitmap(blob);const width=bm.width,height=bm.height;bm.close();
     if(edit!==current)break;current.gallery.push({blob,preview:URL.createObjectURL(blob),alt:'',file:0,width,height});drawGallery()}
     $('#galleryStatus').textContent='Изображения добавлены. Нажмите «Готово», чтобы опубликовать.';
@@ -203,7 +204,7 @@ $('#addF').onclick=()=>{edit.feats.push({h:'',p:'',ul:''});drawFeats()};
 $('#files').onchange=async e=>{for(const f of e.target.files){const blob=await shrink(f);edit.shots.push({blob,preview:URL.createObjectURL(blob),h:'',p:''})}e.target.value='';drawShots()};
 
 // фото загружается как есть; пережимается без уменьшения только если больше лимита запроса Vercel (~3 МБ)
-async function shrink(f){if(f.size<=3e6&&/^image\/(jpeg|png|webp)$/.test(f.type))return f;
+async function shrink(f){if(f.type==='image/gif'){if(f.size>3e6)throw new Error('GIF должен быть не больше 3 МБ');const looped=await window.GalleryMedia.loopGif(f);if(looped.size>3e6)throw new Error('GIF должен быть не больше 3 МБ');return looped;}if(f.size<=3e6&&/^image\/(jpeg|png|webp|gif)$/.test(f.type))return f;
   const bm=await createImageBitmap(f),c=document.createElement('canvas');c.width=bm.width;c.height=bm.height;c.getContext('2d').drawImage(bm,0,0);
   for(const q of[.95,.9,.85,.75]){const b=await new Promise(res=>c.toBlob(res,'image/webp',q));if(b.size<=3e6)return b}
   return new Promise(res=>c.toBlob(res,'image/webp',.7))}
@@ -222,7 +223,7 @@ let busy=false,again=false;
 async function publish(){if(busy){again=true;return}busy=true;$('#publish').hidden=true;const files=pending;
   try{let n=0,total=list.reduce((a,p)=>a+[...(p.shots||[]),...(p.gallery||[])].filter(s=>s.blob).length,0);
     for(const p of list)for(const s of [...(p.shots||[]),...(p.gallery||[])])if(s.blob){$('#bmsg').textContent=`Загрузка фото ${++n}/${total}…`;
-      const {sha}=await api({op:'blob',data:await b64(s.blob)}),path=`img/${p.id}/${Math.random().toString(36).slice(2,10)}.${{'image/jpeg':'jpg','image/png':'png'}[s.blob.type]||'webp'}`;
+      const {sha}=await api({op:'blob',data:await b64(s.blob)}),path=`img/${p.id}/${Math.random().toString(36).slice(2,10)}.${{'image/jpeg':'jpg','image/png':'png','image/gif':'gif'}[s.blob.type]||'webp'}`;
       files.push({path,sha});s.src=path;delete s.blob;delete s.preview}
     $('#bmsg').textContent='Публикация…';
     const clean=list.map(p=>({...p,features:p.features||[],shots:(p.shots||[]).map(s=>({src:s.src,h:s.h||'',p:s.p||''})),gallery:(p.gallery||[]).map(s=>({src:s.src,alt:s.alt||'',file:Math.max(0,Math.min(2,Math.floor(Number(s.file)||0))),width:s.width||0,height:s.height||0}))}));

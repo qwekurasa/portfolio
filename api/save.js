@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const GH = 'https://api.github.com/repos/qwekurasa/portfolio';
-const PATH = /^img\/[a-z0-9_-]+\/[a-z0-9_.-]+\.(webp|jpe?g|png)$/;
+const PATH = /^img\/[a-z0-9_-]+\/[a-z0-9_.-]+\.(webp|jpe?g|png|gif)$/;
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).end();
