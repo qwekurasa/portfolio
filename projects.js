@@ -70,6 +70,44 @@ window.CUSTOM=[
   ]
  },
  {
+  "id": "mwv4utb5",
+  "name": "thinkinbrain - идейник",
+  "type": "Приложение",
+  "created": "24.11.2026",
+  "stack": "",
+  "platforms": "iPhone",
+  "link": "",
+  "pwa": "",
+  "device": "phone",
+  "folder": "0",
+  "desc": "",
+  "gallery": [
+   {
+    "src": "img/mwv4utb5/bgc3n243.gif",
+    "alt": "",
+    "file": 0,
+    "width": 900,
+    "height": 900
+   },
+   {
+    "src": "img/mwv4utb5/65eqv9b0.gif",
+    "alt": "",
+    "file": 0,
+    "width": 900,
+    "height": 900
+   },
+   {
+    "src": "img/mwv4utb5/n7apcqad.gif",
+    "alt": "",
+    "file": 0,
+    "width": 900,
+    "height": 900
+   }
+  ],
+  "shots": [],
+  "features": []
+ },
+ {
   "id": "mvjxhkra",
   "name": "tempt - магазин",
   "type": "Сайт",
