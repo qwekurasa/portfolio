@@ -108,6 +108,7 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
     </div>
     <label><span>Папка с экранами на странице проекта</span><select id="f-folder"><option value="1">Показывать</option><option value="0">Не показывать</option></select></label>
     <label style="margin:0"><span>Описание — курсивом в System Browser</span><textarea id="f-desc"></textarea></label>
+    <label style="margin:0"><span>Развёрнутое описание над фото и GIF</span><textarea id="f-description" rows="6"></textarea></label>
     </div>
     <p class="sec">Экраны — окна Form Editor</p>
     <div id="shots"></div>
@@ -163,7 +164,7 @@ $('#c-new').onkeydown=e=>{if(e.key==='Enter')$('#c-add').click()};
 $('#f-type').onchange=()=>{const n=$('#f-type').value==='+';$('#newcat').hidden=!n;if(n){$('#f-cat').value='';$('#f-cat').focus()}};
 $('#addCat').onclick=()=>{const c=addCat($('#f-cat').value);if(c)fillTypes(c)};
 $('#f-cat').onkeydown=e=>{if(e.key==='Enter')$('#addCat').click()};
-const F=['name','type','created','stack','platforms','link','pwa','device','folder','desc'];
+const F=['name','type','created','stack','platforms','link','pwa','device','folder','desc','description'];
 $('#f-device').onchange=()=>{$('#pwaLbl').textContent=$('#f-device').value==='ipad'?'Адрес сайта — откроется в iPad (с https://)':'Адрес web-приложения — запустится в iPhone (с https://)'};
 function open(i){edit={i,shots:(i==null?[]:list[i].shots||[]).map(s=>({...s})),feats:(i==null?[]:list[i].features||[]).map(f=>({h:f.h||'',p:f.p||'',ul:(f.ul||[]).join('\n')}))};
   const p=i==null?{}:list[i];fillTypes(p.type);F.forEach(k=>k!=='type'&&($('#f-'+k).value=p[k]||(k==='device'?'phone':k==='folder'?'1':'')));$('#f-device').onchange();

@@ -9,6 +9,10 @@
  doll.setAttribute('src','artem-doll.glb');doll.setAttribute('alt','Фигурка Артёма в коричневой рубашке');
  for(const [key,value] of Object.entries({'camera-controls':'','disable-pan':'','disable-tap':'','camera-orbit':'0deg 90deg auto','field-of-view':'30deg','interaction-prompt':'none','environment-image':'neutral','exposure':'1','shadow-intensity':'0','loading':'eager'}))doll.setAttribute(key,value);
  wrap.append(doll);
+ const arrow=document.createElement('button');
+ arrow.type='button';arrow.className='room-arrow';arrow.setAttribute('aria-label','Открыть проекты');
+ arrow.innerHTML='<svg viewBox="0 0 108 88" aria-hidden="true" fill="none"><path d="M100 74C81 79 67 72 49 58C34 46 23 30 12 16M12 16C12 24 13 33 15 41M12 16C21 17 29 18 38 22" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+ arrow.addEventListener('click',openProjects);wrap.append(arrow);
  doll.addEventListener('load',()=>{doll.model.materials.forEach(m=>{m.pbrMetallicRoughness.setMetallicFactor(0);m.pbrMetallicRoughness.setRoughnessFactor(.85);});doll.exposure=1.3;import('./doll-motion.js?v=1').then(m=>m.start(doll,card)).catch(()=>{doll.dataset.surfaceReady='true';});});
  const style=document.createElement('style');style.textContent=`
  #map.home-3d{touch-action:auto;background:#fff}
@@ -19,7 +23,12 @@
  .home-model #artemDoll{position:absolute;left:0;top:23%;width:27%;height:58%}
  .model-loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:12px var(--sans);color:#888}
  .model-error{position:absolute;left:0;right:0;top:48%;text-align:center;font-size:13px}.model-error a{text-decoration:underline}
- @media(max-width:700px){.home-model{width:100vw;height:70svh}}
+ .room-arrow{position:absolute;right:7%;bottom:6%;display:none;width:clamp(48px,8vw,100px);padding:0;border:0;background:none;color:#999;cursor:pointer;transition:color .2s}
+ .room-arrow svg{display:block;width:100%}
+ #deskModel[data-ready="true"] ~ .room-arrow{display:block}
+ .room-arrow:hover,.room-arrow:focus-visible{color:#ccc}
+ @media(max-width:700px){.home-model{width:100vw;height:70svh}.room-arrow{right:7%;bottom:19%}}
+ @media(prefers-reduced-motion:reduce){.room-arrow{transition:none}}
  `;document.head.append(style);
  viewer.addEventListener('load',()=>{viewer.model.materials.forEach(m=>{m.pbrMetallicRoughness.setMetallicFactor(0);m.pbrMetallicRoughness.setRoughnessFactor(1);});wrap.querySelector('.model-loading').hidden=true;startPaperUnfold();});
  viewer.addEventListener('error',()=>{viewer.dataset.surfaceReady='true';wrap.querySelector('.model-error').hidden=false;wrap.querySelector('.model-loading').hidden=true;});

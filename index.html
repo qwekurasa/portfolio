@@ -391,7 +391,9 @@ body[data-v=index]{background:#fff}
 }
 .project-photo-grid{display:flex;flex-wrap:wrap;gap:3px;container-type:inline-size;width:100%;margin:0;padding:0;filter:invert(1);background:#000;overflow:hidden}
 .project-photo-grid .project-photo-tile{position:relative;flex:none;height:min(max(120px,calc((100cqw - 15px) / 6)),calc(100cqw / var(--widest,1)));aspect-ratio:var(--media-ratio,1);margin:0;padding:0;border:0;overflow:hidden;background:#000;}
-.project-photo-grid .project-photo-tile::after{content:"";position:absolute;inset:0;pointer-events:none;--corner:clamp(10px,1.4vw,22px);--line:linear-gradient(#292929,#292929);background:var(--line) top left/var(--corner) 3px,var(--line) top left/3px var(--corner),var(--line) top right/var(--corner) 3px,var(--line) top right/3px var(--corner),var(--line) bottom left/var(--corner) 3px,var(--line) bottom left/3px var(--corner),var(--line) bottom right/var(--corner) 3px,var(--line) bottom right/3px var(--corner);background-repeat:no-repeat}
+.project-photo-grid .project-photo-tile::after,.project-description::after{content:"";position:absolute;inset:0;pointer-events:none;--corner:clamp(10px,1.4vw,22px);--line:linear-gradient(#292929,#292929);background:var(--line) top left/var(--corner) 3px,var(--line) top left/3px var(--corner),var(--line) top right/var(--corner) 3px,var(--line) top right/3px var(--corner),var(--line) bottom left/var(--corner) 3px,var(--line) bottom left/3px var(--corner),var(--line) bottom right/var(--corner) 3px,var(--line) bottom right/3px var(--corner);background-repeat:no-repeat}
+.project-description{position:relative;filter:invert(1);background:#080808;color:#b8b8bd;margin:0 0 3px;padding:clamp(20px,3vw,52px);text-align:left;overflow-wrap:anywhere;font-size:clamp(14px,1.02vw,17px);line-height:1.65}
+.project-description p{max-width:72ch;margin:0;white-space:pre-line}
 .project-photo-grid img{display:block;width:100%;height:100%;max-width:none;object-fit:contain;user-select:none}
 
 
@@ -438,7 +440,7 @@ const GENERIC=['Экран 01','Экран 02','Экран 03','Экран 04','
 const P=[
  ...(window.CUSTOM||[]).map(c=>{const e=v=>String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[m]),sh=c.shots||[];
    const url=/^https?:\/\//.test(c.link||'')?c.link:'';
-   return{id:'c'+e(c.id),url,device:c.device==='ipad'?'ipad':'phone',folder:c.folder!=='0',pwa:/^https:\/\//.test(c.pwa||'')?c.pwa:'',name:e(c.name),type:e(c.type),created:e(c.created),year:(c.created||'').slice(-4),desc:e(c.desc),cover:sh[0]?.src,
+   return{id:'c'+e(c.id),url,device:c.device==='ipad'?'ipad':'phone',folder:c.folder!=='0',pwa:/^https:\/\//.test(c.pwa||'')?c.pwa:'',name:e(c.name),type:e(c.type),created:e(c.created),year:(c.created||'').slice(-4),desc:e(c.desc),description:typeof c.description==='string'?c.description.trim():'',cover:sh[0]?.src,
     caseFiles:(c.caseFiles||[]).slice(0,3).map(e),
     gallery:(c.gallery||[]).filter(x=>/^\/?img\/[a-z0-9_-]+\/[a-z0-9_.-]+\.(webp|jpe?g|png|gif)$/i.test(x.src||'')).map(x=>({src:e(x.src),alt:e(x.alt),file:Math.max(0,Math.min(2,Math.floor(Number(x.file)||0))),width:Number(x.width)||0,height:Number(x.height)||0})),
     meta:[c.stack&&['Стек',e(c.stack)],c.platforms&&['Платформы',e(c.platforms)],url&&['Ссылка',`<a href="${e(url)}" target="_blank" rel="noopener">${e(url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''))}</a>`]].filter(Boolean),
@@ -488,6 +490,15 @@ function renderProject(id){const p=P.find(q=>q.id===id)||P[0],i=P.indexOf(p),nx=
   </div></div>`;
   if(p.device==='ipad'&&p.pwa)window.Phone?.mountPad($('#stPhone'),{url:p.pwa});
   else window.Phone?.mount($('#stPhone'),{id:p.id,pwa:p.pwa,name:p.name,icon:p.icon,screens:shots.map(w=>`<img src="${w.img}" alt="">`)});
+  if(p.description){
+    const block=document.createElement('section');
+    block.className='project-description';
+    block.setAttribute('aria-label','Описание проекта');
+    const copy=document.createElement('p');
+    copy.textContent=p.description;
+    block.append(copy);
+    $('#project').append(block);
+  }
   window.CaseFiles?.mount(p,$('#project'));
   window.ProjectCat?.mount($('#project'));
   $('.st').classList.toggle('pad',pad);
@@ -600,7 +611,7 @@ function carousel(box,p){const ring=box.querySelector('.ixc-ring'),w=p.wins||[];
 })();
 </script>
 <script type="module" src="model-viewer.min.js"></script>
-<script src="hero-3d.js?v=2"></script>
+<script src="hero-3d.js?v=room-arrow"></script>
 </body>
 </html>
 
