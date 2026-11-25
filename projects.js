@@ -11,7 +11,6 @@ window.CUSTOM=[
   "device": "phone",
   "folder": "0",
   "desc": "",
-  "description": "Кэш — личный трекер расходов и доходов. В нём можно быстро записать покупку, посмотреть остаток на счетах и понять, куда уходят деньги. На главном экране собраны баланс и последние операции, а в аналитике — расходы по категориям и периодам.\n\nЯ спроектировал интерфейс так, чтобы повседневные действия занимали как можно меньше времени. Приложение работает без интернета и хранит данные на устройстве.",
   "gallery": [
    {
     "src": "img/mvdximll/uxmo25mq.gif",
@@ -21,20 +20,6 @@ window.CUSTOM=[
     "height": 1080
    },
    {
-    "src": "img/mvdximll/rxakkpiq.png",
-    "alt": "",
-    "file": 0,
-    "width": 1600,
-    "height": 1200
-   },
-   {
-    "src": "img/mvdximll/y7wc1khe.png",
-    "alt": "",
-    "file": 0,
-    "width": 1600,
-    "height": 1200
-   },
-   {
     "src": "img/mvdximll/338tvrds.gif",
     "alt": "",
     "file": 0,
@@ -42,7 +27,7 @@ window.CUSTOM=[
     "height": 1080
    },
    {
-    "src": "img/mvdximll/lergqlud.png",
+    "src": "img/mvdximll/rxakkpiq.png",
     "alt": "",
     "file": 0,
     "width": 1600,
