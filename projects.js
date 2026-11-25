@@ -20,11 +20,32 @@ window.CUSTOM=[
     "height": 1080
    },
    {
+    "src": "img/mvdximll/rxakkpiq.png",
+    "alt": "",
+    "file": 0,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "img/mvdximll/y7wc1khe.png",
+    "alt": "",
+    "file": 0,
+    "width": 1600,
+    "height": 1200
+   },
+   {
     "src": "img/mvdximll/338tvrds.gif",
     "alt": "",
     "file": 0,
     "width": 1080,
     "height": 1080
+   },
+   {
+    "src": "img/mvdximll/lergqlud.png",
+    "alt": "",
+    "file": 0,
+    "width": 1600,
+    "height": 1200
    },
    {
     "src": "img/mvdximll/vivltiji.gif",
