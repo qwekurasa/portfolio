@@ -389,10 +389,10 @@ body[data-v=index]{background:#fff}
  .st.pad .st-phone{grid-area:1/1}.st.pad .st-br{grid-area:2/1}.st.pad .st-fl{grid-area:3/1}
  .st.pad>.st-fdw{grid-area:4/1}
 }
-.project-photo-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px;width:100%;margin:0;padding:0;filter:invert(1);background:#000;overflow:hidden}
-.project-photo-grid .project-photo-tile{position:relative;display:block;width:100%;min-width:0;aspect-ratio:1/1;margin:0;padding:0;border:0;overflow:hidden;background:#000;}
+.project-photo-grid{display:flex;flex-wrap:wrap;gap:3px;container-type:inline-size;width:100%;margin:0;padding:0;filter:invert(1);background:#000;overflow:hidden}
+.project-photo-grid .project-photo-tile{position:relative;flex:none;height:min(max(120px,calc((100cqw - 15px) / 6)),calc(100cqw / var(--widest,1)));aspect-ratio:var(--media-ratio,1);margin:0;padding:0;border:0;overflow:hidden;background:#000;}
 .project-photo-grid .project-photo-tile::after{content:"";position:absolute;inset:0;pointer-events:none;--corner:clamp(10px,1.4vw,22px);--line:linear-gradient(#292929,#292929);background:var(--line) top left/var(--corner) 3px,var(--line) top left/3px var(--corner),var(--line) top right/var(--corner) 3px,var(--line) top right/3px var(--corner),var(--line) bottom left/var(--corner) 3px,var(--line) bottom left/3px var(--corner),var(--line) bottom right/var(--corner) 3px,var(--line) bottom right/3px var(--corner);background-repeat:no-repeat}
-.project-photo-grid img{display:block;width:100%;height:100%;max-width:none;object-fit:cover;user-select:none}
+.project-photo-grid img{display:block;width:100%;height:100%;max-width:none;object-fit:contain;user-select:none}
 
 
 </style>
@@ -430,7 +430,7 @@ body[data-v=index]{background:#fff}
 <script>document.write('<script src="projects.js?v='+Date.now()+'"><\/script>')</script>
 <script src="project-cat-3d.js?v=1"></script>
 <script src="phone.js?v=baecc87"></script>
-<script src="case-files.js?v=grid-3px"></script>
+<script src="case-files.js?v=natural-ratio"></script>
 <script>
 const $=s=>document.querySelector(s);
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
