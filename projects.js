@@ -131,6 +131,8 @@ window.CUSTOM=[
   "folder": "0",
   "desc": "Магазин одежды",
   "description": "Tempt — интернет-магазин одежды. В дизайне я сделал акцент на фотографиях и деталях вещей. Из каталога легко перейти к карточке товара, рассмотреть одежду ближе и выбрать размер.",
+  "descriptionHeading": "",
+  "section": "llm",
   "gallery": [
    {
     "src": "img/mvjxhkra/jk9jlloh.png",
@@ -162,22 +164,7 @@ window.CUSTOM=[
    }
   ],
   "shots": [],
-  "features": [
-   {
-    "h": "reg",
-    "p": "erg",
-    "ul": [
-     "erg"
-    ]
-   },
-   {
-    "h": "erg",
-    "p": "erger",
-    "ul": [
-     "ger"
-    ]
-   }
-  ]
+  "features": []
  },
  {
   "id": "mwi649gy",
