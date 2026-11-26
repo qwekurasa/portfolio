@@ -354,12 +354,22 @@ window.CUSTOM=[
  },
  {
   "id": "design-template-3",
-  "name": "Дизайн-проект 03",
-  "section": "design",
+  "name": "Моушн-дизайн сумки",
+  "type": "",
+  "created": "",
+  "stack": "",
+  "platforms": "",
+  "link": "",
+  "pwa": "",
+  "device": "phone",
+  "folder": "1",
+  "desc": "",
   "description": "",
+  "descriptionHeading": "",
+  "section": "design",
   "gallery": [],
-  "features": [],
-  "shots": []
+  "shots": [],
+  "features": []
  }
 ];
 window.CATS=[];
