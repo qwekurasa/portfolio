@@ -317,11 +317,51 @@ window.CUSTOM=[
  {
   "id": "design-template-2",
   "name": "Дизайн-проект 02",
-  "section": "design",
+  "type": "",
+  "created": "",
+  "stack": "",
+  "platforms": "",
+  "link": "",
+  "pwa": "",
+  "device": "phone",
+  "folder": "1",
+  "desc": "",
   "description": "",
-  "gallery": [],
-  "features": [],
-  "shots": []
+  "descriptionHeading": "выавыа",
+  "section": "design",
+  "gallery": [
+   {
+    "src": "img/design-template-2/kibiew4y.gif",
+    "alt": "",
+    "file": 0,
+    "width": 237,
+    "height": 173
+   },
+   {
+    "src": "img/design-template-2/2m44rtii.gif",
+    "alt": "",
+    "file": 0,
+    "width": 249,
+    "height": 251
+   },
+   {
+    "src": "img/design-template-2/ged2sb2k.gif",
+    "alt": "",
+    "file": 0,
+    "width": 237,
+    "height": 177
+   },
+   {
+    "src": "img/design-template-2/dopt12gp.png",
+    "alt": "",
+    "file": 0,
+    "width": 1445,
+    "height": 1088
+   }
+  ],
+  "logo": "img/design-template-2/zrdpb3am.png",
+  "shots": [],
+  "features": []
  },
  {
   "id": "design-template-3",
