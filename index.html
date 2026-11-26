@@ -395,15 +395,25 @@ body[data-v=index]{background:#fff}
 .project-description{position:relative;filter:invert(1);background:#000;color:#b8b8bd;margin:0 0 3px;padding:clamp(20px,3vw,52px);text-align:left;overflow-wrap:anywhere;font-size:clamp(14px,1.02vw,17px);line-height:1.65}
 .project-description h2{margin:0 0 10px;color:#fff;font-size:1.12em;font-weight:600}
 .project-description p{max-width:72ch;margin:0;white-space:pre-line}
-.project-section-title{margin:0;padding-block:12px;background:#1c1c1e;border-block:1px solid #ffffff14;color:#eee;font-size:14px;font-weight:600}
+.project-section-title{margin:0;padding-block:10px;background:#000;border-block:1px solid #ffffff14;color:#bfc0c4;font-size:12px;font-weight:400}
+#list>section>.row:first-of-type{margin-top:7px}
+#list>section{padding-bottom:8px}
 .project-section-title>span{grid-column:2/-1}
-.design-project{filter:invert(1);background:#000;color:#e5e5ea;min-height:100svh;padding:clamp(64px,9vw,100px) 16px 40px}
+.design-project{filter:invert(1);background:#000;color:#e5e5ea;min-height:100svh;padding:clamp(64px,9vw,100px) 0 40px}
 .design-project .project-description{filter:none}
-.design-content{width:min(860px,100%);margin-inline:auto}
-.design-title{margin:0 0 22px;text-align:center;font-size:clamp(24px,4vw,40px);font-weight:600;line-height:1.15}
-.design-carousel{width:min(740px,100%);margin:0 auto 34px}
-.design-carousel-stage{position:relative;height:clamp(220px,48vw,460px);overflow:hidden;border:1px solid #fff2;border-radius:7px;background:#111112;isolation:isolate}
-.design-carousel-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.design-project .project-description p{max-width:none}
+.design-content{width:min(1040px,calc(100% - 32px));margin-inline:auto}
+.design-title{display:flex;justify-content:center;align-items:center;gap:.55em;margin:0 0 18px;text-align:center;font-size:clamp(11px,1vw,13px);font-weight:500;line-height:1.4}
+.design-title-logo{display:block;flex:none;width:auto;height:1em;max-width:3em;object-fit:contain}
+.design-carousel{width:100%;margin:0 auto 30px}
+.design-carousel-stage{position:relative;height:clamp(220px,48vw,460px);overflow:hidden;isolation:isolate;perspective:900px}
+.design-slide{position:absolute;top:2%;bottom:2%;left:0;right:0;margin:auto;width:min(54%,470px);padding:0;display:grid;place-items:center;border:1px solid #363638;border-radius:8px;background:#101011;overflow:hidden;color:inherit;box-shadow:0 10px 30px #0009}
+.design-slide[aria-hidden="true"]{pointer-events:none}
+.design-slide[data-side]{cursor:pointer}
+.design-slide:focus-visible{outline-offset:-3px}
+.design-slide img{position:absolute;inset:0;display:block;width:100%;height:100%;min-height:0;object-fit:contain}
+.design-carousel-stage:has(.design-placeholder){height:clamp(160px,38vw,360px);border:1px solid #fff2;border-radius:7px;background:#101011}
+@media(max-width:700px){.design-slide{width:64%}}
 .design-placeholder{margin:0;display:grid;place-items:center;height:100%;color:#9b9ba0}
 .design-carousel-controls{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:12px;color:#b8b8bd}
 .design-carousel-controls button{font:inherit;min-height:34px;min-width:34px;padding:4px 10px;background:#19191b;color:#eee;border:1px solid #fff2;border-radius:5px;cursor:pointer}
@@ -450,7 +460,7 @@ body[data-v=index]{background:#fff}
 <script src="project-cat-3d.js?v=1"></script>
 <script src="phone.js?v=baecc87"></script>
 <script src="project-sections.js?v=2"></script>
-<script src="design-carousel.js?v=1"></script>
+<script src="design-carousel.js?v=2"></script>
 <script src="case-files.js?v=natural-ratio"></script>
 <script>
 const $=s=>document.querySelector(s);
@@ -462,6 +472,7 @@ const P=[
    const url=/^https?:\/\//.test(c.link||'')?c.link:'';
    return{id:'c'+e(c.id),section:sectionOf(c),url,device:c.device==='ipad'?'ipad':'phone',folder:c.folder!=='0',pwa:/^https:\/\//.test(c.pwa||'')?c.pwa:'',name:e(c.name),type:e(c.type),created:e(c.created),year:(c.created||'').slice(-4),desc:e(c.desc),description:typeof c.description==='string'?c.description.trim():'',cover:sh[0]?.src,
     caseFiles:(c.caseFiles||[]).slice(0,3).map(e),
+    logo:/^img\/[a-z0-9_-]+\/[a-z0-9_.-]+\.(png|jpe?g)$/i.test(c.logo||'')?e(c.logo):'',
     gallery:(c.gallery||[]).filter(x=>/^\/?img\/[a-z0-9_-]+\/[a-z0-9_.-]+\.(webp|jpe?g|png|gif)$/i.test(x.src||'')).map(x=>({src:e(x.src),alt:e(x.alt),file:Math.max(0,Math.min(2,Math.floor(Number(x.file)||0))),width:Number(x.width)||0,height:Number(x.height)||0})),
     meta:[c.stack&&['Стек',e(c.stack)],c.platforms&&['Платформы',e(c.platforms)],url&&['Ссылка',`<a href="${e(url)}" target="_blank" rel="noopener">${e(url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''))}</a>`]].filter(Boolean),
     shots:sh.length?sh.map(x=>e(x.h)||'Фото'):undefined,wins:sh.length||(c.features||[]).length?[...sh.map(x=>({img:e(x.src),h:e(x.h),p:e(x.p)})),...(c.features||[]).map(f=>({h:e(f.h),p:e(f.p),ul:(f.ul||[]).map(e)}))]:undefined}}),
@@ -509,7 +520,7 @@ function renderDesignProject(project){
   const host=$('#project');
   host.innerHTML=`<article class="design-project"><div class="design-content">
     <a class="design-back" href="#index">← Все проекты</a>
-    <h1 class="design-title">${project.name}</h1>
+    <h1 class="design-title">${project.logo?`<img class="design-title-logo" src="${project.logo}" alt="">`: ''}<span>${project.name}</span></h1>
     <section class="design-carousel" aria-label="Работы проекта">
       <div class="design-carousel-stage">${project.gallery.length?'':'<p class="design-placeholder">Здесь появятся работы проекта</p>'}</div>
       <div class="design-carousel-controls" hidden>
@@ -520,7 +531,7 @@ function renderDesignProject(project){
       </div>
     </section>
   </div></article>`;
-  appendProjectDescription(host.querySelector('.design-content'),project.description||'Описание пока не добавлено.');
+  appendProjectDescription(host.querySelector('.design-project'),project.description||'Описание пока не добавлено.');
   window.ProjectCat?.mount(host);
   disposeDesignCarousel=window.DesignCarousel.mount(host.querySelector('.design-carousel'),project.gallery);
 }

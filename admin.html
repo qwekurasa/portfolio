@@ -72,6 +72,9 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
 #project-details summary{cursor:pointer;padding-block:9px}
 #project-details summary:hover{color:#eee}
 .admin-group-title{padding:9px 16px;margin:0;background:#1c1c1e;color:#e5e5ea;font-size:13px}
+.logo-picker{margin:0 0 14px}
+.logo-picker input{width:auto;max-width:100%}
+.logo-preview{width:44px;height:44px;object-fit:contain;background:#000;border-radius:5px}
 #gallery .item img{object-fit:contain;background:#090909}
 </style>
 </head>
@@ -100,6 +103,11 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
     <div class="two">
       <label><span>Раздел портфолио</span><select id="f-section"></select></label>
       <label><span>Название *</span><input id="f-name" maxlength="60" required></label>
+    </div>
+    <div class="logo-picker" id="logo-picker" hidden>
+      <label><span>Логотип рядом с названием · SVG, PNG, JPG</span><input id="logo-file" type="file" accept="image/svg+xml,image/png,image/jpeg,.svg,.png,.jpg,.jpeg" aria-describedby="logo-status"></label>
+      <div class="row"><img class="logo-preview" id="logo-preview" alt="Предпросмотр логотипа" hidden><button type="button" class="ghost" id="logo-remove" hidden>Убрать логотип</button></div>
+      <p class="msg" id="logo-status" role="status" hidden></p>
     </div>
     <label style="margin:0"><span>О проекте</span><textarea id="f-description" rows="5" placeholder="Что это за проект и что вы в нём сделали"></textarea></label>
     </div>
@@ -188,6 +196,7 @@ const F=['name','type','created','stack','platforms','link','pwa','device','fold
 function syncSection(){
   const design=$('#f-section').value==='design';
   $('#project-details').hidden=design;
+  $('#logo-picker').hidden=!design;
   $('#gallery-title').textContent=design?'Карусель проекта':'Галерея проекта';
   $('#gallery-note').textContent=(design?'Изображения будут показаны каруселью. ':'Фото и GIF сохраняют пропорции и переносятся на следующую строку. ')+ 'PNG, JPG, WebP и GIF. До 60 файлов, GIF зацикливаются и могут весить до 3 МБ.';
 }
@@ -197,11 +206,62 @@ function open(i){edit={i,shots:(i==null?[]:list[i].shots||[]).map(s=>({...s})),f
   const p=i==null?{}:list[i];fillTypes(p.type);F.forEach(k=>k!=='type'&&($('#f-'+k).value=p[k]||(k==='device'?'phone':k==='folder'?'1':'')));$('#f-device').onchange();
   $('#f-section').value=sectionOf(p);$('#project-details').open=false;syncSection();
   $('#galleryStatus').textContent='';
+  edit.logo=typeof p.logo==='string'?{src:p.logo}:p.logo||null;
+  $('#logo-file').value='';setLogoStatus('');drawLogo();
   $('#ftitle').textContent=i==null?'Project Editor · новый':'Project Editor · '+p.name;$('#del').hidden=i==null;
   edit.gallery=(p.gallery||[]).map(s=>({...s}));
   $('#form').hidden=false;drawShots();drawGallery();drawFeats();$('#form').scrollIntoView({behavior:'smooth'})}
 $('#add').onclick=()=>open(null);
-$('#cancel').onclick=()=>{edit=null;$('#form').hidden=true};
+$('#cancel').onclick=()=>{if(edit.logo?.preview&&!edit.logo.saved)URL.revokeObjectURL(edit.logo.preview);edit=null;$('#form').hidden=true};
+
+let logoLoading=false;
+const logoSource=logo=>typeof logo==='string'?logo:logo?.src||'';
+function setLogoStatus(message){
+  const status=$('#logo-status');
+  status.textContent=message;
+  status.hidden=!message;
+}
+function drawLogo(){
+  const preview=$('#logo-preview');
+  const src=edit.logo?.preview||logoSource(edit.logo);
+  preview.hidden=!src;
+  $('#logo-remove').hidden=!src;
+  if(src)preview.src=src;
+  else preview.removeAttribute('src');
+}
+function replaceLogo(logo){
+  if(edit.logo?.preview&&!edit.logo.saved)URL.revokeObjectURL(edit.logo.preview);
+  edit.logo=logo;
+  drawLogo();
+}
+$('#logo-remove').onclick=()=>{replaceLogo(null);setLogoStatus('');};
+$('#logo-file').onchange=async event=>{
+  const file=event.target.files[0],current=edit;
+  event.target.value='';
+  if(!file||!current||logoLoading)return;
+  logoLoading=true;
+  $('#done').disabled=true;
+  const type=file.type||(/\.svg$/i.test(file.name)?'image/svg+xml':/\.png$/i.test(file.name)?'image/png':/\.jpe?g$/i.test(file.name)?'image/jpeg':'');
+  let url;
+  try{
+    if(!['image/svg+xml','image/png','image/jpeg'].includes(type))throw new Error('Выберите SVG, PNG или JPG.');
+    // Decode as an image, then store a small, transparent PNG on the site.
+    url=URL.createObjectURL(file.slice(0,file.size,type));
+    const image=new Image();image.src=url;
+    await image.decode();
+    const scale=Math.min(1,512/Math.max(image.naturalWidth,image.naturalHeight));
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
+    canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+    canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+    if(!blob)throw new Error('Логотип не удалось обработать.');
+    if(edit!==current)return;
+    replaceLogo({blob,preview:URL.createObjectURL(blob)});
+    setLogoStatus('Логотип готов к сохранению.');
+  }catch(error){if(edit===current)setLogoStatus(error.message);}
+  finally{if(url)URL.revokeObjectURL(url);logoLoading=false;$('#done').disabled=galleryLoading;}
+};
 
 function drawShots(){$('#shots').innerHTML=edit.shots.map((s,k)=>`<div class="item"><img src="${s.preview||'/'+esc(s.src)}" alt="">
   <div><input data-k="${k}" data-f="h" placeholder="Заголовок фото" value="${esc(s.h)}" style="margin-bottom:6px">
@@ -222,7 +282,7 @@ $('#galleryFiles').onchange=async e=>{const current=edit,files=[...e.target.file
     $('#galleryStatus').textContent='Подготовка: '+f.name;const blob=await shrink(f),bm=await createImageBitmap(blob);const width=bm.width,height=bm.height;bm.close();
     if(edit!==current)break;current.gallery.push({blob,preview:URL.createObjectURL(blob),alt:'',file:0,width,height});drawGallery()}
     $('#galleryStatus').textContent='Изображения добавлены. Нажмите «Сохранить проект», чтобы опубликовать.';
-  }catch(err){$('#galleryStatus').textContent='Ошибка: '+err.message}finally{galleryLoading=false;$('#done').disabled=false}};
+  }catch(err){$('#galleryStatus').textContent='Ошибка: '+err.message}finally{galleryLoading=false;$('#done').disabled=logoLoading}};
 function drawFeats(){$('#feats').innerHTML=edit.feats.map((f,k)=>`<div class="item f"><div><input data-k="${k}" data-f="h" placeholder="Название, например «Импорт выписки»" value="${esc(f.h)}">
   <textarea data-k="${k}" data-f="p" placeholder="Короткое описание" style="min-height:52px;margin-bottom:6px">${esc(f.p)}</textarea>
   <textarea data-k="${k}" data-f="ul" placeholder="Пункты списка — каждый с новой строки (необязательно)" style="min-height:52px">${esc(f.ul)}</textarea>
@@ -239,24 +299,28 @@ async function shrink(f){if(f.type==='image/gif'){if(f.size>3e6)throw new Error(
   for(const q of[.95,.9,.85,.75]){const b=await new Promise(res=>c.toBlob(res,'image/webp',q));if(b.size<=3e6)return b}
   return new Promise(res=>c.toBlob(res,'image/webp',.7))}
 
-$('#done').onclick=()=>{if(galleryLoading)return;const name=$('#f-name').value.trim();if(!name){$('#f-name').focus();return}
+$('#done').onclick=()=>{if(galleryLoading||logoLoading)return;const name=$('#f-name').value.trim();if(!name){$('#f-name').focus();return}
   const old=edit.i==null?null:list[edit.i],p={id:old?.id||Date.now().toString(36)};F.forEach(k=>p[k]=$('#f-'+k).value.trim());if(p.type==='+')p.type='';
   (old?.shots||[]).forEach(s=>{if(!edit.shots.some(n=>n.src===s.src))removed.push(s.src)});
   (old?.gallery||[]).forEach(s=>{if(!edit.gallery.some(n=>n.src===s.src))removed.push(s.src)});p.gallery=edit.gallery;
+  const previousLogo=logoSource(old?.logo);
+  if(previousLogo&&previousLogo!==logoSource(edit.logo))removed.push(previousLogo);
+  if(edit.logo){p.logo=edit.logo;p.logo.saved=true;}
   p.shots=edit.shots;p.features=edit.feats.filter(f=>f.h.trim()).map(f=>({h:f.h.trim(),p:f.p.trim(),ul:f.ul.split('\n').map(x=>x.trim()).filter(Boolean)}));if(old)list[edit.i]=p;else list.push(p);
   edit=null;$('#form').hidden=true;mark();render();renderCats()};
 $('#del').onclick=()=>{const p=list[edit.i];if(!confirm('Удалить «'+p.name+'»?'))return;
-  [...(p.shots||[]),...(p.gallery||[])].forEach(s=>s.src&&removed.push(s.src));list.splice(edit.i,1);edit=null;$('#form').hidden=true;mark();render();renderCats()};
+  [...(p.shots||[]),...(p.gallery||[])].forEach(s=>s.src&&removed.push(s.src));if(logoSource(p.logo))removed.push(logoSource(p.logo));list.splice(edit.i,1);edit=null;$('#form').hidden=true;mark();render();renderCats()};
 
 const b64=b=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result.split(',')[1]);fr.readAsDataURL(b)});
 let busy=false,again=false;
+const projectMedia=p=>[...(p.shots||[]),...(p.gallery||[]),...(p.logo?.blob?[p.logo]:[])];
 async function publish(){if(busy){again=true;return}busy=true;$('#publish').hidden=true;const files=pending;
-  try{let n=0,total=list.reduce((a,p)=>a+[...(p.shots||[]),...(p.gallery||[])].filter(s=>s.blob).length,0);
-    for(const p of list)for(const s of [...(p.shots||[]),...(p.gallery||[])])if(s.blob){$('#bmsg').textContent=`Загрузка фото ${++n}/${total}…`;
+  try{let n=0,total=list.reduce((a,p)=>a+projectMedia(p).filter(s=>s.blob).length,0);
+    for(const p of list)for(const s of projectMedia(p))if(s.blob){$('#bmsg').textContent=`Загрузка фото ${++n}/${total}…`;
       const {sha}=await api({op:'blob',data:await b64(s.blob)}),path=`img/${p.id}/${Math.random().toString(36).slice(2,10)}.${{'image/jpeg':'jpg','image/png':'png','image/gif':'gif'}[s.blob.type]||'webp'}`;
-      files.push({path,sha});s.src=path;delete s.blob;delete s.preview}
+      files.push({path,sha});s.src=path;delete s.blob;if(s===p.logo&&s.preview)URL.revokeObjectURL(s.preview);delete s.preview}
     $('#bmsg').textContent='Публикация…';
-    const clean=list.map(p=>({...p,features:p.features||[],shots:(p.shots||[]).map(s=>({src:s.src,h:s.h||'',p:s.p||''})),gallery:(p.gallery||[]).map(s=>({src:s.src,alt:s.alt||'',file:Math.max(0,Math.min(2,Math.floor(Number(s.file)||0))),width:s.width||0,height:s.height||0}))}));
+    const clean=list.map(p=>({...p,logo:logoSource(p.logo)||undefined,features:p.features||[],shots:(p.shots||[]).map(s=>({src:s.src,h:s.h||'',p:s.p||''})),gallery:(p.gallery||[]).map(s=>({src:s.src,alt:s.alt||'',file:Math.max(0,Math.min(2,Math.floor(Number(s.file)||0))),width:s.width||0,height:s.height||0}))}));
     await api({op:'commit',json:JSON.stringify(clean),cats,files,del:removed.filter(x=>!files.some(f=>f.path===x)),msg:'Админка: обновление проектов'});
     removed=[];pending=[];dirty=false;$('#bmsg').textContent='Опубликовано. Сайт обновится примерно через минуту.';setTimeout(()=>{if(!dirty)$('#bar').hidden=true},6000);render()}
   catch(e){$('#bmsg').textContent='Ошибка: '+e.message;$('#publish').hidden=false}

@@ -6,56 +6,89 @@
     const playback = controls.querySelector('[data-playback]');
     const position = controls.querySelector('[data-position]');
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
-    const slides = media.map(({ src, alt }) => {
+    const slides = media.map(({ src, alt }, i) => {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'design-slide';
       const image = new Image();
       const label = document.createElement('textarea');
       label.innerHTML = alt;
       image.alt = label.value;
       image.draggable = false;
       image.decoding = 'async';
-      return { image, src };
+      card.setAttribute('aria-label', label.value || 'Изображение ' + (i + 1));
+      card.append(image);
+      stage.append(card);
+      card.addEventListener('click', () => {
+        const side = Number(card.dataset.side);
+        if (side) show(i, Math.sign(side));
+      });
+      return { card, image, src, offset: null };
     });
 
     let index = 0;
-    let current = null;
     let paused = motion.matches;
     let inView = false;
-    let disposed = false;
-    let changing = false;
+    let animating = false;
+    const animations = new Set();
+    const wrap = i => (i + slides.length) % slides.length;
 
-    function prepare(i) {
-      const { image, src } = slides[i];
-      if (!image.hasAttribute('src')) image.src = src;
-      return image;
+    function offsetFor(i, current, direction) {
+      const forward = wrap(i - current);
+      const back = forward - slides.length;
+      if (forward === -back) return direction > 0 ? forward : back;
+      return forward < -back ? forward : back;
     }
 
-    async function show(i, direction = 1) {
-      if (changing || disposed) return;
-      const next = (i + slides.length) % slides.length;
-      if (next === index && current) return;
-      changing = true;
-      const image = prepare(next);
-      await image.decode().catch(() => {});
-      if (disposed) return;
+    function pose(offset) {
+      const slot = Math.max(-2, Math.min(2, offset));
+      const depth = Math.abs(slot);
+      return {
+        transform: 'translate3d(' + (slot * 68) + '%,0,' + (-depth * 105) + 'px) rotateY(' + (-slot * 31) + 'deg) scale(' + (depth ? .90 : 1) + ')',
+        opacity: depth === 0 ? 1 : depth === 1 ? .63 : 0,
+        zIndex: 3 - depth,
+      };
+    }
+
+    function show(i, direction = 1, initial = false) {
+      if (animating) return;
+      const next = wrap(i);
+      if (next === index && !initial) return;
       index = next;
-      const previous = current;
-      current = image;
-      stage.replaceChildren(image);
+      const running = [];
+
+      slides.forEach((slide, n) => {
+        const offset = offsetFor(n, next, direction);
+        const poseNext = pose(offset);
+        const visible = Math.abs(offset) <= 1;
+        if (visible && !slide.image.hasAttribute('src')) slide.image.src = slide.src;
+        const { card } = slide;
+        card.style.transform = poseNext.transform;
+        card.style.opacity = poseNext.opacity;
+        card.style.zIndex = poseNext.zIndex;
+        card.setAttribute('aria-hidden', String(!visible));
+        card.setAttribute('aria-disabled', String(offset === 0));
+        card.tabIndex = visible && offset !== 0 ? 0 : -1;
+        if (visible && offset !== 0) card.dataset.side = offset;
+        else delete card.dataset.side;
+
+        if (!initial && !motion.matches && (visible || Math.abs(slide.offset) <= 1)) {
+          const before = pose(slide.offset);
+          const crosses = Math.abs(slide.offset - offset) > 1;
+          const frames = crosses
+            ? [before, { ...pose(slide.offset - direction), opacity: 0, offset: .45 }, { ...pose(offset + direction), opacity: 0, offset: .55 }, poseNext]
+            : [before, poseNext];
+          const animation = card.animate(frames, { duration: 540, easing: 'cubic-bezier(.22,.75,.28,1)' });
+          animations.add(animation);
+          running.push(animation.finished.catch(() => {}).finally(() => animations.delete(animation)));
+        }
+        slide.offset = offset;
+      });
       position.textContent = (index + 1) + ' / ' + slides.length;
-      if (previous && !motion.matches) {
-        stage.prepend(previous);
-        previous.setAttribute('aria-hidden', 'true');
-        image.removeAttribute('aria-hidden');
-        const duration = 460;
-        const timing = { duration, easing: 'cubic-bezier(.22,.75,.28,1)' };
-        const outgoing = previous.animate([{ opacity: 1, transform: 'translateX(0)' }, { opacity: 0, transform: 'translateX(' + (-direction * 15) + '%)' }], timing);
-        image.animate([{ opacity: 0, transform: 'translateX(' + (direction * 15) + '%)' }, { opacity: 1, transform: 'translateX(0)' }], timing);
-        await outgoing.finished.catch(() => {});
-        previous.remove();
-      } else {
-        image.removeAttribute('aria-hidden');
+      if (running.length) {
+        animating = true;
+        Promise.all(running).then(() => { animating = false; });
       }
-      changing = false;
     }
 
     function updatePlayback() {
@@ -69,8 +102,8 @@
     }
 
     controls.hidden = slides.length < 2;
-    show(0);
-    if (slides.length < 2) return () => { disposed = true; };
+    show(0, 1, true);
+    if (slides.length < 2) return () => {};
 
     controls.addEventListener('click', event => {
       const button = event.target.closest('button');
@@ -92,15 +125,15 @@
     const observer = new IntersectionObserver(([entry]) => { inView = entry.isIntersecting; });
     observer.observe(stage);
     const timer = setInterval(() => {
-      if (!paused && inView && !document.hidden && !stage.matches(':hover') && !root.contains(document.activeElement)) show(index + 1);
+      if (!paused && inView && !document.hidden && !root.matches(':hover') && !root.contains(document.activeElement)) show(index + 1);
     }, 4200);
     motion.addEventListener('change', onPreferenceChange);
     updatePlayback();
     return () => {
-      disposed = true;
       clearInterval(timer);
       observer.disconnect();
       motion.removeEventListener('change', onPreferenceChange);
+      animations.forEach(animation => animation.cancel());
     };
   }
 
