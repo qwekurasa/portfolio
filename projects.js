@@ -305,7 +305,7 @@ window.CUSTOM=[
  },
  {
   "id": "design-template-2",
-  "name": "Дизайн-проект 02",
+  "name": "бот торговли market CS:GO",
   "type": "",
   "created": "",
   "stack": "",
