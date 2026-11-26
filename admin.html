@@ -72,6 +72,13 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
 #project-details summary{cursor:pointer;padding-block:9px}
 #project-details summary:hover{color:#eee}
 .admin-group-title{padding:9px 16px;margin:0;background:#1c1c1e;color:#e5e5ea;font-size:13px}
+.project-colors{margin:0;padding:10px 12px 0;border:1px solid #fff2;border-radius:5px}
+.project-colors legend{padding:0 5px;color:var(--mute);font-size:12px}
+.project-color-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:6px 12px}
+.project-color-options label{margin:0 0 10px;display:flex;align-items:center;gap:8px;color:#e5e5ea;font-size:12px}
+.project-color-options input[type=checkbox]{width:auto;margin:0}
+.project-color-options input[type=color]{width:30px;height:26px;padding:2px;flex:none}
+.project-color-options input:disabled{opacity:.4}
 .logo-picker{margin:0 0 14px}
 .logo-picker input{width:auto;max-width:100%}
 .logo-preview{width:44px;height:44px;object-fit:contain;background:#000;border-radius:5px}
@@ -109,7 +116,12 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
       <div class="row"><img class="logo-preview" id="logo-preview" alt="Предпросмотр логотипа" hidden><button type="button" class="ghost" id="logo-remove" hidden>Убрать логотип</button></div>
       <p class="msg" id="logo-status" role="status" hidden></p>
     </div>
-    <label style="margin:0"><span>О проекте</span><textarea id="f-description" rows="5" placeholder="Что это за проект и что вы в нём сделали"></textarea></label>
+    <label><span>Заголовок перед описанием (необязательно)</span><input id="f-descriptionHeading" maxlength="80" placeholder="Например, «Результат для бренда»"></label>
+    <label><span>Описание проекта</span><textarea id="f-description" rows="5" placeholder="Что это за проект и что вы в нём сделали"></textarea></label>
+    <fieldset class="project-colors">
+      <legend>Цвет текста на странице</legend>
+      <div id="project-colors" class="project-color-options"></div>
+    </fieldset>
     </div>
     <h3 class="sec" id="gallery-title">Фото и GIF</h3>
     <div class="pad"><p class="note" id="gallery-note"></p></div>
@@ -192,7 +204,7 @@ $('#c-new').onkeydown=e=>{if(e.key==='Enter')$('#c-add').click()};
 $('#f-type').onchange=()=>{const n=$('#f-type').value==='+';$('#newcat').hidden=!n;if(n){$('#f-cat').value='';$('#f-cat').focus()}};
 $('#addCat').onclick=()=>{const c=addCat($('#f-cat').value);if(c)fillTypes(c)};
 $('#f-cat').onkeydown=e=>{if(e.key==='Enter')$('#addCat').click()};
-const F=['name','type','created','stack','platforms','link','pwa','device','folder','desc','description','section'];
+const F=['name','type','created','stack','platforms','link','pwa','device','folder','desc','description','descriptionHeading','section'];
 function syncSection(){
   const design=$('#f-section').value==='design';
   $('#project-details').hidden=design;
@@ -200,10 +212,35 @@ function syncSection(){
   $('#gallery-title').textContent=design?'Карусель проекта':'Галерея проекта';
   $('#gallery-note').textContent=(design?'Изображения будут показаны каруселью. ':'До пяти фото и GIF в ряд. Ширина зависит от пропорций файла. ')+ 'PNG, JPG, WebP и GIF. До 60 файлов, GIF зацикливаются и могут весить до 3 МБ.';
 }
+const colorFields=[
+  {key:'textColor',label:'Весь текст',fallback:'#e5e5ea'},
+  {key:'titleColor',label:'Название проекта',fallback:'#dddde2'},
+  {key:'descriptionColor',label:'Описание',fallback:'#94949a'},
+].map(({key,label,fallback})=>{
+  const row=document.createElement('label');
+  const enabled=document.createElement('input');
+  enabled.type='checkbox';
+  enabled.setAttribute('aria-label','Задать цвет: '+label);
+  const picker=document.createElement('input');
+  picker.type='color';
+  picker.setAttribute('aria-label','Цвет: '+label);
+  enabled.onchange=()=>{picker.disabled=!enabled.checked;};
+  row.append(enabled,picker,label);
+  $('#project-colors').append(row);
+  return {key,fallback,enabled,picker};
+});
+function loadProjectColors(project){
+  for(const {key,fallback,enabled,picker} of colorFields){
+    enabled.checked=/^#[0-9a-f]{6}$/i.test(project[key]||'');
+    picker.value=enabled.checked?project[key]:fallback;
+    picker.disabled=!enabled.checked;
+  }
+}
 $('#f-section').onchange=syncSection;
 $('#f-device').onchange=()=>{$('#pwaLbl').textContent=$('#f-device').value==='ipad'?'Адрес сайта — откроется в iPad (с https://)':'Адрес web-приложения — запустится в iPhone (с https://)'};
 function open(i){edit={i,shots:(i==null?[]:list[i].shots||[]).map(s=>({...s})),feats:(i==null?[]:list[i].features||[]).map(f=>({h:f.h||'',p:f.p||'',ul:(f.ul||[]).join('\n')}))};
   const p=i==null?{}:list[i];fillTypes(p.type);F.forEach(k=>k!=='type'&&($('#f-'+k).value=p[k]||(k==='device'?'phone':k==='folder'?'1':'')));$('#f-device').onchange();
+  loadProjectColors(p);
   $('#f-section').value=sectionOf(p);$('#project-details').open=false;syncSection();
   $('#galleryStatus').textContent='';
   edit.logo=typeof p.logo==='string'?{src:p.logo}:p.logo||null;
@@ -301,6 +338,7 @@ async function shrink(f){if(f.type==='image/gif'){if(f.size>3e6)throw new Error(
 
 $('#done').onclick=()=>{if(galleryLoading||logoLoading)return;const name=$('#f-name').value.trim();if(!name){$('#f-name').focus();return}
   const old=edit.i==null?null:list[edit.i],p={id:old?.id||Date.now().toString(36)};F.forEach(k=>p[k]=$('#f-'+k).value.trim());if(p.type==='+')p.type='';
+  for(const {key,enabled,picker} of colorFields)if(enabled.checked)p[key]=picker.value;
   (old?.shots||[]).forEach(s=>{if(!edit.shots.some(n=>n.src===s.src))removed.push(s.src)});
   (old?.gallery||[]).forEach(s=>{if(!edit.gallery.some(n=>n.src===s.src))removed.push(s.src)});p.gallery=edit.gallery;
   const previousLogo=logoSource(old?.logo);

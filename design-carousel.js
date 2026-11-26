@@ -2,8 +2,6 @@
   function mount(root, media) {
     if (!media.length) return () => {};
     const stage = root.querySelector('.design-carousel-stage');
-    const controls = root.querySelector('.design-carousel-controls');
-    const position = controls.querySelector('[data-position]');
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     // A two-image loop also needs a copy on each side of the active card.
     const items = media.length === 2 ? [...media, ...media] : media;
@@ -69,12 +67,20 @@
         const offset = offsetFor(index, angle);
         const slot = clamp(offset, -2, 2);
         const depth = Math.abs(slot);
-        const spacing = Math.min(centerWidth * .43 + slide.width * .38, width * .43);
+        const yaw = -slot * 34;
+        const radians = yaw * Math.PI / 180;
+        const z = -depth * 168;
+        // Bound the projected card corners so the frame stays inside the stage while turning.
+        const nearEdge = z + Math.abs(Math.sin(radians)) * slide.width / 2;
+        const magnification = 900 / (900 - nearEdge);
+        const halfCard = Math.abs(Math.cos(radians)) * slide.width / 2;
+        const maxShift = Math.max(0, (width / 2 - 4) / magnification - halfCard);
+        const shift = Math.sign(slot) * Math.min(depth * (centerWidth * .43 + slide.width * .38), maxShift);
         const opacity = depth < 1 ? 1 - depth * .37 : .63 * (1 - Math.min(1, (depth - 1) * 2));
         if (depth <= 1.5 && !slide.image.hasAttribute('src')) slide.image.src = slide.src;
         slide.card.style.opacity = opacity;
         slide.card.style.zIndex = Math.round(100 - depth * 40);
-        slide.card.style.transform = 'translate3d(' + (slot * spacing) + 'px,0,' + (-depth * 105) + 'px) rotateY(' + (-slot * 34) + 'deg)';
+        slide.card.style.transform = 'translate3d(' + shift + 'px,0,' + z + 'px) rotateY(' + yaw + 'deg)';
       });
     }
 
@@ -88,7 +94,6 @@
         if (side) card.dataset.side = offset;
         else delete card.dataset.side;
       });
-      position.textContent = (wrap(target) % media.length + 1) + ' / ' + media.length;
     }
 
     function schedule() {
@@ -120,7 +125,6 @@
       schedule();
     }
 
-    controls.hidden = count < 2;
     resize();
     updateControls();
     const sizeObserver = new ResizeObserver(resize);
@@ -128,6 +132,7 @@
     if (count < 2) return () => sizeObserver.disconnect();
 
     stage.classList.add('is-draggable');
+    stage.tabIndex = 0;
     stage.addEventListener('pointerdown', event => {
       if (!event.isPrimary || event.button !== 0) return;
       ignoreClick = false;
@@ -171,10 +176,6 @@
       event.stopPropagation();
       ignoreClick = false;
     }, true);
-    controls.addEventListener('click', event => {
-      const step = Number(event.target.closest('[data-step]')?.dataset.step);
-      if (step) go(target + step);
-    });
     root.addEventListener('keydown', event => {
       if (!['ArrowRight', 'ArrowLeft'].includes(event.key)) return;
       event.preventDefault();
