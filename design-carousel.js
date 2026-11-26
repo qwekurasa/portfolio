@@ -41,13 +41,13 @@
     function resize() {
       width = stage.clientWidth;
       height = stage.clientHeight;
-      const maxWidth = Math.max(0, Math.min(width * .62, 680) - 2);
-      const maxHeight = Math.max(0, height * .94 - 2);
+      const maxWidth = Math.max(0, Math.min(width * .62, 680));
+      const maxHeight = Math.max(0, height * .94);
       for (const slide of slides) {
         const innerHeight = Math.min(maxHeight, maxWidth / slide.ratio);
-        slide.width = innerHeight * slide.ratio + 2;
+        slide.width = innerHeight * slide.ratio;
         slide.card.style.width = slide.width + 'px';
-        slide.card.style.height = innerHeight + 2 + 'px';
+        slide.card.style.height = innerHeight + 'px';
       }
       draw();
     }

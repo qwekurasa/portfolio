@@ -414,13 +414,13 @@ body[data-v=index]{background:#fff}
 .design-title-logo{display:block;flex:none;width:auto;height:1em;max-width:3em;object-fit:contain}
 .design-carousel{width:100%;margin:0 auto 30px}
 .design-carousel-stage{position:relative;height:clamp(220px,48vw,460px);overflow:visible;isolation:isolate;perspective:900px}
-.design-slide{position:absolute;inset:0;margin:auto;padding:0;display:grid;place-items:center;border:1px solid transparent;background:#101011;color:inherit;box-shadow:0 10px 30px #0009}
-.design-slide::after{content:"";position:absolute;inset:-1px;z-index:1;pointer-events:none;box-shadow:inset 0 0 0 1px #363638}
+.design-slide{position:absolute;inset:0;margin:auto;padding:0;display:grid;place-items:center;border:0;background:transparent;color:inherit;-webkit-tap-highlight-color:transparent}
 .design-slide[aria-hidden="true"]{pointer-events:none}
 .design-carousel-stage.is-draggable{cursor:grab;touch-action:pan-y;user-select:none}
 .design-carousel-stage.is-dragging,.design-carousel-stage.is-dragging .design-slide{cursor:grabbing}
 .design-slide[data-side]{cursor:pointer}
-.design-slide:focus-visible{outline-offset:-3px}
+.design-slide:focus,.design-carousel-stage:focus{outline:none}
+.design-slide:focus-visible img,.design-carousel-stage:focus-visible .design-slide[aria-disabled="true"] img{filter:brightness(1.24)}
 .design-slide img{position:absolute;inset:0;display:block;width:100%;height:100%;min-height:0;object-fit:contain}
 .design-carousel-stage:has(.design-placeholder){height:clamp(160px,38vw,360px);border:1px solid #fff2;border-radius:7px;background:#101011}
 .design-placeholder{margin:0;display:grid;place-items:center;height:100%;color:#9b9ba0}
@@ -465,7 +465,7 @@ body[data-v=index]{background:#fff}
 <script src="project-cat-3d.js?v=1"></script>
 <script src="phone.js?v=baecc87"></script>
 <script src="project-sections.js?v=2"></script>
-<script src="design-carousel.js?v=4"></script>
+<script src="design-carousel.js?v=5"></script>
 <script src="case-files.js?v=five-per-row"></script>
 <script>
 const $=s=>document.querySelector(s);
