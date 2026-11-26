@@ -87,7 +87,7 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
 </head>
 <body>
 <main>
-<nav class="menu"><b>qwekurasa · админка</b><a href="/">← на сайт</a><a href="/#index">Проекты</a></nav>
+<nav class="menu"><b>qwekurasa · админка</b><a href="https://qwekurasa.github.io/">← на сайт</a><a href="https://qwekurasa.github.io/#index">Проекты</a></nav>
 
 <section class="win" id="login"><h2 class="tab on">Login</h2><div class="pad">
   <label><span>Пароль</span><input type="password" id="pw" autocomplete="current-password"></label>
@@ -185,7 +185,7 @@ function render(){
     const projects=list.map((p,i)=>({p,i})).filter(({p})=>sectionOf(p)===key);
     if(!projects.length)return '';
     return `<h3 class="admin-group-title">${label}</h3>${projects.map(({p,i},row)=>`<div class="pr"><span class="c">P${String(i+1).padStart(3,'0')}</span><span>${esc(p.name)}</span><div>
-      <button class="ghost" data-a="move" data-i="${i}" data-to="${projects[row-1]?.i??''}" aria-label="Выше" ${row?'':'disabled'}>↑</button><button class="ghost" data-a="move" data-i="${i}" data-to="${projects[row+1]?.i??''}" aria-label="Ниже" ${row<projects.length-1?'':'disabled'}>↓</button><button class="ghost" data-a="edit" data-i="${i}">Изменить</button>${p.id?`<a class="btn ghost" href="/#p-c${esc(p.id)}" target="_blank" rel="noopener">Открыть ↗</a>`:''}</div></div>`).join('')}`;
+      <button class="ghost" data-a="move" data-i="${i}" data-to="${projects[row-1]?.i??''}" aria-label="Выше" ${row?'':'disabled'}>↑</button><button class="ghost" data-a="move" data-i="${i}" data-to="${projects[row+1]?.i??''}" aria-label="Ниже" ${row<projects.length-1?'':'disabled'}>↓</button><button class="ghost" data-a="edit" data-i="${i}">Изменить</button>${p.id?`<a class="btn ghost" href="https://qwekurasa.github.io/#p-c${esc(p.id)}" target="_blank" rel="noopener">Открыть ↗</a>`:''}</div></div>`).join('')}`;
   }).join('')||'<p class="pr note" style="display:block">Пока нет проектов.</p>';
 }
 $('#list').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=+b.dataset.i;
@@ -360,7 +360,7 @@ async function publish(){if(busy){again=true;return}busy=true;$('#publish').hidd
     $('#bmsg').textContent='Публикация…';
     const clean=list.map(p=>({...p,logo:logoSource(p.logo)||undefined,features:p.features||[],shots:(p.shots||[]).map(s=>({src:s.src,h:s.h||'',p:s.p||''})),gallery:(p.gallery||[]).map(s=>({src:s.src,alt:s.alt||'',file:Math.max(0,Math.min(2,Math.floor(Number(s.file)||0))),width:s.width||0,height:s.height||0}))}));
     await api({op:'commit',json:JSON.stringify(clean),cats,files,del:removed.filter(x=>!files.some(f=>f.path===x)),msg:'Админка: обновление проектов'});
-    removed=[];pending=[];dirty=false;$('#bmsg').textContent='Опубликовано. Сайт обновится примерно через минуту.';setTimeout(()=>{if(!dirty)$('#bar').hidden=true},6000);render()}
+    removed=[];pending=[];dirty=false;$('#bmsg').textContent='Опубликовано. GitHub Pages проверяет обновления каждые 15 минут.';setTimeout(()=>{if(!dirty)$('#bar').hidden=true},6000);render()}
   catch(e){$('#bmsg').textContent='Ошибка: '+e.message;$('#publish').hidden=false}
   busy=false;if(again){again=false;publish()}}
 $('#publish').onclick=publish;
