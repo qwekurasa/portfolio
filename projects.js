@@ -370,6 +370,25 @@ window.CUSTOM=[
   "gallery": [],
   "shots": [],
   "features": []
+ },
+ {
+  "id": "mwxjw1e7",
+  "name": "tempt - магазин одежды",
+  "type": "",
+  "created": "",
+  "stack": "",
+  "platforms": "",
+  "link": "",
+  "pwa": "",
+  "device": "phone",
+  "folder": "1",
+  "desc": "",
+  "description": "",
+  "descriptionHeading": "",
+  "section": "design",
+  "gallery": [],
+  "shots": [],
+  "features": []
  }
 ];
 window.CATS=[];
