@@ -327,6 +327,24 @@ window.CUSTOM=[
   "gallery": [],
   "features": [],
   "shots": []
+ },
+ {
+  "id": "mwxbggph",
+  "name": "trade bot - market cs:go",
+  "type": "",
+  "created": "",
+  "stack": "",
+  "platforms": "",
+  "link": "",
+  "pwa": "",
+  "device": "phone",
+  "folder": "1",
+  "desc": "",
+  "description": "",
+  "section": "llm",
+  "gallery": [],
+  "shots": [],
+  "features": []
  }
 ];
 window.CATS=[];
