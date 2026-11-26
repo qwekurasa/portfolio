@@ -84,12 +84,14 @@ window.CUSTOM=[
   "created": "24.11.2026",
   "stack": "",
   "platforms": "iPhone",
-  "link": "",
-  "pwa": "",
+  "link": "https://qwekurasa.github.io/thinkinbrain/",
+  "pwa": "https://qwekurasa.github.io/thinkinbrain/",
   "device": "phone",
   "folder": "0",
   "desc": "Thinkinbrain — идейник",
   "description": "Thinkinbrain — идейник для мыслей, которые приходят в самый неожиданный момент. Открываешь приложение, записываешь идею в пару строк и возвращаешься к ней позже, когда есть время её развить.",
+  "descriptionHeading": "",
+  "section": "llm",
   "gallery": [
    {
     "src": "img/mwv4utb5/bgc3n243.gif",
