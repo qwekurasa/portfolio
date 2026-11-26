@@ -198,7 +198,7 @@ function syncSection(){
   $('#project-details').hidden=design;
   $('#logo-picker').hidden=!design;
   $('#gallery-title').textContent=design?'Карусель проекта':'Галерея проекта';
-  $('#gallery-note').textContent=(design?'Изображения будут показаны каруселью. ':'Фото и GIF сохраняют пропорции и переносятся на следующую строку. ')+ 'PNG, JPG, WebP и GIF. До 60 файлов, GIF зацикливаются и могут весить до 3 МБ.';
+  $('#gallery-note').textContent=(design?'Изображения будут показаны каруселью. ':'До пяти фото и GIF в ряд. Ширина зависит от пропорций файла. ')+ 'PNG, JPG, WebP и GIF. До 60 файлов, GIF зацикливаются и могут весить до 3 МБ.';
 }
 $('#f-section').onchange=syncSection;
 $('#f-device').onchange=()=>{$('#pwaLbl').textContent=$('#f-device').value==='ipad'?'Адрес сайта — откроется в iPad (с https://)':'Адрес web-приложения — запустится в iPhone (с https://)'};

@@ -3,10 +3,17 @@
     if (!media.length) return () => {};
     const stage = root.querySelector('.design-carousel-stage');
     const controls = root.querySelector('.design-carousel-controls');
-    const playback = controls.querySelector('[data-playback]');
     const position = controls.querySelector('[data-position]');
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
-    const slides = media.map(({ src, alt }, i) => {
+    // A two-image loop also needs a copy on each side of the active card.
+    const items = media.length === 2 ? [...media, ...media] : media;
+    const count = items.length;
+    const wrap = value => ((value % count) + count) % count;
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    let width = 0, height = 0, angle = 0, target = 0, direction = 1;
+    let frame = 0, timer = 0, drag = null, ignoreClick = false, visible = false;
+
+    const slides = items.map(({ src, alt, width: sourceWidth, height: sourceHeight }, i) => {
       const card = document.createElement('button');
       card.type = 'button';
       card.className = 'design-slide';
@@ -16,124 +23,174 @@
       image.alt = label.value;
       image.draggable = false;
       image.decoding = 'async';
-      card.setAttribute('aria-label', label.value || 'Изображение ' + (i + 1));
+      card.setAttribute('aria-label', label.value || 'Изображение ' + (i % media.length + 1));
       card.append(image);
       stage.append(card);
       card.addEventListener('click', () => {
         const side = Number(card.dataset.side);
-        if (side) show(i, Math.sign(side));
+        if (side) go(target + side);
       });
-      return { card, image, src, offset: null };
+      const ratio = sourceWidth / sourceHeight;
+      const slide = { card, image, src, ratio: ratio > 0 && Number.isFinite(ratio) ? ratio : 1 };
+      image.addEventListener('load', () => {
+        if (!image.naturalWidth || !image.naturalHeight || !stage.isConnected) return;
+        slide.ratio = image.naturalWidth / image.naturalHeight;
+        resize();
+      }, { once: true });
+      return slide;
     });
 
-    let index = 0;
-    let paused = motion.matches;
-    let inView = false;
-    let animating = false;
-    const animations = new Set();
-    const wrap = i => (i + slides.length) % slides.length;
-
-    function offsetFor(i, current, direction) {
-      const forward = wrap(i - current);
-      const back = forward - slides.length;
-      if (forward === -back) return direction > 0 ? forward : back;
-      return forward < -back ? forward : back;
+    function resize() {
+      width = stage.clientWidth;
+      height = stage.clientHeight;
+      const maxWidth = Math.max(0, Math.min(width * .62, 680) - 2);
+      const maxHeight = Math.max(0, height * .94 - 2);
+      for (const slide of slides) {
+        const innerHeight = Math.min(maxHeight, maxWidth / slide.ratio);
+        slide.width = innerHeight * slide.ratio + 2;
+        slide.card.style.width = slide.width + 'px';
+        slide.card.style.height = innerHeight + 2 + 'px';
+      }
+      draw();
     }
 
-    function pose(offset) {
-      const slot = Math.max(-2, Math.min(2, offset));
-      const depth = Math.abs(slot);
-      return {
-        transform: 'translate3d(' + (slot * 68) + '%,0,' + (-depth * 105) + 'px) rotateY(' + (-slot * 31) + 'deg) scale(' + (depth ? .90 : 1) + ')',
-        opacity: depth === 0 ? 1 : depth === 1 ? .63 : 0,
-        zIndex: 3 - depth,
-      };
+    function offsetFor(index, current) {
+      const forward = wrap(index - current);
+      const backward = forward - count;
+      if (forward === -backward) return direction > 0 ? forward : backward;
+      return forward < -backward ? forward : backward;
     }
 
-    function show(i, direction = 1, initial = false) {
-      if (animating) return;
-      const next = wrap(i);
-      if (next === index && !initial) return;
-      index = next;
-      const running = [];
-
-      slides.forEach((slide, n) => {
-        const offset = offsetFor(n, next, direction);
-        const poseNext = pose(offset);
-        const visible = Math.abs(offset) <= 1;
-        if (visible && !slide.image.hasAttribute('src')) slide.image.src = slide.src;
-        const { card } = slide;
-        card.style.transform = poseNext.transform;
-        card.style.opacity = poseNext.opacity;
-        card.style.zIndex = poseNext.zIndex;
-        card.setAttribute('aria-hidden', String(!visible));
-        card.setAttribute('aria-disabled', String(offset === 0));
-        card.tabIndex = visible && offset !== 0 ? 0 : -1;
-        if (visible && offset !== 0) card.dataset.side = offset;
-        else delete card.dataset.side;
-
-        if (!initial && !motion.matches && (visible || Math.abs(slide.offset) <= 1)) {
-          const before = pose(slide.offset);
-          const crosses = Math.abs(slide.offset - offset) > 1;
-          const frames = crosses
-            ? [before, { ...pose(slide.offset - direction), opacity: 0, offset: .45 }, { ...pose(offset + direction), opacity: 0, offset: .55 }, poseNext]
-            : [before, poseNext];
-          const animation = card.animate(frames, { duration: 540, easing: 'cubic-bezier(.22,.75,.28,1)' });
-          animations.add(animation);
-          running.push(animation.finished.catch(() => {}).finally(() => animations.delete(animation)));
-        }
-        slide.offset = offset;
+    function draw() {
+      const base = Math.floor(angle), fraction = angle - base;
+      const leftWidth = slides[wrap(base)].width;
+      const centerWidth = leftWidth + (slides[wrap(base + 1)].width - leftWidth) * fraction;
+      slides.forEach((slide, index) => {
+        const offset = offsetFor(index, angle);
+        const slot = clamp(offset, -2, 2);
+        const depth = Math.abs(slot);
+        const spacing = Math.min(centerWidth * .43 + slide.width * .38, width * .43);
+        const opacity = depth < 1 ? 1 - depth * .37 : .63 * (1 - Math.min(1, (depth - 1) * 2));
+        if (depth <= 1.5 && !slide.image.hasAttribute('src')) slide.image.src = slide.src;
+        slide.card.style.opacity = opacity;
+        slide.card.style.zIndex = Math.round(100 - depth * 40);
+        slide.card.style.transform = 'translate3d(' + (slot * spacing) + 'px,0,' + (-depth * 105) + 'px) rotateY(' + (-slot * 34) + 'deg)';
       });
-      position.textContent = (index + 1) + ' / ' + slides.length;
-      if (running.length) {
-        animating = true;
-        Promise.all(running).then(() => { animating = false; });
+    }
+
+    function updateControls() {
+      slides.forEach(({ card }, index) => {
+        const offset = offsetFor(index, target);
+        const side = Math.abs(offset) === 1;
+        card.setAttribute('aria-hidden', String(Math.abs(offset) > 1));
+        card.setAttribute('aria-disabled', String(offset === 0));
+        card.tabIndex = side ? 0 : -1;
+        if (side) card.dataset.side = offset;
+        else delete card.dataset.side;
+      });
+      position.textContent = (wrap(target) % media.length + 1) + ' / ' + media.length;
+    }
+
+    function schedule() {
+      clearTimeout(timer);
+      if (count < 2 || !visible || document.hidden || motion.matches || drag) return;
+      timer = setTimeout(() => go(target + 1), 3000);
+    }
+
+    function go(next) {
+      cancelAnimationFrame(frame);
+      if (next !== target) direction = Math.sign(next - target);
+      target = next;
+      updateControls();
+      const start = angle;
+      if (motion.matches || Math.abs(start - target) < .001) {
+        angle = target;
+        draw();
+      } else {
+        const started = performance.now();
+        function turn(now) {
+          const t = clamp((now - started) / 580, 0, 1);
+          const eased = t * t * (3 - 2 * t);
+          angle = start + (target - start) * eased;
+          draw();
+          if (t < 1) frame = requestAnimationFrame(turn);
+        }
+        frame = requestAnimationFrame(turn);
       }
+      schedule();
     }
 
-    function updatePlayback() {
-      playback.textContent = paused ? 'Авто · выкл.' : 'Авто · вкл.';
-      playback.setAttribute('aria-pressed', String(!paused));
+    controls.hidden = count < 2;
+    resize();
+    updateControls();
+    const sizeObserver = new ResizeObserver(resize);
+    sizeObserver.observe(stage);
+    if (count < 2) return () => sizeObserver.disconnect();
+
+    stage.classList.add('is-draggable');
+    stage.addEventListener('pointerdown', event => {
+      if (!event.isPrimary || event.button !== 0) return;
+      ignoreClick = false;
+      drag = { pointer: event.pointerId, x: event.clientX, angle, moved: false };
+      clearTimeout(timer);
+    });
+    stage.addEventListener('pointermove', event => {
+      if (drag?.pointer !== event.pointerId) return;
+      const delta = event.clientX - drag.x;
+      if (!drag.moved) {
+        if (Math.abs(delta) < 6) return;
+        cancelAnimationFrame(frame);
+        drag.angle = angle;
+        drag.moved = true;
+        stage.setPointerCapture(event.pointerId);
+        stage.classList.add('is-dragging');
+      }
+      direction = delta < 0 ? 1 : -1;
+      const distance = Math.max(80, width * .28);
+      angle = drag.angle - clamp(delta / distance, -2, 2);
+      draw();
+    });
+    function endDrag(event) {
+      if (drag?.pointer !== event.pointerId) return;
+      const { moved, angle: start } = drag;
+      drag = null;
+      stage.classList.remove('is-dragging');
+      if (!moved) { schedule(); return; }
+      ignoreClick = true;
+      const delta = angle - start;
+      const next = Math.round(angle + (Math.abs(delta) > .16 ? Math.sign(delta) * .34 : 0));
+      go(next);
     }
-
-    function onPreferenceChange() {
-      paused = motion.matches;
-      updatePlayback();
-    }
-
-    controls.hidden = slides.length < 2;
-    show(0, 1, true);
-    if (slides.length < 2) return () => {};
-
+    stage.addEventListener('pointerup', endDrag);
+    stage.addEventListener('pointercancel', endDrag);
+    stage.addEventListener('lostpointercapture', endDrag);
+    stage.addEventListener('pointerleave', event => { if (!drag?.moved) endDrag(event); });
+    stage.addEventListener('click', event => {
+      if (!ignoreClick || !event.detail) return;
+      event.preventDefault();
+      event.stopPropagation();
+      ignoreClick = false;
+    }, true);
     controls.addEventListener('click', event => {
-      const button = event.target.closest('button');
-      if (!button) return;
-      if (button === playback) {
-        paused = !paused;
-        updatePlayback();
-        return;
-      }
-      const direction = Number(button.dataset.step);
-      show(index + direction, direction);
+      const step = Number(event.target.closest('[data-step]')?.dataset.step);
+      if (step) go(target + step);
     });
     root.addEventListener('keydown', event => {
       if (!['ArrowRight', 'ArrowLeft'].includes(event.key)) return;
       event.preventDefault();
-      const direction = event.key === 'ArrowRight' ? 1 : -1;
-      show(index + direction, direction);
+      go(target + (event.key === 'ArrowRight' ? 1 : -1));
     });
-    const observer = new IntersectionObserver(([entry]) => { inView = entry.isIntersecting; });
+    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; schedule(); });
     observer.observe(stage);
-    const timer = setInterval(() => {
-      if (!paused && inView && !document.hidden && !root.matches(':hover') && !root.contains(document.activeElement)) show(index + 1);
-    }, 4200);
-    motion.addEventListener('change', onPreferenceChange);
-    updatePlayback();
+    document.addEventListener('visibilitychange', schedule);
+    motion.addEventListener('change', schedule);
     return () => {
-      clearInterval(timer);
+      cancelAnimationFrame(frame);
+      clearTimeout(timer);
       observer.disconnect();
-      motion.removeEventListener('change', onPreferenceChange);
-      animations.forEach(animation => animation.cancel());
+      sizeObserver.disconnect();
+      document.removeEventListener('visibilitychange', schedule);
+      motion.removeEventListener('change', schedule);
     };
   }
 

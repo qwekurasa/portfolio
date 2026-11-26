@@ -389,8 +389,9 @@ body[data-v=index]{background:#fff}
  .st.pad .st-phone{grid-area:1/1}.st.pad .st-br{grid-area:2/1}.st.pad .st-fl{grid-area:3/1}
  .st.pad>.st-fdw{grid-area:4/1}
 }
-.project-photo-grid{display:flex;flex-wrap:wrap;gap:3px;container-type:inline-size;width:100%;margin:0;padding:0;filter:invert(1);background:#000;overflow:hidden}
-.project-photo-grid .project-photo-tile{position:relative;flex:none;height:min(max(120px,calc((100cqw - 15px) / 6)),calc(100cqw / var(--widest,1)));aspect-ratio:var(--media-ratio,1);margin:0;padding:0;border:0;overflow:hidden;background:#000;}
+.project-photo-grid{display:flex;flex-direction:column;gap:3px;container-type:inline-size;width:100%;margin:0;padding:0;filter:invert(1);background:#000;overflow:hidden}
+.project-photo-row{display:flex;flex-wrap:wrap;gap:3px}
+.project-photo-grid .project-photo-tile{position:relative;flex:none;height:min(max(120px,calc((100cqw - 12px) / 5)),calc(100cqw / var(--widest,1)));aspect-ratio:var(--media-ratio,1);margin:0;padding:0;border:0;overflow:hidden;background:#000;}
 .project-photo-grid .project-photo-tile::after,.project-description::after{content:"";position:absolute;inset:0;pointer-events:none;--corner:clamp(10px,1.4vw,22px);--line:linear-gradient(#292929,#292929);background:var(--line) top left/var(--corner) 3px,var(--line) top left/3px var(--corner),var(--line) top right/var(--corner) 3px,var(--line) top right/3px var(--corner),var(--line) bottom left/var(--corner) 3px,var(--line) bottom left/3px var(--corner),var(--line) bottom right/var(--corner) 3px,var(--line) bottom right/3px var(--corner);background-repeat:no-repeat}
 .project-description{position:relative;filter:invert(1);background:#000;color:#b8b8bd;margin:0 0 3px;padding:clamp(20px,3vw,52px);text-align:left;overflow-wrap:anywhere;font-size:clamp(14px,1.02vw,17px);line-height:1.65}
 .project-description h2{margin:0 0 10px;color:#fff;font-size:1.12em;font-weight:600}
@@ -400,20 +401,23 @@ body[data-v=index]{background:#fff}
 #list>section{padding-bottom:8px}
 .project-section-title>span{grid-column:2/-1}
 .design-project{filter:invert(1);background:#000;color:#e5e5ea;min-height:100svh;padding:clamp(64px,9vw,100px) 0 40px}
-.design-project .project-description{filter:none}
+.design-project .project-description{filter:none;color:#94949a;font-size:clamp(12px,calc(1.02vw - 2px),15px)}
+.design-project .project-description::after{content:none}
+.design-project .project-description h2{color:#dddde2;font-size:clamp(14px,calc(1.14vw - 2px),17px)}
 .design-project .project-description p{max-width:none}
 .design-content{width:min(1040px,calc(100% - 32px));margin-inline:auto}
 .design-title{display:flex;justify-content:center;align-items:center;gap:.55em;margin:0 0 18px;text-align:center;font-size:clamp(11px,1vw,13px);font-weight:500;line-height:1.4}
 .design-title-logo{display:block;flex:none;width:auto;height:1em;max-width:3em;object-fit:contain}
 .design-carousel{width:100%;margin:0 auto 30px}
 .design-carousel-stage{position:relative;height:clamp(220px,48vw,460px);overflow:hidden;isolation:isolate;perspective:900px}
-.design-slide{position:absolute;top:2%;bottom:2%;left:0;right:0;margin:auto;width:min(54%,470px);padding:0;display:grid;place-items:center;border:1px solid #363638;border-radius:8px;background:#101011;overflow:hidden;color:inherit;box-shadow:0 10px 30px #0009}
+.design-slide{position:absolute;inset:0;margin:auto;padding:0;display:grid;place-items:center;border:1px solid #363638;background:#101011;color:inherit;box-shadow:0 10px 30px #0009}
 .design-slide[aria-hidden="true"]{pointer-events:none}
+.design-carousel-stage.is-draggable{cursor:grab;touch-action:pan-y;user-select:none}
+.design-carousel-stage.is-dragging,.design-carousel-stage.is-dragging .design-slide{cursor:grabbing}
 .design-slide[data-side]{cursor:pointer}
 .design-slide:focus-visible{outline-offset:-3px}
 .design-slide img{position:absolute;inset:0;display:block;width:100%;height:100%;min-height:0;object-fit:contain}
 .design-carousel-stage:has(.design-placeholder){height:clamp(160px,38vw,360px);border:1px solid #fff2;border-radius:7px;background:#101011}
-@media(max-width:700px){.design-slide{width:64%}}
 .design-placeholder{margin:0;display:grid;place-items:center;height:100%;color:#9b9ba0}
 .design-carousel-controls{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:12px;color:#b8b8bd}
 .design-carousel-controls button{font:inherit;min-height:34px;min-width:34px;padding:4px 10px;background:#19191b;color:#eee;border:1px solid #fff2;border-radius:5px;cursor:pointer}
@@ -460,8 +464,8 @@ body[data-v=index]{background:#fff}
 <script src="project-cat-3d.js?v=1"></script>
 <script src="phone.js?v=baecc87"></script>
 <script src="project-sections.js?v=2"></script>
-<script src="design-carousel.js?v=2"></script>
-<script src="case-files.js?v=natural-ratio"></script>
+<script src="design-carousel.js?v=3"></script>
+<script src="case-files.js?v=five-per-row"></script>
 <script>
 const $=s=>document.querySelector(s);
 const {labels:sectionLabels,sectionOf}=window.ProjectSections;
@@ -527,7 +531,6 @@ function renderDesignProject(project){
         <button type="button" data-step="-1" aria-label="Предыдущее изображение">←</button>
         <span data-position></span>
         <button type="button" data-step="1" aria-label="Следующее изображение">→</button>
-        <button type="button" data-playback aria-label="Автопрокрутка"></button>
       </div>
     </section>
   </div></article>`;
