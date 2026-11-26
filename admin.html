@@ -119,7 +119,7 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
     <label><span>Заголовок перед описанием (необязательно)</span><input id="f-descriptionHeading" maxlength="80" placeholder="Например, «Результат для бренда»"></label>
     <label><span>Описание проекта</span><textarea id="f-description" rows="5" placeholder="Что это за проект и что вы в нём сделали"></textarea></label>
     <fieldset class="project-colors">
-      <legend>Цвет текста на странице</legend>
+      <legend>Цвета страницы</legend>
       <div id="project-colors" class="project-color-options"></div>
     </fieldset>
     </div>
@@ -213,6 +213,7 @@ function syncSection(){
   $('#gallery-note').textContent=(design?'Изображения будут показаны каруселью. ':'До пяти фото и GIF в ряд. Ширина зависит от пропорций файла. ')+ 'PNG, JPG, WebP и GIF. До 60 файлов, GIF зацикливаются и могут весить до 3 МБ.';
 }
 const colorFields=[
+  {key:'backgroundColor',label:'Фон проекта',fallback:'#000000'},
   {key:'textColor',label:'Весь текст',fallback:'#e5e5ea'},
   {key:'titleColor',label:'Название проекта',fallback:'#dddde2'},
   {key:'descriptionColor',label:'Описание',fallback:'#94949a'},
