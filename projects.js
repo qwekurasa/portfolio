@@ -269,6 +269,27 @@ window.CUSTOM=[
     "ul": []
    }
   ]
+ },
+ {
+  "id": "design-template-1",
+  "name": "Дизайн-проект 01",
+  "section": "design",
+  "description": "",
+  "gallery": []
+ },
+ {
+  "id": "design-template-2",
+  "name": "Дизайн-проект 02",
+  "section": "design",
+  "description": "",
+  "gallery": []
+ },
+ {
+  "id": "design-template-3",
+  "name": "Дизайн-проект 03",
+  "section": "design",
+  "description": "",
+  "gallery": []
  }
 ];
 window.CATS=[];

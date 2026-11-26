@@ -69,6 +69,10 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
 .bar{background:#202023;color:#f2f2f7;border-top:1px solid rgba(255,255,255,.1)}
 .bar button{background:#f2f2f7;color:#000;border-color:#f2f2f7}
 .del{border-color:var(--bad);background:transparent}
+#project-details summary{cursor:pointer;padding-block:9px}
+#project-details summary:hover{color:#eee}
+.admin-group-title{padding:9px 16px;margin:0;background:#1c1c1e;color:#e5e5ea;font-size:13px}
+#gallery .item img{object-fit:contain;background:#090909}
 </style>
 </head>
 <body>
@@ -83,7 +87,7 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
 
 <div id="app" hidden>
   <section class="win"><h2 class="tab">Projects Browser</h2>
-    <div class="pad"><p class="note">Проекты идут на сайте в этом порядке и встают на места «Проект 01…10».</p>
+    <div class="pad"><p class="note">Стрелками можно менять порядок проектов внутри разделов.</p>
     <button id="add">+ Новый проект</button></div>
     <div id="list" style="border-top:1px solid rgba(255,255,255,.08)"></div>
     <p class="sec">Категории</p>
@@ -93,7 +97,19 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
 
   <section class="win" id="form" hidden><h2 class="tab on" id="ftitle">Project Editor</h2>
     <div class="pad">
-    <label><span>Название *</span><input id="f-name" maxlength="60"></label>
+    <div class="two">
+      <label><span>Раздел портфолио</span><select id="f-section"></select></label>
+      <label><span>Название *</span><input id="f-name" maxlength="60" required></label>
+    </div>
+    <label style="margin:0"><span>О проекте</span><textarea id="f-description" rows="5" placeholder="Что это за проект и что вы в нём сделали"></textarea></label>
+    </div>
+    <h3 class="sec" id="gallery-title">Фото и GIF</h3>
+    <div class="pad"><p class="note" id="gallery-note"></p></div>
+    <div id="gallery"></div>
+    <div class="pad"><label class="btn" style="display:inline-block;margin:0">+ Добавить фото / GIF<input type="file" id="galleryFiles" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden></label><p class="note" id="galleryStatus" role="status"></p></div>
+    <details id="project-details">
+      <summary class="sec">Устройство, ссылки и дополнительные сведения</summary>
+      <div class="pad">
     <div class="two">
       <label><span>Категория</span><select id="f-type"></select></label>
       <label><span>Дата создания</span><input id="f-created" placeholder="10.10.2026"></label>
@@ -103,24 +119,20 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
     <div class="row" id="newcat" hidden style="margin:-4px 0 12px"><input id="f-cat" maxlength="40" placeholder="Название новой категории" style="flex:1;width:auto"><button id="addCat">Добавить</button></div>
     <label><span>Ссылка (с https://)</span><input id="f-link" placeholder="https://…"></label>
     <div class="two">
-      <label><span>Устройство слева на странице проекта</span><select id="f-device"><option value="phone">iPhone — приложение</option><option value="ipad">iPad — сайт</option></select></label>
+      <label><span>Устройство на странице проекта</span><select id="f-device"><option value="phone">iPhone — приложение</option><option value="ipad">iPad — сайт</option></select></label>
       <label><span id="pwaLbl">Адрес web-приложения (с https://)</span><input id="f-pwa" placeholder="https://…"></label>
     </div>
     <label><span>Папка с экранами на странице проекта</span><select id="f-folder"><option value="1">Показывать</option><option value="0">Не показывать</option></select></label>
     <label style="margin:0"><span>Описание — курсивом в System Browser</span><textarea id="f-desc"></textarea></label>
-    <label style="margin:0"><span>Развёрнутое описание над фото и GIF</span><textarea id="f-description" rows="6"></textarea></label>
-    </div>
+      </div>
     <p class="sec">Экраны — окна Form Editor</p>
     <div id="shots"></div>
     <div class="pad"><label class="btn" style="display:inline-block;margin:0">+ Добавить фото<input type="file" id="files" accept="image/*" multiple hidden></label></div>
-    <p class="sec">Фотографии под проектом</p>
-    <div class="pad"><p class="note">Фото и GIF отображаются целиком, с одинаковой высотой и шириной по исходным пропорциям. Если не помещаются, переходят на следующий ряд. GIF зацикливаются автоматически. До 60 изображений; GIF — до 3 МБ.</p></div>
-    <div id="gallery"></div>
-    <div class="pad"><label class="btn" style="display:inline-block;margin:0">+ Добавить фото / GIF<input type="file" id="galleryFiles" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden></label><p class="note" id="galleryStatus" role="status"></p></div>
     <p class="sec">Функции — окно File List</p>
     <div id="feats"></div>
     <div class="pad"><button id="addF">+ Добавить функцию</button></div>
-    <div class="pad row" style="border-top:1px solid rgba(255,255,255,.08)"><button class="dark" id="done">Готово</button><button id="cancel">Отмена</button><button id="del" class="del" style="margin-left:auto">Удалить проект</button></div>
+    </details>
+    <div class="pad row" style="border-top:1px solid rgba(255,255,255,.08)"><button class="dark" id="done">Сохранить проект</button><button id="cancel">Отмена</button><button id="del" class="del" style="margin-left:auto">Удалить проект</button></div>
   </section>
 </div>
 </main>
@@ -128,8 +140,11 @@ button.dark{background:#f2f2f7;color:#000;border-color:#f2f2f7}
 <div class="bar" id="bar" hidden><span id="bmsg">Публикация…</span><button class="dark" id="publish" hidden>Повторить</button></div>
 
 <script src="gallery-media.js?v=1"></script>
+<script src="project-sections.js?v=1"></script>
 <script>
 const $=s=>document.querySelector(s);
+const {labels:sectionLabels,sectionOf}=window.ProjectSections;
+$('#f-section').replaceChildren(...Object.entries(sectionLabels).map(([key,label])=>new Option(label,key)));
 let PW=sessionStorage.getItem('pw')||'',cats=[],list=[],removed=[],pending=[],edit=null,dirty=false;
 const esc=v=>String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[m]);
 
@@ -146,11 +161,16 @@ if(PW)login();
 
 function mark(){dirty=true;$('#bar').hidden=false;publish()}
 function render(){
-  $('#list').innerHTML=list.map((p,i)=>`<div class="pr"><span class="c">P${String(i+1).padStart(3,'0')}</span><span>${esc(p.name)}</span><div>
-    <button class="ghost" data-a="up" data-i="${i}" ${i?'':'disabled'}>↑</button><button class="ghost" data-a="down" data-i="${i}" ${i<list.length-1?'':'disabled'}>↓</button><button class="ghost" data-a="edit" data-i="${i}">Изменить</button>${p.id?`<a class="btn ghost" href="/#p-c${esc(p.id)}" target="_blank" rel="noopener">Открыть ↗</a>`:''}</div></div>`).join('')||'<p class="pr note" style="display:block">Пока нет проектов.</p>'}
+  $('#list').innerHTML=Object.entries(sectionLabels).map(([key,label])=>{
+    const projects=list.map((p,i)=>({p,i})).filter(({p})=>sectionOf(p)===key);
+    if(!projects.length)return '';
+    return `<h3 class="admin-group-title">${label}</h3>${projects.map(({p,i},row)=>`<div class="pr"><span class="c">P${String(i+1).padStart(3,'0')}</span><span>${esc(p.name)}</span><div>
+      <button class="ghost" data-a="move" data-i="${i}" data-to="${projects[row-1]?.i??''}" aria-label="Выше" ${row?'':'disabled'}>↑</button><button class="ghost" data-a="move" data-i="${i}" data-to="${projects[row+1]?.i??''}" aria-label="Ниже" ${row<projects.length-1?'':'disabled'}>↓</button><button class="ghost" data-a="edit" data-i="${i}">Изменить</button>${p.id?`<a class="btn ghost" href="/#p-c${esc(p.id)}" target="_blank" rel="noopener">Открыть ↗</a>`:''}</div></div>`).join('')}`;
+  }).join('')||'<p class="pr note" style="display:block">Пока нет проектов.</p>';
+}
 $('#list').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=+b.dataset.i;
   if(b.dataset.a==='edit')open(i);
-  else{const j=b.dataset.a==='up'?i-1:i+1;[list[i],list[j]]=[list[j],list[i]];mark();render()}};
+  else if(b.dataset.to!==''){const j=+b.dataset.to;[list[i],list[j]]=[list[j],list[i]];mark();render()}};
 
 const BASE=['Сайт','Приложение','Бот','Дизайн','Инструмент'];
 const used=()=>list.map(p=>p.type).filter(Boolean);
@@ -164,10 +184,19 @@ $('#c-new').onkeydown=e=>{if(e.key==='Enter')$('#c-add').click()};
 $('#f-type').onchange=()=>{const n=$('#f-type').value==='+';$('#newcat').hidden=!n;if(n){$('#f-cat').value='';$('#f-cat').focus()}};
 $('#addCat').onclick=()=>{const c=addCat($('#f-cat').value);if(c)fillTypes(c)};
 $('#f-cat').onkeydown=e=>{if(e.key==='Enter')$('#addCat').click()};
-const F=['name','type','created','stack','platforms','link','pwa','device','folder','desc','description'];
+const F=['name','type','created','stack','platforms','link','pwa','device','folder','desc','description','section'];
+function syncSection(){
+  const design=$('#f-section').value==='design';
+  $('#project-details').hidden=design;
+  $('#gallery-title').textContent=design?'Карусель проекта':'Галерея проекта';
+  $('#gallery-note').textContent=(design?'Изображения будут показаны каруселью. ':'Фото и GIF сохраняют пропорции и переносятся на следующую строку. ')+ 'PNG, JPG, WebP и GIF. До 60 файлов, GIF зацикливаются и могут весить до 3 МБ.';
+}
+$('#f-section').onchange=syncSection;
 $('#f-device').onchange=()=>{$('#pwaLbl').textContent=$('#f-device').value==='ipad'?'Адрес сайта — откроется в iPad (с https://)':'Адрес web-приложения — запустится в iPhone (с https://)'};
 function open(i){edit={i,shots:(i==null?[]:list[i].shots||[]).map(s=>({...s})),feats:(i==null?[]:list[i].features||[]).map(f=>({h:f.h||'',p:f.p||'',ul:(f.ul||[]).join('\n')}))};
   const p=i==null?{}:list[i];fillTypes(p.type);F.forEach(k=>k!=='type'&&($('#f-'+k).value=p[k]||(k==='device'?'phone':k==='folder'?'1':'')));$('#f-device').onchange();
+  $('#f-section').value=sectionOf(p);$('#project-details').open=false;syncSection();
+  $('#galleryStatus').textContent='';
   $('#ftitle').textContent=i==null?'Project Editor · новый':'Project Editor · '+p.name;$('#del').hidden=i==null;
   edit.gallery=(p.gallery||[]).map(s=>({...s}));
   $('#form').hidden=false;drawShots();drawGallery();drawFeats();$('#form').scrollIntoView({behavior:'smooth'})}
@@ -192,7 +221,7 @@ $('#galleryFiles').onchange=async e=>{const current=edit,files=[...e.target.file
   try{for(const f of files){if(!/^image\/(jpeg|png|webp|gif)$/.test(f.type))throw new Error('Поддерживаются PNG, JPG, WebP и GIF');
     $('#galleryStatus').textContent='Подготовка: '+f.name;const blob=await shrink(f),bm=await createImageBitmap(blob);const width=bm.width,height=bm.height;bm.close();
     if(edit!==current)break;current.gallery.push({blob,preview:URL.createObjectURL(blob),alt:'',file:0,width,height});drawGallery()}
-    $('#galleryStatus').textContent='Изображения добавлены. Нажмите «Готово», чтобы опубликовать.';
+    $('#galleryStatus').textContent='Изображения добавлены. Нажмите «Сохранить проект», чтобы опубликовать.';
   }catch(err){$('#galleryStatus').textContent='Ошибка: '+err.message}finally{galleryLoading=false;$('#done').disabled=false}};
 function drawFeats(){$('#feats').innerHTML=edit.feats.map((f,k)=>`<div class="item f"><div><input data-k="${k}" data-f="h" placeholder="Название, например «Импорт выписки»" value="${esc(f.h)}">
   <textarea data-k="${k}" data-f="p" placeholder="Короткое описание" style="min-height:52px;margin-bottom:6px">${esc(f.p)}</textarea>
