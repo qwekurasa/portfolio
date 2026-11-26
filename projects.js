@@ -272,24 +272,61 @@ window.CUSTOM=[
  },
  {
   "id": "design-template-1",
-  "name": "Дизайн-проект 01",
+  "name": "thinkinbrain - идейник",
+  "type": "",
+  "created": "",
+  "stack": "",
+  "platforms": "",
+  "link": "",
+  "pwa": "",
+  "device": "phone",
+  "folder": "1",
+  "desc": "",
+  "description": "Thinkinbrain — идейник для мыслей, которые приходят в самый неожиданный момент. Открываешь приложение, записываешь идею в пару строк и возвращаешься к ней позже, когда есть время её развить. Разрабатывал приложения для максимального удобства при записи текста. Есть возможность записать текст с помощью микрофона. Так же проработано взаимодействие с человеком через визуальную составляющую.",
   "section": "design",
-  "description": "",
-  "gallery": []
+  "gallery": [
+   {
+    "src": "img/design-template-1/1qe4p8zf.gif",
+    "alt": "",
+    "file": 0,
+    "width": 900,
+    "height": 900
+   },
+   {
+    "src": "img/design-template-1/qlv0txjg.gif",
+    "alt": "",
+    "file": 0,
+    "width": 900,
+    "height": 900
+   },
+   {
+    "src": "img/design-template-1/6x3mcpdv.gif",
+    "alt": "",
+    "file": 0,
+    "width": 900,
+    "height": 900
+   }
+  ],
+  "shots": [],
+  "features": []
  },
  {
   "id": "design-template-2",
   "name": "Дизайн-проект 02",
   "section": "design",
   "description": "",
-  "gallery": []
+  "gallery": [],
+  "features": [],
+  "shots": []
  },
  {
   "id": "design-template-3",
   "name": "Дизайн-проект 03",
   "section": "design",
   "description": "",
-  "gallery": []
+  "gallery": [],
+  "features": [],
+  "shots": []
  }
 ];
 window.CATS=[];
